@@ -141,19 +141,62 @@
 
         <!-- View 4: Neon Chess -->
         <div id="chessView" class="game-view hidden">
-            <div class="chess-game-container">
+            <!-- Lobby: Tạo và tìm phòng -->
+            <div id="chessLobby" class="caro-lobby-container">
+                <h2 class="lobby-title">♟️ NEON CHESS</h2>
+                <p class="lobby-subtitle">CHƠI CỜ VUA TRỰC TUYẾN CÙNG BẠN BÈ</p>
+                
+                <div class="input-group">
+                    <label for="chessNicknameInput">TÊN HIỂN THỊ</label>
+                    <input type="text" id="chessNicknameInput" placeholder="NICKNAME CỦA BẠN..." maxlength="12">
+                </div>
+                
+                <div class="lobby-actions">
+                    <button id="btnChessCreateRoom" class="lobby-btn create-btn">TẠO PHÒNG MỚI</button>
+                    
+                    <div class="divider">HOẶC</div>
+                    
+                    <div class="join-box">
+                        <input type="text" id="chessRoomCodeInput" placeholder="NHẬP MÃ 4 KÝ TỰ..." maxlength="4">
+                        <button id="btnChessJoinRoom" class="lobby-btn join-btn">VÀO PHÒNG</button>
+                    </div>
+                </div>
+                
+                <p id="chessLobbyMessage" class="lobby-msg"></p>
+            </div>
+
+            <!-- Màn chơi Chess Online -->
+            <div id="chessGame" class="chess-game-container hidden">
                 <div class="chess-header">
-                    <div class="chess-header-item">LƯỢT ĐI: <span id="chessTurn" class="highlight">TRẮNG</span></div>
-                    <div class="chess-header-item"><span id="chessStatus" class="highlight blink hidden">CHIẾU TƯỚNG!</span></div>
+                    <div class="chess-header-item">ROOM: <span id="chessDisplayRoomCode" class="highlight">-</span></div>
+                    <div class="chess-header-item">LƯỢT: <span id="chessTurn" class="highlight">TRẮNG</span></div>
+                    <div class="chess-header-item"><span id="chessStatus" class="highlight blink hidden">CHIẾU!</span></div>
                 </div>
                 
-                <div class="chess-canvas-wrapper">
-                    <canvas id="chessCanvas" width="400" height="400"></canvas>
-                </div>
-                
-                <div class="chess-footer">
-                    <div id="chessStatusText">CLICK QUÂN CỜ ĐỂ DI CHUYỂN</div>
-                    <button id="btnResetChess" class="leave-btn">CHƠI LẠI</button>
+                <div class="chess-play-area">
+                    <div class="board-column">
+                        <div class="chess-canvas-wrapper">
+                            <canvas id="chessCanvas" width="400" height="400"></canvas>
+                        </div>
+                        
+                        <div class="chess-footer">
+                            <div id="chessStatusText">ĐANG CHỜ ĐỐI THỦ VÀO PHÒNG...</div>
+                            <div class="chess-footer-btns">
+                                <button id="btnResetChess" class="leave-btn hidden">CHƠI LẠI</button>
+                                <button id="btnLeaveChess" class="leave-btn">THOÁT PHÒNG</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-column">
+                        <div class="chat-history" id="chessChatHistory">
+                            <div class="chat-msg system">KÊNH CHAT PHÒNG CỜ VUA</div>
+                        </div>
+                        <div class="chat-input-box">
+                            <input type="text" id="chessChatInput" placeholder="NHẬP TIN NHẮN..." maxlength="60">
+                            <button id="btnChessSendChat">GỬI</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,77 +1,111 @@
-// chess-game.js - Neon Chess (Cờ Vua Cyberpunk)
+// chess-game.js - Neon Chess Online (Cờ Vua Cyberpunk Trực tuyến)
 (function() {
 "use strict";
 
+// --- PHẦN TỬ DOM ---
 const chessCanvas = document.getElementById('chessCanvas');
 const chessCtx = chessCanvas.getContext('2d');
 
-const chessTurn = document.getElementById('chessTurn');
-const chessStatus = document.getElementById('chessStatus');
+// Lobby
+const chessLobby = document.getElementById('chessLobby');
+const chessNicknameInput = document.getElementById('chessNicknameInput');
+const chessRoomCodeInput = document.getElementById('chessRoomCodeInput');
+const btnChessCreateRoom = document.getElementById('btnChessCreateRoom');
+const btnChessJoinRoom = document.getElementById('btnChessJoinRoom');
+const chessLobbyMessage = document.getElementById('chessLobbyMessage');
+
+// Game
+const chessGame = document.getElementById('chessGame');
+const chessDisplayRoomCode = document.getElementById('chessDisplayRoomCode');
+const chessTurnEl = document.getElementById('chessTurn');
+const chessStatusEl = document.getElementById('chessStatus');
 const chessStatusText = document.getElementById('chessStatusText');
 const btnResetChess = document.getElementById('btnResetChess');
+const btnLeaveChess = document.getElementById('btnLeaveChess');
 
+// Chat
+const chessChatHistory = document.getElementById('chessChatHistory');
+const chessChatInput = document.getElementById('chessChatInput');
+const btnChessSendChat = document.getElementById('btnChessSendChat');
+
+// --- HẰNG SỐ ---
 const BOARD_SIZE = 8;
-const CHESS_CELL_SIZE = chessCanvas.width / BOARD_SIZE; // 400 / 8 = 50px mỗi ô
-
+const CELL_SIZE = chessCanvas.width / BOARD_SIZE; // 50px
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1'];
+const PIECE_SYMBOLS = { 'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟' };
 
-const PIECE_SYMBOLS = {
-    'k': '♚',
-    'q': '♛',
-    'r': '♜',
-    'b': '♝',
-    'n': '♞',
-    'p': '♟'
-};
-
-// Khởi tạo Chess.js engine
+// --- TRẠNG THÁI GAME ---
 let chess = null;
 if (typeof Chess !== 'undefined') {
     chess = new Chess();
-} else {
-    console.error("Chess.js CDN failed to load!");
 }
 
-const chessState = {
-    selectedSquare: null, // e.g. 'e2'
-    validMoves: [] // Danh sách các nước đi hợp lệ dưới dạng verbose objects từ chess.js
+const state = {
+    status: 'LOBBY', // LOBBY | WAITING | PLAYING | ENDED
+    nickname: '',
+    roomCode: '',
+    myColor: 'w', // 'w' hoặc 'b'
+    opponentName: 'Đối thủ',
+    selectedSquare: null,
+    validMoves: [],
+    // Supabase channels
+    gameChannel: null,
+    chatChannel: null
 };
 
-// --- LOGIC HÌNH ẢNH & RENDERING ---
+// --- TIỆN ÍCH ---
+function genRoomCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return code;
+}
 
-function renderChessBoard() {
+function showLobbyMsg(msg, isError) {
+    chessLobbyMessage.innerText = msg;
+    chessLobbyMessage.style.color = isError ? '#ff3b30' : '#00f0ff';
+}
+
+function addChatMsg(text, type) {
+    const div = document.createElement('div');
+    div.classList.add('chat-msg', type);
+    div.textContent = text;
+    chessChatHistory.appendChild(div);
+    chessChatHistory.scrollTop = chessChatHistory.scrollHeight;
+}
+
+// --- VẼ BÀN CỜ ---
+function renderBoard() {
     if (!chess) return;
-    
-    // Clear canvas
     chessCtx.fillStyle = '#07080c';
     chessCtx.fillRect(0, 0, chessCanvas.width, chessCanvas.height);
-    
+
     const board = chess.board();
     const isCheck = chess.in_check();
-    
-    // 1. Vẽ các ô cờ
+
+    // 1. Ô lưới
     for (let r = 0; r < BOARD_SIZE; r++) {
         for (let c = 0; c < BOARD_SIZE; c++) {
             const isDark = (r + c) % 2 === 1;
             chessCtx.fillStyle = isDark ? '#161722' : '#2c2d3d';
-            chessCtx.fillRect(c * CHESS_CELL_SIZE, r * CHESS_CELL_SIZE, CHESS_CELL_SIZE, CHESS_CELL_SIZE);
-            
-            // Vẽ số hiệu hàng/cột mờ nhạt (files & ranks)
+            chessCtx.fillRect(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+
+            // File/Rank labels
             if (c === 0) {
                 chessCtx.fillStyle = '#8f92a1';
                 chessCtx.font = '9px Outfit, sans-serif';
-                chessCtx.fillText(RANKS[r], 4, r * CHESS_CELL_SIZE + 12);
+                chessCtx.fillText(RANKS[r], 4, r * CELL_SIZE + 12);
             }
             if (r === BOARD_SIZE - 1) {
                 chessCtx.fillStyle = '#8f92a1';
                 chessCtx.font = '9px Outfit, sans-serif';
-                chessCtx.fillText(FILES[c], c * CHESS_CELL_SIZE + CHESS_CELL_SIZE - 10, chessCanvas.height - 4);
+                chessCtx.fillText(FILES[c], c * CELL_SIZE + CELL_SIZE - 10, chessCanvas.height - 4);
             }
         }
     }
-    
-    // 2. Vẽ viền chiếu tướng đỏ cho Vua
+
+    // 2. Viền đỏ Vua bị chiếu
     if (isCheck) {
         const turn = chess.turn();
         for (let r = 0; r < BOARD_SIZE; r++) {
@@ -83,54 +117,50 @@ function renderChessBoard() {
                     chessCtx.shadowColor = '#ff3b30';
                     chessCtx.strokeStyle = '#ff3b30';
                     chessCtx.lineWidth = 3;
-                    chessCtx.strokeRect(c * CHESS_CELL_SIZE + 2, r * CHESS_CELL_SIZE + 2, CHESS_CELL_SIZE - 4, CHESS_CELL_SIZE - 4);
+                    chessCtx.strokeRect(c * CELL_SIZE + 2, r * CELL_SIZE + 2, CELL_SIZE - 4, CELL_SIZE - 4);
                     chessCtx.restore();
                 }
             }
         }
     }
-    
-    // 3. Highlight ô cờ đang chọn (Neon Yellow)
-    if (chessState.selectedSquare) {
-        const col = FILES.indexOf(chessState.selectedSquare[0]);
-        const row = RANKS.indexOf(chessState.selectedSquare[1]);
-        
+
+    // 3. Highlight ô đang chọn
+    if (state.selectedSquare) {
+        const col = FILES.indexOf(state.selectedSquare[0]);
+        const row = RANKS.indexOf(state.selectedSquare[1]);
         chessCtx.save();
         chessCtx.shadowBlur = 10;
         chessCtx.shadowColor = '#ffe600';
         chessCtx.strokeStyle = '#ffe600';
         chessCtx.lineWidth = 2.5;
-        chessCtx.strokeRect(col * CHESS_CELL_SIZE + 2, row * CHESS_CELL_SIZE + 2, CHESS_CELL_SIZE - 4, CHESS_CELL_SIZE - 4);
+        chessCtx.strokeRect(col * CELL_SIZE + 2, row * CELL_SIZE + 2, CELL_SIZE - 4, CELL_SIZE - 4);
         chessCtx.restore();
     }
-    
-    // 4. Vẽ gợi ý nước đi hợp lệ
-    chessState.validMoves.forEach(mv => {
+
+    // 4. Gợi ý nước đi hợp lệ
+    state.validMoves.forEach(mv => {
         const col = FILES.indexOf(mv.to[0]);
         const row = RANKS.indexOf(mv.to[1]);
         const targetPiece = board[row][col];
-        
         chessCtx.save();
         if (targetPiece) {
-            // Nếu ô đích có quân đối thủ -> vẽ viền đỏ/xanh cảnh báo ăn quân
             chessCtx.shadowBlur = 8;
             chessCtx.shadowColor = '#ff7300';
             chessCtx.strokeStyle = '#ff7300';
             chessCtx.lineWidth = 2;
-            chessCtx.strokeRect(col * CHESS_CELL_SIZE + 4, row * CHESS_CELL_SIZE + 4, CHESS_CELL_SIZE - 8, CHESS_CELL_SIZE - 8);
+            chessCtx.strokeRect(col * CELL_SIZE + 4, row * CELL_SIZE + 4, CELL_SIZE - 8, CELL_SIZE - 8);
         } else {
-            // Ô trống -> vẽ chấm tròn cyan phát sáng
             chessCtx.shadowBlur = 8;
             chessCtx.shadowColor = '#00f0ff';
             chessCtx.fillStyle = 'rgba(0, 240, 255, 0.6)';
             chessCtx.beginPath();
-            chessCtx.arc(col * CHESS_CELL_SIZE + CHESS_CELL_SIZE / 2, row * CHESS_CELL_SIZE + CHESS_CELL_SIZE / 2, 6, 0, Math.PI * 2);
+            chessCtx.arc(col * CELL_SIZE + CELL_SIZE / 2, row * CELL_SIZE + CELL_SIZE / 2, 6, 0, Math.PI * 2);
             chessCtx.fill();
         }
         chessCtx.restore();
     });
-    
-    // 5. Vẽ các quân cờ
+
+    // 5. Quân cờ
     for (let r = 0; r < BOARD_SIZE; r++) {
         for (let c = 0; c < BOARD_SIZE; c++) {
             const piece = board[r][c];
@@ -139,146 +169,313 @@ function renderChessBoard() {
                 chessCtx.font = '36px Arial';
                 chessCtx.textAlign = 'center';
                 chessCtx.textBaseline = 'middle';
-                
-                // Thiết lập phát sáng neon theo màu quân cờ
                 if (piece.color === 'w') {
-                    // Quân trắng: Neon Cyan
                     chessCtx.shadowBlur = 8;
                     chessCtx.shadowColor = '#00f0ff';
                     chessCtx.fillStyle = '#00f0ff';
                 } else {
-                    // Quân đen: Neon Pink
                     chessCtx.shadowBlur = 8;
                     chessCtx.shadowColor = '#ff007f';
                     chessCtx.fillStyle = '#ff007f';
                 }
-                
-                const symbol = PIECE_SYMBOLS[piece.type] || '';
-                chessCtx.fillText(symbol, c * CHESS_CELL_SIZE + CHESS_CELL_SIZE / 2, r * CHESS_CELL_SIZE + CHESS_CELL_SIZE / 2 + 2);
+                chessCtx.fillText(PIECE_SYMBOLS[piece.type] || '', c * CELL_SIZE + CELL_SIZE / 2, r * CELL_SIZE + CELL_SIZE / 2 + 2);
                 chessCtx.restore();
             }
         }
     }
 }
 
-// Cập nhật trạng thái trận đấu lên màn hình
-function updateChessStatus() {
+// --- CẬP NHẬT TRẠNG THÁI UI ---
+function updateStatusUI() {
     if (!chess) return;
-    
-    // Cập nhật lượt đi
     const turn = chess.turn();
-    chessTurn.innerText = turn === 'w' ? 'TRẮNG' : 'ĐEN';
-    chessTurn.style.color = turn === 'w' ? '#00f0ff' : '#ff007f';
-    chessTurn.style.textShadow = turn === 'w' ? '0 0 8px #00f0ff' : '0 0 8px #ff007f';
-    
-    // Trạng thái Chiếu tướng
+    chessTurnEl.innerText = turn === 'w' ? 'TRẮNG' : 'ĐEN';
+    chessTurnEl.style.color = turn === 'w' ? '#00f0ff' : '#ff007f';
+    chessTurnEl.style.textShadow = turn === 'w' ? '0 0 8px #00f0ff' : '0 0 8px #ff007f';
+
     if (chess.in_check()) {
-        chessStatus.classList.remove('hidden');
+        chessStatusEl.classList.remove('hidden');
     } else {
-        chessStatus.classList.add('hidden');
+        chessStatusEl.classList.add('hidden');
     }
-    
-    // Trạng thái kết thúc game
+
+    const isMyTurn = turn === state.myColor;
+
     if (chess.in_checkmate()) {
         const winner = turn === 'w' ? 'ĐEN' : 'TRẮNG';
-        chessStatusText.innerText = `CHIẾU BÍ! QUÂN ${winner} THẮNG CUỘC.`;
+        chessStatusText.innerText = `CHIẾU BÍ! QUÂN ${winner} THẮNG!`;
         chessStatusText.style.color = '#ff3b30';
+        state.status = 'ENDED';
+        btnResetChess.classList.remove('hidden');
     } else if (chess.in_draw()) {
-        chessStatusText.innerText = "TRẬN ĐẤU HÒA (HÒA CỜ / STALEMATE)!";
+        chessStatusText.innerText = 'TRẬN ĐẤU HÒA!';
         chessStatusText.style.color = '#ffe600';
-    } else {
-        chessStatusText.innerText = "CLICK QUÂN CỜ ĐỂ DI CHUYỂN";
+        state.status = 'ENDED';
+        btnResetChess.classList.remove('hidden');
+    } else if (state.status === 'PLAYING') {
+        chessStatusText.innerText = isMyTurn ? '👉 LƯỢT CỦA BẠN - CLICK QUÂN CỜ' : '⏳ ĐỐI THỦ ĐANG SUY NGHĨ...';
         chessStatusText.style.color = '#ffe600';
     }
 }
 
-// Reset lại ván cờ
-function resetChessGame() {
-    if (!chess) return;
-    chess.reset();
-    chessState.selectedSquare = null;
-    chessState.validMoves = [];
-    renderChessBoard();
-    updateChessStatus();
+// --- SUPABASE CHANNELS ---
+function setupChannels() {
+    if (typeof window.supabaseClient === 'undefined' || !window.supabaseClient) {
+        const sc = window.supabaseClient;
+    }
+    const client = window.supabaseClient;
+    if (!client) {
+        console.warn('Supabase not available. Chess online mode disabled.');
+        return;
+    }
+
+    // Game channel — di chuyển, join, reset
+    state.gameChannel = client.channel(`chess-${state.roomCode}`, {
+        config: { broadcast: { self: false } }
+    });
+
+    state.gameChannel.on('broadcast', { event: 'player-joined' }, (payload) => {
+        const data = payload.payload;
+        state.opponentName = data.name || 'Đối thủ';
+        state.status = 'PLAYING';
+        chessStatusText.innerText = '👉 LƯỢT CỦA BẠN - CLICK QUÂN CỜ';
+        addChatMsg(`Hệ thống: ${state.opponentName} ĐÃ THAM GIA. BẮT ĐẦU!`, 'system');
+        renderBoard();
+        updateStatusUI();
+    });
+
+    state.gameChannel.on('broadcast', { event: 'chess-move' }, (payload) => {
+        const data = payload.payload;
+        if (chess) {
+            chess.move({ from: data.from, to: data.to, promotion: data.promotion || undefined });
+            state.selectedSquare = null;
+            state.validMoves = [];
+            renderBoard();
+            updateStatusUI();
+        }
+    });
+
+    state.gameChannel.on('broadcast', { event: 'chess-reset' }, () => {
+        chess.reset();
+        state.selectedSquare = null;
+        state.validMoves = [];
+        state.status = 'PLAYING';
+        btnResetChess.classList.add('hidden');
+        addChatMsg('Hệ thống: ĐỐI THỦ ĐÃ BẮT ĐẦU VÁN MỚI!', 'system');
+        renderBoard();
+        updateStatusUI();
+    });
+
+    state.gameChannel.subscribe();
+
+    // Chat channel
+    state.chatChannel = client.channel(`chess-chat-${state.roomCode}`, {
+        config: { broadcast: { self: false } }
+    });
+
+    state.chatChannel.on('broadcast', { event: 'chat-message' }, (payload) => {
+        const data = payload.payload;
+        const colorClass = data.color === 'w' ? 'x' : 'o';
+        addChatMsg(`${data.name}: ${data.text}`, colorClass);
+    });
+
+    state.chatChannel.subscribe();
 }
 
-// --- XỬ LÝ CLICK CHUỘT ---
+function cleanupChannels() {
+    if (state.gameChannel) { state.gameChannel.unsubscribe(); state.gameChannel = null; }
+    if (state.chatChannel) { state.chatChannel.unsubscribe(); state.chatChannel = null; }
+}
 
+// --- LOBBY ---
+function enterGame() {
+    chessLobby.classList.add('hidden');
+    chessGame.classList.remove('hidden');
+    chessDisplayRoomCode.innerText = state.roomCode;
+    chess.reset();
+    state.selectedSquare = null;
+    state.validMoves = [];
+    // Clear old chat
+    chessChatHistory.innerHTML = '<div class="chat-msg system">KÊNH CHAT PHÒNG CỜ VUA</div>';
+    renderBoard();
+    updateStatusUI();
+    setupChannels();
+}
+
+function leaveGame() {
+    cleanupChannels();
+    chessGame.classList.add('hidden');
+    chessLobby.classList.remove('hidden');
+    state.status = 'LOBBY';
+    state.roomCode = '';
+    btnResetChess.classList.add('hidden');
+    showLobbyMsg('', false);
+}
+
+// Tạo phòng
+btnChessCreateRoom.addEventListener('click', () => {
+    const name = chessNicknameInput.value.trim();
+    if (!name) { showLobbyMsg('VUI LÒNG NHẬP TÊN!', true); return; }
+
+    state.nickname = name;
+    state.roomCode = genRoomCode();
+    state.myColor = 'w'; // Host chơi Trắng
+    state.status = 'WAITING';
+
+    showLobbyMsg(`ĐÃ TẠO PHÒNG: ${state.roomCode} — CHỜ ĐỐI THỦ...`, false);
+    chessStatusText.innerText = `ĐANG CHỜ ĐỐI THỦ VÀO PHÒNG... MÃ: ${state.roomCode}`;
+    enterGame();
+});
+
+// Vào phòng
+btnChessJoinRoom.addEventListener('click', () => {
+    const name = chessNicknameInput.value.trim();
+    if (!name) { showLobbyMsg('VUI LÒNG NHẬP TÊN!', true); return; }
+
+    const code = chessRoomCodeInput.value.trim().toUpperCase();
+    if (code.length !== 4) { showLobbyMsg('MÃ PHÒNG PHẢI GỒM 4 KÝ TỰ!', true); return; }
+
+    state.nickname = name;
+    state.roomCode = code;
+    state.myColor = 'b'; // Guest chơi Đen
+    state.status = 'PLAYING';
+
+    enterGame();
+    addChatMsg(`Hệ thống: BẠN ĐÃ VÀO PHÒNG ${code}. BẮT ĐẦU TRẬN ĐẤU!`, 'system');
+
+    // Thông báo cho host
+    setTimeout(() => {
+        if (state.gameChannel) {
+            state.gameChannel.send({
+                type: 'broadcast',
+                event: 'player-joined',
+                payload: { name: state.nickname }
+            });
+        }
+    }, 500);
+});
+
+// Thoát phòng
+btnLeaveChess.addEventListener('click', () => {
+    leaveGame();
+});
+
+// Chơi lại
+btnResetChess.addEventListener('click', () => {
+    chess.reset();
+    state.selectedSquare = null;
+    state.validMoves = [];
+    state.status = 'PLAYING';
+    btnResetChess.classList.add('hidden');
+    addChatMsg('Hệ thống: BẠN ĐÃ BẮT ĐẦU VÁN MỚI!', 'system');
+    renderBoard();
+    updateStatusUI();
+
+    // Broadcast reset
+    if (state.gameChannel) {
+        state.gameChannel.send({
+            type: 'broadcast',
+            event: 'chess-reset',
+            payload: {}
+        });
+    }
+});
+
+// --- CLICK BÀN CỜ ---
 chessCanvas.addEventListener('click', (e) => {
     if (!chess) return;
-    if (chess.game_over()) return; // Ván cờ đã kết thúc
-    
-    // Tọa độ click chuột trên canvas
+    if (state.status !== 'PLAYING') return;
+    if (chess.game_over()) return;
+
+    // Chỉ cho phép đi khi đúng lượt
+    if (chess.turn() !== state.myColor) return;
+
     const rect = chessCanvas.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const clickY = e.clientY - rect.top;
-    
-    // Ô cờ tương ứng
-    const col = Math.floor(clickX / CHESS_CELL_SIZE);
-    const row = Math.floor(clickY / CHESS_CELL_SIZE);
-    
+    const scaleX = chessCanvas.width / rect.width;
+    const scaleY = chessCanvas.height / rect.height;
+    const clickX = (e.clientX - rect.left) * scaleX;
+    const clickY = (e.clientY - rect.top) * scaleY;
+
+    const col = Math.floor(clickX / CELL_SIZE);
+    const row = Math.floor(clickY / CELL_SIZE);
+    if (col < 0 || col >= 8 || row < 0 || row >= 8) return;
+
     const square = FILES[col] + RANKS[row];
     const piece = chess.get(square);
     const turn = chess.turn();
-    
-    // 1. Nếu chưa chọn quân cờ nào
-    if (!chessState.selectedSquare) {
+
+    if (!state.selectedSquare) {
+        // Chọn quân của mình
         if (piece && piece.color === turn) {
-            // Chọn quân của mình
-            chessState.selectedSquare = square;
-            chessState.validMoves = chess.moves({ square: square, verbose: true });
+            state.selectedSquare = square;
+            state.validMoves = chess.moves({ square: square, verbose: true });
         }
     } else {
-        // 2. Đang chọn quân cờ
-        // Kiểm tra xem click vào ô đi hợp lệ không
-        const isMoveValid = chessState.validMoves.some(mv => mv.to === square);
-        
+        const isMoveValid = state.validMoves.some(mv => mv.to === square);
+
         if (isMoveValid) {
-            // Thực hiện di chuyển nước đi cờ
-            // Hỗ trợ tự động phong cấp Tốt thành Hậu (Promotion to Queen)
-            const sourcePiece = chess.get(chessState.selectedSquare);
+            const sourcePiece = chess.get(state.selectedSquare);
             const isPromotion = sourcePiece && sourcePiece.type === 'p' && (square[1] === '8' || square[1] === '1');
-            
-            chess.move({
-                from: chessState.selectedSquare,
+            const moveData = {
+                from: state.selectedSquare,
                 to: square,
                 promotion: isPromotion ? 'q' : undefined
-            });
-            
-            // Xóa vùng chọn
-            chessState.selectedSquare = null;
-            chessState.validMoves = [];
-            
-            // Cập nhật trạng thái
-            updateChessStatus();
+            };
+
+            chess.move(moveData);
+
+            // Broadcast nước đi
+            if (state.gameChannel) {
+                state.gameChannel.send({
+                    type: 'broadcast',
+                    event: 'chess-move',
+                    payload: moveData
+                });
+            }
+
+            state.selectedSquare = null;
+            state.validMoves = [];
+            updateStatusUI();
         } else {
-            // Nếu click sang quân khác cùng màu
             if (piece && piece.color === turn) {
-                chessState.selectedSquare = square;
-                chessState.validMoves = chess.moves({ square: square, verbose: true });
+                state.selectedSquare = square;
+                state.validMoves = chess.moves({ square: square, verbose: true });
             } else {
-                // Click ra ô ngoài không hợp lệ -> hủy chọn
-                chessState.selectedSquare = null;
-                chessState.validMoves = [];
+                state.selectedSquare = null;
+                state.validMoves = [];
             }
         }
     }
-    
-    renderChessBoard();
+
+    renderBoard();
 });
 
-// Nút chơi lại
-if (btnResetChess) {
-    btnResetChess.addEventListener('click', () => {
-        resetChessGame();
-    });
+// --- CHAT ---
+function sendChessChat() {
+    const text = chessChatInput.value.trim();
+    if (!text) return;
+
+    const colorClass = state.myColor === 'w' ? 'x' : 'o';
+    addChatMsg(`${state.nickname}: ${text}`, colorClass);
+    chessChatInput.value = '';
+
+    if (state.chatChannel) {
+        state.chatChannel.send({
+            type: 'broadcast',
+            event: 'chat-message',
+            payload: { name: state.nickname, text: text, color: state.myColor }
+        });
+    }
 }
 
-// Export renderChessBoard ra global để game.js gọi được khi chuyển tab
-window.renderChessBoard = renderChessBoard;
+btnChessSendChat.addEventListener('click', sendChessChat);
+chessChatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') sendChessChat();
+});
 
-// Khởi chạy ngay (không dùng DOMContentLoaded vì DOM đã sẵn sàng khi script ở cuối body)
+// --- EXPORT & INIT ---
+window.renderChessBoard = renderBoard;
 console.log('Chess.js loaded:', typeof Chess !== 'undefined', '| chess instance:', chess !== null);
-resetChessGame();
+renderBoard();
 
 })(); // Kết thúc IIFE
