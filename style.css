@@ -11,15 +11,84 @@ body {
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-/* Container chính của game */
+/* Thanh Menubar trên cùng */
+.menubar {
+    width: 100%;
+    height: 60px;
+    background-color: #11121d;
+    border-bottom: 1px solid #222436;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: #8f92a1;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+
+.nav-btn:hover {
+    color: #ffffff;
+    background-color: rgba(34, 36, 54, 0.4);
+}
+
+.nav-btn.active {
+    color: #00f0ff;
+    text-shadow: 0 0 10px #00f0ff;
+    border: 1px solid #00f0ff;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+    background-color: rgba(0, 240, 255, 0.05);
+}
+
+/* Container chứa các view */
+.portal-container {
+    width: 100%;
+    margin-top: 80px; /* Nhường chỗ cho menubar */
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.game-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    transition: opacity 0.3s ease;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- STYLING CHO NEON SNAKE --- */
+
 .game-container {
     display: flex;
-    flex-content: center;
     flex-direction: column;
     align-items: center;
     width: 100%;
@@ -30,7 +99,6 @@ body {
     border: 1px solid #222436;
 }
 
-/* Bảng điểm số */
 .score-board {
     width: 100%;
     display: flex;
@@ -48,20 +116,16 @@ body {
 }
 
 .score-item span {
-    color: #39ff14; /* Màu neon mặc định */
+    color: #39ff14; /* Màu xanh lá mặc định */
     text-shadow: 0 0 8px #39ff14;
     transition: color 0.5s ease, text-shadow 0.5s ease;
 }
 
-/* Wrapper cho Canvas */
 .canvas-wrapper {
     position: relative;
-    width: 400px;
-    height: 400px;
     margin-bottom: 16px;
 }
 
-/* Thẻ Canvas */
 #gameCanvas {
     background-color: #07080c;
     border: 2px solid #39ff14;
@@ -70,7 +134,6 @@ body {
     transition: border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
-/* Chân trang */
 .footer-hint {
     font-family: 'Outfit', sans-serif;
     font-size: 14px;
@@ -79,11 +142,237 @@ body {
     letter-spacing: 1px;
 }
 
-.footer-hint span {
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.2);
+/* --- STYLING CHO NEON GOMOKU (CARO) --- */
+
+.caro-lobby-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 440px;
+    padding: 30px 24px;
+    border-radius: 8px;
+    background-color: #161722;
+    border: 1px solid #222436;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Lớp phủ màn hình nhấp nháy cho text menu/pause */
+.lobby-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #ff007f;
+    text-shadow: 0 0 10px #ff007f;
+    margin-bottom: 6px;
+}
+
+.lobby-subtitle {
+    font-size: 12px;
+    color: #8f92a1;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.input-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #8f92a1;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #07080c;
+    border: 1px solid #222436;
+    border-radius: 4px;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #ff007f;
+    box-shadow: 0 0 8px rgba(255, 0, 127, 0.3);
+}
+
+.lobby-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lobby-btn {
+    width: 100%;
+    padding: 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.create-btn {
+    background-color: #ff007f;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+}
+
+.create-btn:hover {
+    background-color: #ff2a93;
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
+}
+
+.divider {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4a4d64;
+    margin: 16px 0;
+    letter-spacing: 2px;
+}
+
+.join-box {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.join-box input {
+    flex-grow: 1;
+    padding: 12px 16px;
+    background-color: #07080c;
+    border: 1px solid #222436;
+    border-radius: 4px;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.join-box input:focus {
+    outline: none;
+    border-color: #00f0ff;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+}
+
+.join-btn {
+    width: 120px;
+    background-color: #00f0ff;
+    color: #0d0e15;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+}
+
+.join-btn:hover {
+    background-color: #33f3ff;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+}
+
+.lobby-msg {
+    margin-top: 16px;
+    font-size: 13px;
+    text-align: center;
+    color: #ff3b30;
+    min-height: 18px;
+}
+
+/* Caro Game View */
+.caro-game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 490px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #161722;
+    border: 1px solid #222436;
+}
+
+.caro-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+}
+
+.caro-header-item {
+    color: #8f92a1;
+}
+
+.highlight {
+    color: #00f0ff;
+    text-shadow: 0 0 8px #00f0ff;
+}
+
+#caroCanvas {
+    background-color: #07080c;
+    border: 2px solid #b026ff;
+    box-shadow: 0 0 15px rgba(176, 38, 255, 0.7);
+    display: block;
+    cursor: pointer;
+}
+
+.caro-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 16px;
+}
+
+#caroStatusText {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    color: #ffe600;
+    text-shadow: 0 0 5px rgba(255, 230, 0, 0.3);
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.leave-btn {
+    background: transparent;
+    border: 1px solid #ff007f;
+    color: #ff007f;
+    padding: 8px 16px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.leave-btn:hover {
+    background-color: rgba(255, 0, 127, 0.1);
+    box-shadow: 0 0 8px rgba(255, 0, 127, 0.3);
+}
+
+/* Hiệu ứng nhấp nháy */
 .blink {
     animation: blinker 1.5s linear infinite;
 }

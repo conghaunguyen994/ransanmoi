@@ -710,10 +710,19 @@ function drawMenu() {
     
     ctx.restore();
 }
-
 // --- XỬ LÝ LẮNG NGHE BÀN PHÍM ---
 
 window.addEventListener('keydown', (e) => {
+    // 0. Bỏ qua phím nếu đang tập trung vào ô nhập văn bản (nhập mã phòng, nickname)
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+        return;
+    }
+    
+    // Chỉ hoạt động khi Snake View đang active
+    if (document.getElementById('snakeView').classList.contains('hidden')) {
+        return;
+    }
+
     const key = e.key;
     
     // 1. Phím tắt điều khiển khi ở trạng thái MENU
@@ -806,9 +815,45 @@ window.addEventListener('DOMContentLoaded', () => {
     gameState.highScoreChallenge = parseInt(localStorage.getItem('neon_snake_challenge_high')) || 0;
     
     // Hiển thị điểm cao trên UI
-    document.getElementById('classicHighScore').innerText = gameState.highScoreClassic;
+    const hsVal = document.getElementById('classicHighScore');
+    if (hsVal) {
+        hsVal.innerText = gameState.highScoreClassic;
+    }
     
     // Vẽ bảng Menu chính ban đầu
     drawMenu();
     console.log('Neon Snake initialized successfully with Menu.');
+    
+    // Thiết lập chuyển đổi View trên Menubar
+    document.getElementById('btnSnake').addEventListener('click', () => {
+        document.getElementById('btnSnake').classList.add('active');
+        document.getElementById('btnCaro').classList.remove('active');
+        
+        document.getElementById('snakeView').classList.remove('hidden');
+        document.getElementById('caroView').classList.add('hidden');
+        
+        // Vẽ lại bảng Snake để đảm bảo hiển thị đúng
+        if (gameState.gameStatus === 'MENU') {
+            drawMenu();
+        } else if (gameState.gameStatus === 'PLAYING') {
+            render();
+        } else if (gameState.gameStatus === 'PAUSED') {
+            renderPauseOverlay();
+        } else if (gameState.gameStatus === 'GAME_OVER') {
+            renderGameOverOverlay(gameState.score > gameState.highScoreClassic);
+        }
+    });
+
+    document.getElementById('btnCaro').addEventListener('click', () => {
+        document.getElementById('btnCaro').classList.add('active');
+        document.getElementById('btnSnake').classList.remove('active');
+        
+        document.getElementById('caroView').classList.remove('hidden');
+        document.getElementById('snakeView').classList.add('hidden');
+        
+        // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
+        if (gameState.gameStatus === 'PLAYING') {
+            togglePause();
+        }
+    });
 });

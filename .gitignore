@@ -12,3 +12,6 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 .DS_Store
+
+# Local secrets config
+supabase-config.js

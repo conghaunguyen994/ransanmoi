@@ -3,32 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rắn Săn Mồi Neon</title>
+    <title>Neon Game Center</title>
     <!-- Nhúng Google Fonts 'Outfit' và 'Inter' -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Nhúng Supabase client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
-        <!-- Bảng điểm số phía trên Canvas -->
-        <div class="score-board">
-            <div class="score-item">SCORE <span id="currentScore">0</span></div>
-            <div class="score-item">CLASSIC HIGH <span id="classicHighScore">0</span></div>
-        </div>
+    <!-- Thanh Menubar Cyberpunk trên cùng -->
+    <nav class="menubar">
+        <button id="btnSnake" class="nav-btn active">🐍 NEON SNAKE</button>
+        <button id="btnCaro" class="nav-btn">⚔️ NEON GOMOKU</button>
+    </nav>
+
+    <!-- Màn hình chính của các View -->
+    <div class="portal-container">
         
-        <!-- Bàn chơi Canvas -->
-        <div class="canvas-wrapper">
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <!-- View 1: Neon Snake -->
+        <div id="snakeView" class="game-view">
+            <div class="game-container">
+                <!-- Bảng điểm số phía trên Canvas -->
+                <div class="score-board">
+                    <div class="score-item">SCORE <span id="currentScore">0</span></div>
+                    <div class="score-item">CLASSIC HIGH <span id="classicHighScore">0</span></div>
+                </div>
+                
+                <!-- Bàn chơi Canvas -->
+                <div class="canvas-wrapper">
+                    <canvas id="gameCanvas" width="400" height="400"></canvas>
+                </div>
+
+                <!-- Hướng dẫn chân trang -->
+                <div class="footer-hint">
+                    <span id="footerText">NHẤN ENTER ĐỂ BẮT ĐẦU</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Hướng dẫn chân trang -->
-        <div class="footer-hint">
-            <span id="footerText">NHẤN ENTER ĐỂ BẮT ĐẦU</span>
+        <!-- View 2: Neon Gomoku (Cờ Ca rô Online) -->
+        <div id="caroView" class="game-view hidden">
+            <!-- Lobby: Tạo và tìm phòng -->
+            <div id="caroLobby" class="caro-lobby-container">
+                <h2 class="lobby-title">⚔️ NEON GOMOKU</h2>
+                <p class="lobby-subtitle">CHƠI CỜ TRỰC TUYẾN CÙNG BẠN BÈ</p>
+                
+                <div class="input-group">
+                    <label for="nicknameInput">TÊN HIỂN THỊ</label>
+                    <input type="text" id="nicknameInput" placeholder="NICKNAME CỦA BẠN..." maxlength="12">
+                </div>
+                
+                <div class="lobby-actions">
+                    <button id="btnCreateRoom" class="lobby-btn create-btn">TẠO PHÒNG MỚI</button>
+                    
+                    <div class="divider">HOẶC</div>
+                    
+                    <div class="join-box">
+                        <input type="text" id="roomCodeInput" placeholder="NHẬP MÃ 4 KÝ TỰ..." maxlength="4">
+                        <button id="btnJoinRoom" class="lobby-btn join-btn">VÀO PHÒNG</button>
+                    </div>
+                </div>
+                
+                <p id="lobbyMessage" class="lobby-msg"></p>
+            </div>
+
+            <!-- Màn chơi Gomoku -->
+            <div id="caroGame" class="caro-game-container hidden">
+                <div class="caro-header">
+                    <div class="caro-header-item">ROOM: <span id="displayRoomCode" class="highlight">-</span></div>
+                    <div class="caro-header-item">LƯỢT ĐI: <span id="displayTurn" class="highlight">-</span></div>
+                </div>
+                
+                <div class="canvas-wrapper">
+                    <canvas id="caroCanvas" width="450" height="450"></canvas>
+                </div>
+                
+                <div class="caro-footer">
+                    <div id="caroStatusText" class="blink">ĐANG CHỜ ĐỐI THỦ VÀO PHÒNG...</div>
+                    <button id="btnLeaveRoom" class="leave-btn">THOÁT PHÒNG</button>
+                </div>
+            </div>
         </div>
+        
     </div>
     
+    <script src="supabase-config.js"></script>
     <script src="game.js"></script>
+    <script src="caro.js"></script>
 </body>
 </html>
