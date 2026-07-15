@@ -15,4 +15,3 @@ Desktop.ini
 
 # Local secrets config
 supabase-config.js
-db-config.js

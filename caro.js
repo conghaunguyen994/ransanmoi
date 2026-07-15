@@ -1,5 +1,11 @@
 // caro.js - Neon Gomoku (Cờ Ca rô Online)
 
+// Đảm bảo supabaseClient luôn tồn tại dưới dạng biến toàn cục để tránh ReferenceError
+if (typeof window.supabaseClient === 'undefined') {
+    window.supabaseClient = null;
+}
+const supabaseClient = window.supabaseClient;
+
 // Lấy tham chiếu các phần tử DOM
 const caroCanvas = document.getElementById('caroCanvas');
 const caroCtx = caroCanvas.getContext('2d');
