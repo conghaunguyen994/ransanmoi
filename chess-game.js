@@ -272,7 +272,7 @@ if (btnResetChess) {
     });
 }
 
-// Tự động khởi chạy lần đầu
-window.addEventListener('DOMContentLoaded', () => {
-    resetChessGame();
-});
+// Khởi chạy ngay (không dùng DOMContentLoaded vì DOM đã sẵn sàng khi script ở cuối body)
+console.log('Chess.js loaded:', typeof Chess !== 'undefined', '| chess instance:', chess !== null);
+resetChessGame();
+
