@@ -1,0 +1,95 @@
+/* Reset mặc định */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #0d0e15;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Container chính của game */
+.game-container {
+    display: flex;
+    flex-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 440px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #161722;
+    border: 1px solid #222436;
+}
+
+/* Bảng điểm số */
+.score-board {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+}
+
+.score-item {
+    color: #ffffff;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.score-item span {
+    color: #39ff14; /* Màu neon mặc định */
+    text-shadow: 0 0 8px #39ff14;
+    transition: color 0.5s ease, text-shadow 0.5s ease;
+}
+
+/* Wrapper cho Canvas */
+.canvas-wrapper {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin-bottom: 16px;
+}
+
+/* Thẻ Canvas */
+#gameCanvas {
+    background-color: #07080c;
+    border: 2px solid #39ff14;
+    box-shadow: 0 0 15px #39ff14;
+    display: block;
+    transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Chân trang */
+.footer-hint {
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    color: #8f92a1;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.footer-hint span {
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+/* Lớp phủ màn hình nhấp nháy cho text menu/pause */
+.blink {
+    animation: blinker 1.5s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0.3;
+    }
+}

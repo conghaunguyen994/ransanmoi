@@ -1,0 +1,668 @@
+// game.js - Neon Snake Game
+
+// Lấy tham chiếu đến Canvas và Context
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Trạng thái cấu hình game
+const GRID_SIZE = 20; // 20x20 ô lưới
+const TILE_COUNT = canvas.width / GRID_SIZE; // Số pixel mỗi ô (400 / 20 = 20px)
+
+// Bảng màu Neon chủ đạo đổi theo cấp độ (cứ mỗi 100 điểm)
+const COLOR_PALETTES = [
+    '#39ff14', // Xanh lá neon
+    '#ff007f', // Hồng neon
+    '#00f0ff', // Xanh dương neon
+    '#ff7300', // Cam neon
+    '#b026ff'  // Tím neon
+];
+
+// Đối tượng trạng thái game (Game State Model)
+const gameState = {
+    score: 0,
+    highScoreClassic: 0,
+    highScoreChallenge: 0,
+    gameStatus: 'MENU', // MENU | PLAYING | PAUSED | GAME_OVER
+    mode: 'CLASSIC', // CLASSIC | CHALLENGE
+    
+    // Màu sắc neon hiện tại
+    neonColor: '#39ff14',
+    colorIndex: 0,
+    
+    // Hiệu ứng rung màn hình
+    shakeFrames: 0,
+    
+    // Rắn (mảng tọa độ các đốt, đầu ở index 0)
+    snake: [],
+    direction: 'RIGHT', // UP | DOWN | LEFT | RIGHT
+    inputQueue: [], // Hàng đợi điều khiển
+    
+    // Mồi và vật cản
+    food: { x: -1, y: -1 },
+    obstacles: [],
+    
+    // Hệ thống hạt (particle effects)
+    particles: [],
+    
+    // Tốc độ và Game loop timer
+    speed: 150, // ms mỗi tick (tốc độ khởi đầu)
+    gameInterval: null
+};
+
+// --- LOGIC SINH CHƯỚNG NGẠI VẬT (CHALLENGE MODE) ---
+
+// Sinh ngẫu nhiên 5 chướng ngại vật tĩnh
+function generateObstacles() {
+    gameState.obstacles = [];
+    while (gameState.obstacles.length < 5) {
+        const obs = {
+            x: Math.floor(Math.random() * GRID_SIZE),
+            y: Math.floor(Math.random() * GRID_SIZE)
+        };
+        
+        // Tránh đè lên rắn bắt đầu (X từ 7 đến 10, Y = 10)
+        // Cách xa đầu rắn ban đầu (X = 10, Y = 10) ít nhất 3 bước đi
+        const startDist = Math.abs(obs.x - 10) + Math.abs(obs.y - 10);
+        if (startDist < 4) continue;
+        
+        // Tránh trùng chướng ngại vật trước đó
+        let duplicate = false;
+        for (let existing of gameState.obstacles) {
+            if (existing.x === obs.x && existing.y === obs.y) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (duplicate) continue;
+        
+        gameState.obstacles.push(obs);
+    }
+}
+
+// --- LOGIC SINH MỒI ---
+
+// Sinh mồi ngẫu nhiên ở một ô trống trên lưới
+function generateFood() {
+    let newFood;
+    let overlap;
+    do {
+        overlap = false;
+        newFood = {
+            x: Math.floor(Math.random() * GRID_SIZE),
+            y: Math.floor(Math.random() * GRID_SIZE)
+        };
+        
+        // Tránh sinh mồi đè lên rắn
+        for (let segment of gameState.snake) {
+            if (segment.x === newFood.x && segment.y === newFood.y) {
+                overlap = true;
+                break;
+            }
+        }
+        
+        // Tránh sinh mồi đè lên chướng ngại vật
+        if (gameState.mode === 'CHALLENGE') {
+            for (let obs of gameState.obstacles) {
+                if (obs.x === newFood.x && obs.y === newFood.y) {
+                    overlap = true;
+                    break;
+                }
+            }
+        }
+    } while (overlap);
+    
+    gameState.food = newFood;
+}
+
+// --- HỆ THỐNG HẠT BỤI SÁNG (PARTICLES) ---
+
+// Khởi tạo các hạt sáng tại vị trí ăn mồi
+function createParticles(foodX, foodY) {
+    const px = foodX * TILE_COUNT + TILE_COUNT / 2;
+    const py = foodY * TILE_COUNT + TILE_COUNT / 2;
+    
+    for (let i = 0; i < 10; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 3 + 1.5;
+        gameState.particles.push({
+            x: px,
+            y: py,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            color: '#ffe600', // Màu vàng neon phát sáng cho mồi
+            alpha: 1,
+            decay: Math.random() * 0.05 + 0.03
+        });
+    }
+}
+
+// Cập nhật và vẽ các hạt sáng
+function updateAndDrawParticles() {
+    ctx.save();
+    for (let i = gameState.particles.length - 1; i >= 0; i--) {
+        const p = gameState.particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= p.decay;
+        
+        if (p.alpha <= 0) {
+            gameState.particles.splice(i, 1);
+        } else {
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.alpha;
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = p.color;
+            ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
+        }
+    }
+    ctx.restore();
+}
+
+// --- LOGIC DI CHUYỂN & VÒNG LẶP GAME ---
+
+// Khởi chạy game từ Menu hoặc Restart
+function startGame() {
+    // Reset trạng thái
+    gameState.score = 0;
+    gameState.direction = 'RIGHT';
+    gameState.inputQueue = [];
+    gameState.gameStatus = 'PLAYING';
+    gameState.speed = 150; // Trở lại tốc độ ban đầu
+    gameState.particles = [];
+    gameState.colorIndex = 0;
+    gameState.neonColor = COLOR_PALETTES[0];
+    
+    // Cập nhật bảng màu UI theo mặc định
+    updateUIColors();
+    
+    // Khởi tạo rắn ở giữa màn hình (độ dài 4)
+    gameState.snake = [
+        { x: 10, y: 10 },
+        { x: 9, y: 10 },
+        { x: 8, y: 10 },
+        { x: 7, y: 10 }
+    ];
+    
+    // Nếu chế độ là Challenge, sinh vật cản
+    if (gameState.mode === 'CHALLENGE') {
+        generateObstacles();
+    } else {
+        gameState.obstacles = [];
+    }
+    
+    // Sinh mồi ban đầu
+    generateFood();
+    
+    // Cập nhật UI
+    document.getElementById('currentScore').innerText = gameState.score;
+    
+    // Hiển thị điểm cao tương ứng của chế độ hiện tại
+    const highScoreVal = gameState.mode === 'CLASSIC' ? gameState.highScoreClassic : gameState.highScoreChallenge;
+    const headerLabel = gameState.mode === 'CLASSIC' ? 'CLASSIC HIGH' : 'CHALLENGE HIGH';
+    
+    document.querySelector('.score-board').innerHTML = `
+        <div class="score-item">SCORE <span id="currentScore" style="color: ${gameState.neonColor}; text-shadow: 0 0 8px ${gameState.neonColor};">${gameState.score}</span></div>
+        <div class="score-item">${headerLabel} <span id="highScoreText" style="color: ${gameState.neonColor}; text-shadow: 0 0 8px ${gameState.neonColor};">${highScoreVal}</span></div>
+    `;
+    
+    document.getElementById('footerText').innerHTML = 'NHẤN <span style="color:#ff007f; text-shadow:0 0 5px #ff007f;">ESC</span> HOẶC <span style="color:#ff007f; text-shadow:0 0 5px #ff007f;">P</span> ĐỂ TẠM DỪNG';
+    
+    // Khởi chạy loop
+    if (gameState.gameInterval) clearInterval(gameState.gameInterval);
+    gameState.gameInterval = setInterval(gameTick, gameState.speed);
+}
+
+// Cập nhật màu sắc giao diện theo màu neon chủ đạo hiện hành
+function updateUIColors() {
+    const canvasEl = document.getElementById('gameCanvas');
+    canvasEl.style.borderColor = gameState.neonColor;
+    canvasEl.style.boxShadow = `0 0 15px ${gameState.neonColor}`;
+    
+    const scoreVal = document.getElementById('currentScore');
+    if (scoreVal) {
+        scoreVal.style.color = gameState.neonColor;
+        scoreVal.style.textShadow = `0 0 8px ${gameState.neonColor}`;
+    }
+    
+    const hsVal = document.getElementById('highScoreText');
+    if (hsVal) {
+        hsVal.style.color = gameState.neonColor;
+        hsVal.style.textShadow = `0 0 8px ${gameState.neonColor}`;
+    }
+}
+
+// Tick xử lý logic sau mỗi khoảng thời gian 'speed'
+function gameTick() {
+    if (gameState.gameStatus !== 'PLAYING') return;
+
+    // 1. Xử lý hướng đi từ hàng đợi inputQueue
+    if (gameState.inputQueue.length > 0) {
+        const nextDirection = gameState.inputQueue.shift();
+        if (!isOpposite(nextDirection, gameState.direction)) {
+            gameState.direction = nextDirection;
+        }
+    }
+
+    // 2. Tính toán vị trí đầu mới của rắn
+    const head = { ...gameState.snake[0] };
+    if (gameState.direction === 'LEFT') head.x -= 1;
+    else if (gameState.direction === 'RIGHT') head.x += 1;
+    else if (gameState.direction === 'UP') head.y -= 1;
+    else if (gameState.direction === 'DOWN') head.y += 1;
+
+    // 3. Cơ chế đi xuyên tường (Wrap Around)
+    head.x = (head.x + GRID_SIZE) % GRID_SIZE;
+    head.y = (head.y + GRID_SIZE) % GRID_SIZE;
+
+    // 4. Kiểm tra va chạm với chướng ngại vật (Challenge Mode)
+    if (gameState.mode === 'CHALLENGE') {
+        for (let obs of gameState.obstacles) {
+            if (obs.x === head.x && obs.y === head.y) {
+                triggerGameOver();
+                return;
+            }
+        }
+    }
+
+    // 5. Kiểm tra va chạm với chính đuôi rắn
+    for (let i = 0; i < gameState.snake.length; i++) {
+        if (gameState.snake[i].x === head.x && gameState.snake[i].y === head.y) {
+            triggerGameOver();
+            return;
+        }
+    }
+
+    // 6. Cập nhật vị trí rắn (Thêm đầu)
+    gameState.snake.unshift(head);
+
+    // 7. Kiểm tra Rắn có ăn Mồi không
+    if (head.x === gameState.food.x && head.y === gameState.food.y) {
+        // Tăng điểm
+        gameState.score += 10;
+        document.getElementById('currentScore').innerText = gameState.score;
+        
+        // Tạo hiệu ứng hạt bụi sáng và rung màn hình
+        createParticles(gameState.food.x, gameState.food.y);
+        gameState.shakeFrames = 6; // Rung màn hình trong 6 frames (100ms)
+        
+        // Kiểm tra đổi màu Neon theo điểm số (mỗi 100 điểm)
+        const newColorIndex = Math.floor(gameState.score / 100) % COLOR_PALETTES.length;
+        if (newColorIndex !== gameState.colorIndex) {
+            gameState.colorIndex = newColorIndex;
+            gameState.neonColor = COLOR_PALETTES[newColorIndex];
+            updateUIColors();
+        }
+        
+        // Sinh mồi mới
+        generateFood();
+        
+        // Tăng tốc độ game (giảm 5ms, chặn ở tối đa 50ms)
+        const oldSpeed = gameState.speed;
+        gameState.speed = Math.max(50, gameState.speed - 5);
+        
+        if (gameState.speed !== oldSpeed) {
+            clearInterval(gameState.gameInterval);
+            gameState.gameInterval = setInterval(gameTick, gameState.speed);
+        }
+    } else {
+        // Nếu không ăn mồi, bỏ đốt ở đuôi
+        gameState.snake.pop();
+    }
+
+    // 8. Vẽ lại giao diện
+    render();
+}
+
+// Kiểm tra hai hướng có đối ngược nhau không
+function isOpposite(dir1, dir2) {
+    if (dir1 === 'LEFT' && dir2 === 'RIGHT') return true;
+    if (dir1 === 'RIGHT' && dir2 === 'LEFT') return true;
+    if (dir1 === 'UP' && dir2 === 'DOWN') return true;
+    if (dir1 === 'DOWN' && dir2 === 'UP') return true;
+    return false;
+}
+
+// Kích hoạt trạng thái tạm dừng (Pause)
+function togglePause() {
+    if (gameState.gameStatus === 'PLAYING') {
+        gameState.gameStatus = 'PAUSED';
+        clearInterval(gameState.gameInterval);
+        renderPauseOverlay();
+    } else if (gameState.gameStatus === 'PAUSED') {
+        gameState.gameStatus = 'PLAYING';
+        gameState.gameInterval = setInterval(gameTick, gameState.speed);
+    }
+}
+
+// Xử lý Game Over
+function triggerGameOver() {
+    gameState.gameStatus = 'GAME_OVER';
+    clearInterval(gameState.gameInterval);
+    
+    let isNewHighScore = false;
+    
+    if (gameState.mode === 'CLASSIC') {
+        if (gameState.score > gameState.highScoreClassic) {
+            gameState.highScoreClassic = gameState.score;
+            localStorage.setItem('neon_snake_classic_high', gameState.highScoreClassic);
+            isNewHighScore = true;
+        }
+    } else {
+        if (gameState.score > gameState.highScoreChallenge) {
+            gameState.highScoreChallenge = gameState.score;
+            localStorage.setItem('neon_snake_challenge_high', gameState.highScoreChallenge);
+            isNewHighScore = true;
+        }
+    }
+    
+    renderGameOverOverlay(isNewHighScore);
+}
+
+// --- LOGIC HÌNH ẢNH & RENDERING ---
+
+// Hàm render toàn bộ bàn chơi
+function render() {
+    // 1. Áp dụng hiệu ứng Rung màn hình nếu có
+    ctx.save();
+    if (gameState.shakeFrames > 0) {
+        const dx = (Math.random() - 0.5) * 6;
+        const dy = (Math.random() - 0.5) * 6;
+        ctx.translate(dx, dy);
+        gameState.shakeFrames--;
+    }
+    
+    // Vẽ nền tối của Canvas
+    ctx.fillStyle = '#07080c';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Vẽ lưới ô mờ
+    drawGrid();
+
+    // Vẽ chướng ngại vật (Challenge Mode)
+    if (gameState.mode === 'CHALLENGE') {
+        drawObstacles();
+    }
+
+    // Vẽ Rắn Neon
+    drawSnake();
+    
+    // Vẽ Mồi Neon
+    drawFood();
+    
+    // Cập nhật và vẽ các hạt bụi sáng
+    updateAndDrawParticles();
+    
+    ctx.restore(); // Khôi phục trạng thái translate rung màn hình
+}
+
+// Hàm vẽ lưới
+function drawGrid() {
+    ctx.strokeStyle = 'rgba(34, 36, 54, 0.3)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < GRID_SIZE; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * TILE_COUNT, 0);
+        ctx.lineTo(i * TILE_COUNT, canvas.height);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(0, i * TILE_COUNT);
+        ctx.lineTo(canvas.width, i * TILE_COUNT);
+        ctx.stroke();
+    }
+}
+
+// Hàm vẽ chướng ngại vật (Các khối phát sáng màu đỏ cam)
+function drawObstacles() {
+    ctx.save();
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = '#ffe600'; // Phát sáng vàng/cam
+    ctx.fillStyle = '#ffe600';
+    
+    gameState.obstacles.forEach(obs => {
+        ctx.fillRect(obs.x * TILE_COUNT + 1, obs.y * TILE_COUNT + 1, TILE_COUNT - 2, TILE_COUNT - 2);
+    });
+    ctx.restore();
+}
+
+// Hàm vẽ Rắn với hiệu ứng Neon phát sáng
+function drawSnake() {
+    ctx.save();
+    
+    // Cấu hình bóng mờ neon phát sáng theo màu chủ đạo hiện tại
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = gameState.neonColor;
+    ctx.fillStyle = gameState.neonColor;
+    
+    gameState.snake.forEach((segment, index) => {
+        if (index === 0) {
+            // Làm đầu rắn sáng nổi bật hơn body (màu trắng neon)
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = '#ffffff';
+            ctx.fillRect(segment.x * TILE_COUNT + 1, segment.y * TILE_COUNT + 1, TILE_COUNT - 2, TILE_COUNT - 2);
+            ctx.fillStyle = gameState.neonColor;
+            ctx.shadowColor = gameState.neonColor;
+        } else {
+            ctx.fillRect(segment.x * TILE_COUNT + 1, segment.y * TILE_COUNT + 1, TILE_COUNT - 2, TILE_COUNT - 2);
+        }
+    });
+    
+    ctx.restore();
+}
+
+// Hàm vẽ Mồi Neon (Hình tròn phát sáng màu đỏ/hồng neon hoặc đổi màu tương tự)
+function drawFood() {
+    if (gameState.food.x === -1 || gameState.food.y === -1) return;
+    
+    ctx.save();
+    ctx.shadowBlur = 12;
+    
+    // Mồi luôn dùng màu đối lập hoặc màu hồng neon phát sáng để người chơi dễ nhận diện
+    ctx.shadowColor = '#ff007f';
+    ctx.fillStyle = '#ff007f';
+    
+    const radius = TILE_COUNT / 2 - 2;
+    const centerX = gameState.food.x * TILE_COUNT + TILE_COUNT / 2;
+    const centerY = gameState.food.y * TILE_COUNT + TILE_COUNT / 2;
+    
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Vẽ tâm sáng màu trắng
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius / 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.restore();
+}
+
+// Vẽ lớp phủ Pause
+function renderPauseOverlay() {
+    ctx.fillStyle = 'rgba(7, 8, 12, 0.8)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.save();
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = gameState.neonColor;
+    ctx.fillStyle = gameState.neonColor;
+    ctx.font = "bold 32px 'Outfit', sans-serif";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('PAUSED', canvas.width / 2, canvas.height / 2);
+    ctx.restore();
+    
+    document.getElementById('footerText').innerHTML = 'NHẤN <span style="color:#39ff14; text-shadow:0 0 5px #39ff14;">ESC</span> ĐỂ TIẾP TỤC HOẶC <span style="color:#ff007f; text-shadow:0 0 5px #ff007f;">R</span> ĐỂ CHƠI LẠI';
+}
+
+// Vẽ lớp phủ Game Over
+function renderGameOverOverlay(isNewHighScore) {
+    ctx.fillStyle = 'rgba(7, 8, 12, 0.85)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.save();
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = '#ff007f';
+    ctx.fillStyle = '#ff007f';
+    ctx.font = "bold 36px 'Outfit', sans-serif";
+    ctx.textAlign = 'center';
+    ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 40);
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = '#ffffff';
+    ctx.shadowBlur = 5;
+    ctx.font = "20px 'Courier New', monospace";
+    ctx.fillText(`SCORE: ${gameState.score}`, canvas.width / 2, canvas.height / 2 + 10);
+    
+    if (isNewHighScore) {
+        ctx.fillStyle = '#ffe600';
+        ctx.shadowColor = '#ffe600';
+        ctx.shadowBlur = 10;
+        ctx.font = "bold 16px 'Outfit', sans-serif";
+        ctx.fillText('NEW HIGH SCORE!', canvas.width / 2, canvas.height / 2 + 45);
+    }
+    
+    ctx.restore();
+    
+    document.getElementById('footerText').innerHTML = 'NHẤN <span style="color:#39ff14; text-shadow:0 0 5px #39ff14;">ENTER</span> ĐỂ CHƠI LẠI HOẶC <span style="color:#ff007f; text-shadow:0 0 5px #ff007f;">ESC</span> VỀ MENU';
+}
+
+// Màn hình Menu chính lựa chọn chế độ chơi
+function drawMenu() {
+    ctx.fillStyle = '#07080c';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawGrid();
+    
+    ctx.save();
+    // Tiêu đề NEON SNAKE phát sáng
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = '#39ff14';
+    ctx.fillStyle = '#39ff14';
+    ctx.font = "bold 32px 'Outfit', sans-serif";
+    ctx.textAlign = 'center';
+    ctx.fillText('NEON SNAKE', canvas.width / 2, canvas.height / 2 - 60);
+    
+    // Các tùy chọn menu
+    ctx.font = "bold 16px 'Outfit', sans-serif";
+    
+    // Classic Mode
+    if (gameState.mode === 'CLASSIC') {
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#39ff14';
+        ctx.fillText('▶  CLASSIC MODE  ◀', canvas.width / 2, canvas.height / 2 + 10);
+    } else {
+        ctx.fillStyle = '#8f92a1';
+        ctx.shadowBlur = 0;
+        ctx.fillText('CLASSIC MODE', canvas.width / 2, canvas.height / 2 + 10);
+    }
+    
+    // Challenge Mode
+    if (gameState.mode === 'CHALLENGE') {
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#ff007f';
+        ctx.fillText('▶  CHALLENGE MODE  ◀', canvas.width / 2, canvas.height / 2 + 45);
+    } else {
+        ctx.fillStyle = '#8f92a1';
+        ctx.shadowBlur = 0;
+        ctx.fillText('CHALLENGE MODE', canvas.width / 2, canvas.height / 2 + 45);
+    }
+    
+    // Hướng dẫn nhanh ở cuối
+    ctx.fillStyle = '#8f92a1';
+    ctx.shadowBlur = 0;
+    ctx.font = "12px 'Inter', sans-serif";
+    ctx.fillText('ẤN PHÍM LÊN / XUỐNG ĐỂ CHỌN CHẾ ĐỘ', canvas.width / 2, canvas.height / 2 + 100);
+    ctx.fillText('NHẤN ENTER ĐỂ BẮT ĐẦU CHƠI', canvas.width / 2, canvas.height / 2 + 120);
+    
+    ctx.restore();
+}
+
+// --- XỬ LÝ LẮNG NGHE BÀN PHÍM ---
+
+window.addEventListener('keydown', (e) => {
+    const key = e.key;
+    
+    // 1. Phím tắt điều khiển khi ở trạng thái MENU
+    if (gameState.gameStatus === 'MENU') {
+        if (key === 'ArrowUp' || key.toLowerCase() === 'w' || key === 'ArrowDown' || key.toLowerCase() === 's') {
+            // Đảo ngược lựa chọn chế độ
+            gameState.mode = gameState.mode === 'CLASSIC' ? 'CHALLENGE' : 'CLASSIC';
+            drawMenu();
+            e.preventDefault();
+            return;
+        }
+        if (key === 'Enter' || key === ' ') {
+            startGame();
+            return;
+        }
+    }
+    
+    // 2. Phím tắt điều khiển khi ở trạng thái GAME_OVER
+    if (gameState.gameStatus === 'GAME_OVER') {
+        if (key === 'Enter' || key === ' ') {
+            startGame();
+            return;
+        }
+        if (key === 'Escape') {
+            gameState.gameStatus = 'MENU';
+            drawMenu();
+            
+            // Cập nhật lại UI scoreboard ban đầu
+            const hsVal = parseInt(localStorage.getItem('neon_snake_classic_high')) || 0;
+            document.querySelector('.score-board').innerHTML = `
+                <div class="score-item">SCORE <span id="currentScore">0</span></div>
+                <div class="score-item">CLASSIC HIGH <span id="classicHighScore">${hsVal}</span></div>
+            `;
+            document.getElementById('footerText').innerHTML = 'NHẤN <span class="blink">ENTER</span> ĐỂ BẮT ĐẦU';
+            return;
+        }
+    }
+    
+    // 3. Phím tắt điều khiển khi đang chơi hoặc tạm dừng
+    if (gameState.gameStatus === 'PLAYING' || gameState.gameStatus === 'PAUSED') {
+        if (key === 'Escape' || key.toLowerCase() === 'p') {
+            togglePause();
+            return;
+        }
+    }
+    
+    if (key.toLowerCase() === 'r') {
+        startGame();
+        return;
+    }
+    
+    // 4. Phím điều khiển hướng đi của Rắn (chỉ nhận khi đang chơi)
+    if (gameState.gameStatus === 'PLAYING') {
+        let newDir = null;
+        if (key === 'ArrowUp' || key.toLowerCase() === 'w') newDir = 'UP';
+        else if (key === 'ArrowDown' || key.toLowerCase() === 's') newDir = 'DOWN';
+        else if (key === 'ArrowLeft' || key.toLowerCase() === 'a') newDir = 'LEFT';
+        else if (key === 'ArrowRight' || key.toLowerCase() === 'd') newDir = 'RIGHT';
+        
+        if (newDir) {
+            const lastQueuedDir = gameState.inputQueue.length > 0 ? gameState.inputQueue[gameState.inputQueue.length - 1] : gameState.direction;
+            if (newDir !== lastQueuedDir && !isOpposite(newDir, lastQueuedDir)) {
+                gameState.inputQueue.push(newDir);
+            }
+            e.preventDefault(); // Ngăn cuộn trang web
+        }
+    }
+});
+
+// Khởi chạy khi tài liệu HTML tải xong
+window.addEventListener('DOMContentLoaded', () => {
+    // Load điểm cao từ LocalStorage
+    gameState.highScoreClassic = parseInt(localStorage.getItem('neon_snake_classic_high')) || 0;
+    gameState.highScoreChallenge = parseInt(localStorage.getItem('neon_snake_challenge_high')) || 0;
+    
+    // Hiển thị điểm cao trên UI
+    document.getElementById('classicHighScore').innerText = gameState.highScoreClassic;
+    
+    // Vẽ bảng Menu chính ban đầu
+    drawMenu();
+    console.log('Neon Snake initialized successfully with Menu.');
+});

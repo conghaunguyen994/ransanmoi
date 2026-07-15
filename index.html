@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rắn Săn Mồi Neon</title>
+    <!-- Nhúng Google Fonts 'Outfit' và 'Inter' -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Bảng điểm số phía trên Canvas -->
+        <div class="score-board">
+            <div class="score-item">SCORE <span id="currentScore">0</span></div>
+            <div class="score-item">CLASSIC HIGH <span id="classicHighScore">0</span></div>
+        </div>
+        
+        <!-- Bàn chơi Canvas -->
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+        </div>
+
+        <!-- Hướng dẫn chân trang -->
+        <div class="footer-hint">
+            <span id="footerText">NHẤN ENTER ĐỂ BẮT ĐẦU</span>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
