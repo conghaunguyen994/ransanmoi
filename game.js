@@ -384,8 +384,8 @@ function gameTick() {
         }
     }
 
-    // 5. Kiểm tra va chạm với chính đuôi rắn
-    for (let i = 0; i < gameState.snake.length; i++) {
+    // 5. Kiểm tra va chạm với chính đuôi rắn (bỏ qua đốt đuôi cuối cùng vì nó sẽ di chuyển đi)
+    for (let i = 0; i < gameState.snake.length - 1; i++) {
         if (gameState.snake[i].x === head.x && gameState.snake[i].y === head.y) {
             triggerGameOver();
             return;
