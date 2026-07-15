@@ -828,9 +828,11 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnSnake').addEventListener('click', () => {
         document.getElementById('btnSnake').classList.add('active');
         document.getElementById('btnCaro').classList.remove('active');
+        document.getElementById('btnDino').classList.remove('active');
         
         document.getElementById('snakeView').classList.remove('hidden');
         document.getElementById('caroView').classList.add('hidden');
+        document.getElementById('dinoView').classList.add('hidden');
         
         // Vẽ lại bảng Snake để đảm bảo hiển thị đúng
         if (gameState.gameStatus === 'MENU') {
@@ -847,9 +849,26 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnCaro').addEventListener('click', () => {
         document.getElementById('btnCaro').classList.add('active');
         document.getElementById('btnSnake').classList.remove('active');
+        document.getElementById('btnDino').classList.remove('active');
         
         document.getElementById('caroView').classList.remove('hidden');
         document.getElementById('snakeView').classList.add('hidden');
+        document.getElementById('dinoView').classList.add('hidden');
+        
+        // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
+        if (gameState.gameStatus === 'PLAYING') {
+            togglePause();
+        }
+    });
+
+    document.getElementById('btnDino').addEventListener('click', () => {
+        document.getElementById('btnDino').classList.add('active');
+        document.getElementById('btnSnake').classList.remove('active');
+        document.getElementById('btnCaro').classList.remove('active');
+        
+        document.getElementById('dinoView').classList.remove('hidden');
+        document.getElementById('snakeView').classList.add('hidden');
+        document.getElementById('caroView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {

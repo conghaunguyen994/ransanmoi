@@ -13,10 +13,22 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Thông báo Mất mạng Offline Popup -->
+    <div id="offlineAlert" class="offline-alert hidden">
+        <span class="alert-icon">⚠️</span>
+        <div class="alert-content">
+            <div class="alert-title">MẤT KẾT NỐI INTERNET!</div>
+            <div class="alert-desc">Chơi game Khủng long Neon giải trí?</div>
+        </div>
+        <button id="btnPlayDinoOffline" class="alert-btn">CHƠI NGAY</button>
+        <button id="btnCloseOfflineAlert" class="alert-close">×</button>
+    </div>
+
     <!-- Thanh Menubar Cyberpunk trên cùng -->
     <nav class="menubar">
         <button id="btnSnake" class="nav-btn active">🐍 NEON SNAKE</button>
         <button id="btnCaro" class="nav-btn">⚔️ NEON GOMOKU</button>
+        <button id="btnDino" class="nav-btn">🦖 NEON DINO</button>
     </nav>
 
     <!-- Màn hình chính của các View -->
@@ -101,10 +113,35 @@
             </div>
         </div>
         
+        <!-- View 3: Neon Dino -->
+        <div id="dinoView" class="game-view hidden">
+            <div class="dino-game-container">
+                <div class="dino-header">
+                    <div class="dino-score-board">
+                        <div class="dino-score-item">SCORE: <span id="dinoScore">00000</span></div>
+                        <div class="dino-score-item highlight">HIGH: <span id="dinoHighScore">00000</span></div>
+                    </div>
+                </div>
+                
+                <div class="dino-canvas-wrapper">
+                    <canvas id="dinoCanvas" width="600" height="200"></canvas>
+                </div>
+                
+                <div class="dino-footer">
+                    <div id="dinoStatusText">NHẤN SPACE HOẶC MŨI TÊN LÊN ĐỂ NHẢY / BẮT ĐẦU CHƠI</div>
+                    <div class="dino-controls-desc">
+                        <span>[SPACE / ↑] : Nhảy</span>
+                        <span>[S / ↓] : Cúi người</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
     <script src="game.js?v=2"></script>
     <script src="caro.js?v=2"></script>
+    <script src="dino.js?v=2"></script>
 </body>
 </html>
