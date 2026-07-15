@@ -1,4 +1,6 @@
 // chess-game.js - Neon Chess (Cờ Vua Cyberpunk)
+(function() {
+"use strict";
 
 const chessCanvas = document.getElementById('chessCanvas');
 const chessCtx = chessCanvas.getContext('2d');
@@ -272,7 +274,11 @@ if (btnResetChess) {
     });
 }
 
+// Export renderChessBoard ra global để game.js gọi được khi chuyển tab
+window.renderChessBoard = renderChessBoard;
+
 // Khởi chạy ngay (không dùng DOMContentLoaded vì DOM đã sẵn sàng khi script ở cuối body)
 console.log('Chess.js loaded:', typeof Chess !== 'undefined', '| chess instance:', chess !== null);
 resetChessGame();
 
+})(); // Kết thúc IIFE

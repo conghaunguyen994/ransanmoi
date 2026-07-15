@@ -899,8 +899,8 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         
         // Vẽ lại bàn cờ vua khi chuyển tab
-        if (typeof renderChessBoard === 'function') {
-            renderChessBoard();
+        if (typeof window.renderChessBoard === 'function') {
+            window.renderChessBoard();
         }
     });
 });
