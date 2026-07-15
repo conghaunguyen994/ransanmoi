@@ -17,6 +17,11 @@ const displayRoomCode = document.getElementById('displayRoomCode');
 const displayTurn = document.getElementById('displayTurn');
 const caroStatusText = document.getElementById('caroStatusText');
 
+// Các phần tử khung chat mới
+const chatHistory = document.getElementById('chatHistory');
+const chatInput = document.getElementById('chatInput');
+const btnSendChat = document.getElementById('btnSendChat');
+
 // Cấu hình bàn cờ
 const BOARD_SIZE = 15; // Lưới 15x15 ô
 const CARO_CELL_SIZE = caroCanvas.width / BOARD_SIZE; // 450 / 15 = 30px mỗi ô
@@ -45,7 +50,8 @@ const caroState = {
     
     // Supabase subscription references
     roomSubscription: null,
-    movesSubscription: null
+    movesSubscription: null,
+    chatChannel: null
 };
 
 // --- LOGIC HÌNH ẢNH & RENDERING (CARO) ---
@@ -56,6 +62,12 @@ function initCaroBoard() {
     caroState.winner = null;
     caroState.winningCoords = [];
     caroState.hoverCell = { x: -1, y: -1 };
+    
+    // Xóa lịch sử chat
+    if (chatHistory) {
+        chatHistory.innerHTML = '<div class="chat-msg system">KÊNH CHAT PHÒNG TRỰC TUYẾN</div>';
+    }
+    
     renderCaro();
 }
 
@@ -328,6 +340,7 @@ function leaveCurrentRoom() {
     if (supabaseClient) {
         if (caroState.roomSubscription) supabaseClient.removeChannel(caroState.roomSubscription);
         if (caroState.movesSubscription) supabaseClient.removeChannel(caroState.movesSubscription);
+        if (caroState.chatChannel) supabaseClient.removeChannel(caroState.chatChannel);
     }
     
     caroState.status = 'LOBBY';
@@ -404,6 +417,7 @@ btnCreateRoom.addEventListener('click', async () => {
         // Đăng ký lắng nghe Realtime
         subscribeToRoomUpdates(code);
         subscribeToMovesUpdates(code);
+        subscribeToChatUpdates(code);
         
     } catch (err) {
         console.error(err);
@@ -485,6 +499,7 @@ btnJoinRoom.addEventListener('click', async () => {
         // Đăng ký lắng nghe Realtime
         subscribeToRoomUpdates(code);
         subscribeToMovesUpdates(code);
+        subscribeToChatUpdates(code);
         
     } catch (err) {
         console.error(err);
@@ -507,6 +522,7 @@ function subscribeToRoomUpdates(code) {
                 if (updatedRoom.status === 'playing' && caroState.status === 'WAITING') {
                     caroState.status = 'PLAYING';
                     caroStatusText.innerText = "ĐỐI THỦ ĐÃ VÀO PHÒNG! BẮT ĐẦU CHƠI.";
+                    appendChatMessage("Hệ thống", "ĐỐI THỦ ĐÃ THAM GIA PHÒNG. BẮT ĐẦU TRẬN ĐẤU!", null);
                 }
                 
                 // 2. Phòng kết thúc
@@ -517,10 +533,12 @@ function subscribeToRoomUpdates(code) {
                     if (updatedRoom.winner === 'DRAW') {
                         caroStatusText.innerText = "HÒA CỜ! BÀN CỜ ĐÃ ĐẦY.";
                         displayTurn.innerText = "HÒA";
+                        appendChatMessage("Hệ thống", "TRẬN ĐẤU KẾT THÚC: HÒA CỜ!", null);
                     } else {
                         const winMsg = updatedRoom.winner === caroState.mySymbol ? "BẠN CHIẾN THẮNG!" : "ĐỐI THỦ CHIẾN THẮNG!";
                         caroStatusText.innerText = winMsg;
                         displayTurn.innerText = `THẮNG CUỘC: ${updatedRoom.winner}`;
+                        appendChatMessage("Hệ thống", `TRẬN ĐẤU KẾT THÚC. QUÂN ${updatedRoom.winner} CHIẾN THẮNG!`, null);
                     }
                     renderCaro();
                 }
@@ -616,6 +634,93 @@ async function handleOnlineClick(x, y) {
         caroStatusText.innerText = "LỖI KHI GỬI NƯỚC ĐI! HÃY THỬ LẠI.";
         caroState.isMyTurn = true; // Cho phép click lại nếu lỗi
     }
+}
+
+// --- LOGIC VÀ ĐĂNG KÝ HÀNG ĐỢI CHAT ---
+
+// Thêm tin nhắn vào khung chat hiển thị
+function appendChatMessage(sender, text, symbol) {
+    if (!chatHistory) return;
+    
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('chat-msg');
+    
+    if (symbol === 'X') {
+        msgDiv.classList.add('x');
+    } else if (symbol === 'O') {
+        msgDiv.classList.add('o');
+    } else {
+        msgDiv.classList.add('system');
+    }
+    
+    if (symbol) {
+        msgDiv.innerHTML = `<span class="sender">${sender}:</span><span class="text">${text}</span>`;
+    } else {
+        msgDiv.innerHTML = `<span class="text">${text}</span>`;
+    }
+    
+    chatHistory.appendChild(msgDiv);
+    chatHistory.scrollTop = chatHistory.scrollHeight; // Tự động cuộn xuống cuối
+}
+
+// Kênh lắng nghe broadcast tin nhắn Supabase Realtime
+function subscribeToChatUpdates(code) {
+    if (!supabaseClient) return;
+    
+    caroState.chatChannel = supabaseClient.channel(`chat-${code}`);
+    caroState.chatChannel
+        .on('broadcast', { event: 'message' }, (payload) => {
+            const data = payload.payload;
+            appendChatMessage(data.sender, data.text, data.symbol);
+        })
+        .subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+                console.log("Subscribed to chat broadcast channel.");
+            }
+        });
+}
+
+// Gửi tin nhắn đi
+function sendChatMessage() {
+    if (!chatInput) return;
+    const msgText = chatInput.value.trim();
+    if (!msgText) return;
+    
+    const nick = caroState.nickname || "Player";
+    
+    // Nếu chơi online và kênh đang hoạt động
+    if (supabaseClient && caroState.chatChannel && caroState.status !== 'LOBBY') {
+        caroState.chatChannel.send({
+            type: 'broadcast',
+            event: 'message',
+            payload: {
+                sender: nick,
+                text: msgText,
+                symbol: caroState.mySymbol
+            }
+        });
+    }
+    
+    // Luôn vẽ cục bộ cho người gửi
+    appendChatMessage(nick, msgText, caroState.mySymbol);
+    chatInput.value = '';
+}
+
+// Nút bấm gửi
+if (btnSendChat) {
+    btnSendChat.addEventListener('click', () => {
+        sendChatMessage();
+    });
+}
+
+// Nhấn phím Enter
+if (chatInput) {
+    chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            sendChatMessage();
+            e.preventDefault();
+        }
+    });
 }
 
 // Vẽ bàn cờ trống ban đầu khi vừa tải trang

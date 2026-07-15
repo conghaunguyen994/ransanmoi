@@ -232,3 +232,59 @@ So that I get a strong, engaging sense of visual progression.
     *   **When** rắn ăn mồi.
     *   **Then** game canvas dịch chuyển (offset) ngẫu nhiên 2-3px trong thời gian 100ms để tạo hiệu ứng rung nhẹ.
 
+---
+
+## Epic 4: Cờ Ca rô Online & Đồng bộ qua Supabase (Gomoku Online Sync)
+
+Mục tiêu là xây dựng trò chơi cờ ca rô 15x15 ô chơi đối kháng trực tuyến thời gian thực giữa hai người chơi thông qua Supabase.
+
+### Story 4.1: Bàn cờ Ca rô Neon và Chế độ chơi Cục bộ (Offline Fallback)
+As a player,
+I want to play Caro on a glowing 15x15 neon grid locally,
+So that I can play with a friend on the same computer when network/Supabase is offline.
+*   **Acceptance Criteria:**
+    *   **Given** tab Gomoku được chọn.
+    *   **When** người chơi nhập nickname và nhấn "Tạo phòng mới" (khi Supabase chưa kết nối).
+    *   **Then** hệ thống tự khởi động chế độ chơi local (Offline Fallback).
+    *   **And** hiển thị bàn cờ 15x15 với các quân X (Neon Cyan) và O (Neon Pink) thay phiên nhau đánh sau mỗi cú click chuột.
+    *   **And** tự động quét và tìm ra 5 quân cờ liên tiếp để kẻ đường highlight màu vàng neon kết thúc game.
+
+### Story 4.2: Kết nối và đồng bộ phòng chơi Online
+As a player,
+I want to create or join a private online room with a 4-character code,
+So that I can connect with a remote friend online.
+*   **Acceptance Criteria:**
+    *   **Given** Supabase Client đã được cấu hình thành công.
+    *   **When** người chơi 1 nhấn "Tạo phòng mới".
+    *   **Then** hệ thống tạo mã phòng ngẫu nhiên 4 ký tự và chèn một dòng trạng thái 'waiting' vào bảng `caro_rooms`.
+    *   **When** người chơi 2 nhập mã phòng và nhấn "Vào phòng".
+    *   **Then** hệ thống chuyển trạng thái phòng thành 'playing' và bắt đầu đăng ký kênh Realtime đồng bộ nước đi của hai bên.
+
+---
+
+## Epic 5: Trò chuyện thời gian thực (Real-time Chat)
+
+Mục tiêu là tích hợp khung chat thời gian thực ngay bên cạnh bàn cờ Caro khi đang chơi online để tăng tính tương tác xã hội giữa hai người chơi.
+
+### Story 5.1: Giao diện Khung chat Neon
+As a player in a Gomoku match,
+I want to see a chat box next to the board canvas with scrolling messages,
+So that I can easily type and read messages during the match.
+*   **Acceptance Criteria:**
+    *   **Given** người chơi đang trong giao diện trận đấu Caro (`#caroGame`).
+    *   **When** hiển thị trên màn hình máy tính để bàn (Desktop).
+    *   **Then** khung chat rộng khoảng 300px hiển thị song song bên phải bàn cờ canvas.
+    *   **And** khung chat có khung hiển thị tin nhắn (Message history) cuộn tự động và một ô nhập văn bản kèm nút "GỬI".
+    *   **And** khung chat có thiết kế màu neon đồng bộ, bo góc nhẹ 8px.
+
+### Story 5.2: Truyền tin nhắn Realtime qua Supabase Broadcast
+As a player in a Gomoku match,
+I want my sent messages to appear instantly on my friend's screen,
+So that we can talk in real-time without delay.
+*   **Acceptance Criteria:**
+    *   **Given** trận đấu Caro online đang hoạt động.
+    *   **When** người chơi nhập tin nhắn và nhấn phím Enter (hoặc bấm nút "GỬI").
+    *   **Then** tin nhắn được phát đi lập tức thông qua kênh **Supabase Realtime Broadcast** (không cần ghi vào Database để tối ưu tốc độ).
+    *   **And** đối thủ nhận được tin nhắn và hiển thị nó trong khung chat tức thì.
+    *   **And** các tin nhắn hiển thị tên người gửi và có màu sắc neon khác nhau đại diện cho quân cờ đang cầm (X màu Cyan, O màu Pink).
+
