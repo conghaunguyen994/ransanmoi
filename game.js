@@ -25,6 +25,10 @@ const gameState = {
     gameStatus: 'MENU', // MENU | PLAYING | PAUSED | GAME_OVER
     mode: 'CLASSIC', // CLASSIC | CHALLENGE
     
+    // Tự động lái của Admin
+    autopilot: false,
+    adminSequence: '', // Theo dõi chuỗi phím gõ của người dùng
+    
     // Màu sắc neon hiện tại
     neonColor: '#39ff14',
     colorIndex: 0,
@@ -48,6 +52,117 @@ const gameState = {
     speed: 150, // ms mỗi tick (tốc độ khởi đầu)
     gameInterval: null
 };
+
+// --- LOGIC TÌM ĐƯỜNG TỰ ĐỘNG (BFS PATHFINDING FOR AUTOPILOT) ---
+
+// Thuật toán BFS tìm hướng đi tối ưu kế tiếp từ đầu rắn đến mồi
+function calculateAutopilotDirection() {
+    const head = gameState.snake[0];
+    const target = gameState.food;
+    
+    // Hàng đợi BFS chứa các nút: { x, y, path: [] }
+    const queue = [{ x: head.x, y: head.y, path: [] }];
+    
+    // Ma trận đánh dấu đã đi qua để tránh lặp
+    const visited = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(false));
+    visited[head.x][head.y] = true;
+    
+    // Đánh dấu thân rắn làm vật cản (trừ đốt đuôi cùng vì nó sẽ đi ra sau tick tiếp theo)
+    gameState.snake.forEach((segment, index) => {
+        if (index < gameState.snake.length - 1) {
+            visited[segment.x][segment.y] = true;
+        }
+    });
+    
+    // Đánh dấu các chướng ngại vật trong Challenge Mode
+    if (gameState.mode === 'CHALLENGE') {
+        gameState.obstacles.forEach(obs => {
+            visited[obs.x][obs.y] = true;
+        });
+    }
+    
+    let shortestPath = null;
+    
+    // 4 hướng di chuyển cơ bản
+    const moves = [
+        { name: 'UP', dx: 0, dy: -1 },
+        { name: 'DOWN', dx: 0, dy: 1 },
+        { name: 'LEFT', dx: -1, dy: 0 },
+        { name: 'RIGHT', dx: 1, dy: 0 }
+    ];
+    
+    // Duyệt tìm đường đi ngắn nhất
+    while (queue.length > 0) {
+        const current = queue.shift();
+        
+        // Đã tìm thấy mồi
+        if (current.x === target.x && current.y === target.y) {
+            shortestPath = current.path;
+            break;
+        }
+        
+        for (let m of moves) {
+            // Tính tọa độ có xử lý đi xuyên biên (wrap-around)
+            let nextX = (current.x + m.dx + GRID_SIZE) % GRID_SIZE;
+            let nextY = (current.y + m.dy + GRID_SIZE) % GRID_SIZE;
+            
+            if (!visited[nextX][nextY]) {
+                visited[nextX][nextY] = true;
+                queue.push({
+                    x: nextX,
+                    y: nextY,
+                    path: [...current.path, m.name]
+                });
+            }
+        }
+    }
+    
+    // Nếu tìm thấy đường đi trực tiếp, chọn bước đầu tiên của đường đi
+    if (shortestPath && shortestPath.length > 0) {
+        return shortestPath[0];
+    }
+    
+    // --- CHẾ ĐỘ SỐNG SÓT (SURVIVAL FALLBACK) ---
+    // Khi bị bao vây hoặc kẹt cứng (không có đường đến mồi), tìm ô trống an toàn bất kỳ để đi tiếp
+    const safeMoves = moves.filter(m => {
+        let nextX = (head.x + m.dx + GRID_SIZE) % GRID_SIZE;
+        let nextY = (head.y + m.dy + GRID_SIZE) % GRID_SIZE;
+        
+        // Kiểm tra xem ô tiếp theo có đè vào thân rắn không
+        let hitSnake = false;
+        gameState.snake.forEach((segment, index) => {
+            if (index < gameState.snake.length - 1 && segment.x === nextX && segment.y === nextY) {
+                hitSnake = true;
+            }
+        });
+        
+        // Kiểm tra xem ô tiếp theo có đè vào chướng ngại vật không
+        let hitObstacle = false;
+        if (gameState.mode === 'CHALLENGE') {
+            hitObstacle = gameState.obstacles.some(obs => obs.x === nextX && obs.y === nextY);
+        }
+        
+        return !hitSnake && !hitObstacle;
+    });
+    
+    if (safeMoves.length > 0) {
+        // Sắp xếp các ô an toàn theo khoảng cách Manhattan đến mồi để ưu tiên bò về phía mồi
+        safeMoves.sort((a, b) => {
+            const nextAX = (head.x + a.dx + GRID_SIZE) % GRID_SIZE;
+            const nextAY = (head.y + a.dy + GRID_SIZE) % GRID_SIZE;
+            const nextBX = (head.x + b.dx + GRID_SIZE) % GRID_SIZE;
+            const nextBY = (head.y + b.dy + GRID_SIZE) % GRID_SIZE;
+            
+            const distA = Math.abs(nextAX - target.x) + Math.abs(nextAY - target.y);
+            const distB = Math.abs(nextBX - target.x) + Math.abs(nextBY - target.y);
+            return distA - distB;
+        });
+        return safeMoves[0].name;
+    }
+    
+    // Không còn đường trống nào, giữ nguyên hướng đi cũ để chấp nhận thua cuộc
+    return gameState.direction;
+}
 
 // --- LOGIC SINH CHƯỚNG NGẠI VẬT (CHALLENGE MODE) ---
 
@@ -171,6 +286,8 @@ function startGame() {
     gameState.particles = [];
     gameState.colorIndex = 0;
     gameState.neonColor = COLOR_PALETTES[0];
+    gameState.autopilot = false; // Reset autopilot
+    gameState.adminSequence = '';
     
     // Cập nhật bảng màu UI theo mặc định
     updateUIColors();
@@ -235,8 +352,11 @@ function updateUIColors() {
 function gameTick() {
     if (gameState.gameStatus !== 'PLAYING') return;
 
-    // 1. Xử lý hướng đi từ hàng đợi inputQueue
-    if (gameState.inputQueue.length > 0) {
+    // 1. Xử lý hướng đi từ Autopilot hoặc hàng đợi inputQueue
+    if (gameState.autopilot) {
+        gameState.direction = calculateAutopilotDirection();
+        gameState.inputQueue = []; // Xóa hàng đợi tay khi lái tự động
+    } else if (gameState.inputQueue.length > 0) {
         const nextDirection = gameState.inputQueue.shift();
         if (!isOpposite(nextDirection, gameState.direction)) {
             gameState.direction = nextDirection;
@@ -392,6 +512,18 @@ function render() {
     // Cập nhật và vẽ các hạt bụi sáng
     updateAndDrawParticles();
     
+    // Vẽ nhãn trạng thái Autopilot nếu đang hoạt động
+    if (gameState.autopilot) {
+        ctx.save();
+        ctx.fillStyle = '#ffe600'; // Màu vàng neon phát sáng
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#ffe600';
+        ctx.font = "bold 11px 'Outfit', sans-serif";
+        ctx.textAlign = 'right';
+        ctx.fillText('⚡ AUTO-PILOT ON', canvas.width - 15, 25);
+        ctx.restore();
+    }
+    
     ctx.restore(); // Khôi phục trạng thái translate rung màn hình
 }
 
@@ -412,11 +544,11 @@ function drawGrid() {
     }
 }
 
-// Hàm vẽ chướng ngại vật (Các khối phát sáng màu đỏ cam)
+// Hàm vẽ chướng ngại vật (Các khối phát sáng màu vàng)
 function drawObstacles() {
     ctx.save();
     ctx.shadowBlur = 10;
-    ctx.shadowColor = '#ffe600'; // Phát sáng vàng/cam
+    ctx.shadowColor = '#ffe600';
     ctx.fillStyle = '#ffe600';
     
     gameState.obstacles.forEach(obs => {
@@ -450,14 +582,12 @@ function drawSnake() {
     ctx.restore();
 }
 
-// Hàm vẽ Mồi Neon (Hình tròn phát sáng màu đỏ/hồng neon hoặc đổi màu tương tự)
+// Hàm vẽ Mồi Neon (Hình tròn phát sáng màu đỏ/hồng neon)
 function drawFood() {
     if (gameState.food.x === -1 || gameState.food.y === -1) return;
     
     ctx.save();
     ctx.shadowBlur = 12;
-    
-    // Mồi luôn dùng màu đối lập hoặc màu hồng neon phát sáng để người chơi dễ nhận diện
     ctx.shadowColor = '#ff007f';
     ctx.fillStyle = '#ff007f';
     
@@ -649,6 +779,22 @@ window.addEventListener('keydown', (e) => {
                 gameState.inputQueue.push(newDir);
             }
             e.preventDefault(); // Ngăn cuộn trang web
+        }
+        
+        // 5. Theo dõi nhập phím tuần tự để phát hiện cheat code Admin kích hoạt Autopilot
+        const char = key.toLowerCase();
+        if (char.length === 1 && /[a-z]/.test(char)) {
+            gameState.adminSequence += char;
+            if (gameState.adminSequence.length > 10) {
+                gameState.adminSequence = gameState.adminSequence.substring(gameState.adminSequence.length - 10);
+            }
+            
+            // Nếu người dùng gõ từ khóa "admin" hoặc "auto"
+            if (gameState.adminSequence.endsWith('admin') || gameState.adminSequence.endsWith('auto')) {
+                gameState.autopilot = !gameState.autopilot;
+                gameState.adminSequence = ''; // Reset
+                console.log(`Admin Autopilot Mode: ${gameState.autopilot ? 'ENABLED' : 'DISABLED'}`);
+            }
         }
     }
 });
