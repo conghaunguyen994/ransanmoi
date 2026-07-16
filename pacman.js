@@ -135,10 +135,21 @@
         }
 
         // Tự động rẽ khi đến góc rẽ nếu không có tường cản
-        // Kiểm tra xem việc rẽ theo hướng tiếp theo có bị cản bởi tường không
-        const isAlignToGrid = (pm.x % TILE_SIZE === TILE_SIZE / 2) && (pm.y % TILE_SIZE === TILE_SIZE / 2);
+        // Dùng threshold thay vì exact match để đảm bảo luôn detect được tâm ô
+        const HALF = TILE_SIZE / 2;
+        const modX = ((pm.x % TILE_SIZE) + TILE_SIZE) % TILE_SIZE;
+        const modY = ((pm.y % TILE_SIZE) + TILE_SIZE) % TILE_SIZE;
+        const threshold = pm.speed + 0.5; // phạm vi để coi là đang ở tâm ô
+
+        const nearCenterX = Math.abs(modX - HALF) <= threshold;
+        const nearCenterY = Math.abs(modY - HALF) <= threshold;
+        const isAlignToGrid = nearCenterX && nearCenterY;
 
         if (isAlignToGrid) {
+            // Snap Pacman vào tâm ô chính xác để tránh trôi dần
+            pm.x = Math.floor(pm.x / TILE_SIZE) * TILE_SIZE + HALF;
+            pm.y = Math.floor(pm.y / TILE_SIZE) * TILE_SIZE + HALF;
+
             // Ăn hạt chấm sáng
             const gridX = Math.floor(pm.x / TILE_SIZE);
             const gridY = Math.floor(pm.y / TILE_SIZE);
@@ -165,14 +176,34 @@
             }
         }
 
-        // Di chuyển Pac-man
+        // Di chuyển Pac-man - kiểm tra cả tâm lẫn các góc của Pacman (bán kính ~8px)
+        const RADIUS = TILE_SIZE * 0.4;
         const nextX = pm.x + pm.dirX * pm.speed;
         const nextY = pm.y + pm.dirY * pm.speed;
 
-        if (!isWall(nextX, nextY)) {
+        // Kiểm tra theo hướng đang đi: chỉ kiểm tra cạnh dẫn đầu
+        let blocked = false;
+        if (pm.dirX !== 0) {
+            // Di chuyển ngang: kiểm tra mép trái/phải + trên/dưới của cạnh dẫn đầu
+            const leadX = nextX + pm.dirX * RADIUS;
+            if (isWall(leadX, nextY - RADIUS * 0.8) || isWall(leadX, nextY + RADIUS * 0.8)) {
+                blocked = true;
+            }
+        } else if (pm.dirY !== 0) {
+            // Di chuyển dọc: kiểm tra mép trên/dưới + trái/phải của cạnh dẫn đầu
+            const leadY = nextY + pm.dirY * RADIUS;
+            if (isWall(nextX - RADIUS * 0.8, leadY) || isWall(nextX + RADIUS * 0.8, leadY)) {
+                blocked = true;
+            }
+        }
+
+        if (!blocked && (pm.dirX !== 0 || pm.dirY !== 0)) {
             pm.x = nextX;
             pm.y = nextY;
-        } else {
+        } else if (blocked) {
+            // Snap về tâm ô gần nhất khi bị chặn
+            pm.x = Math.round(pm.x / TILE_SIZE) * TILE_SIZE + HALF;
+            pm.y = Math.round(pm.y / TILE_SIZE) * TILE_SIZE + HALF;
             pm.dirX = 0;
             pm.dirY = 0;
         }
@@ -195,8 +226,16 @@
             const gx = Math.floor(g.x / TILE_SIZE);
             const gy = Math.floor(g.y / TILE_SIZE);
             
-            const align = (g.x % TILE_SIZE === TILE_SIZE / 2) && (g.y % TILE_SIZE === TILE_SIZE / 2);
+            const gHalf = TILE_SIZE / 2;
+            const gModX = ((g.x % TILE_SIZE) + TILE_SIZE) % TILE_SIZE;
+            const gModY = ((g.y % TILE_SIZE) + TILE_SIZE) % TILE_SIZE;
+            const gThresh = g.speed + 0.5;
+            const align = Math.abs(gModX - gHalf) <= gThresh && Math.abs(gModY - gHalf) <= gThresh;
             if (align) {
+                // Snap về tâm ô
+                g.x = Math.floor(g.x / TILE_SIZE) * TILE_SIZE + gHalf;
+                g.y = Math.floor(g.y / TILE_SIZE) * TILE_SIZE + gHalf;
+
                 // Liệt kê các hướng đi khả thi tiếp theo (tránh quay ngược đầu ngay lập tức)
                 const possibleDirs = [];
                 const dirs = [
