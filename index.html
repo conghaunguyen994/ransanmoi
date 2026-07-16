@@ -115,6 +115,18 @@
             <span class="nav-icon">🔤</span>
             <span class="nav-label">NEON WORDLE</span>
         </button>
+        <button id="btnPong" class="nav-btn" data-label="NEON PONG">
+            <span class="nav-icon">🎱</span>
+            <span class="nav-label">NEON PONG</span>
+        </button>
+        <button id="btnMemory" class="nav-btn" data-label="NEON MEMORY">
+            <span class="nav-icon">🃏</span>
+            <span class="nav-label">NEON MEMORY</span>
+        </button>
+        <button id="btnTypeRush" class="nav-btn" data-label="NEON TYPE RUSH">
+            <span class="nav-icon">⌨️</span>
+            <span class="nav-label">NEON TYPE RUSH</span>
+        </button>
     </nav>
 
     <!-- Màn hình chính của các View -->
@@ -791,6 +803,30 @@
             </div>
         </div>
 
+        <!-- View 17: Neon Pong -->
+        <div id="pongView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="pongGameArea"></div>
+                <button id="btnQuitPong" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 18: Neon Memory Match -->
+        <div id="memoryView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="memoryGameArea"></div>
+                <button id="btnQuitMemory" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 19: Neon Type Rush -->
+        <div id="typeRushView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="typeRushGameArea"></div>
+                <button id="btnQuitTypeRush" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -810,5 +846,8 @@
     <script src="flappy_bird.js?v=1"></script>
     <script src="whack_mole.js?v=1"></script>
     <script src="neon_wordle.js?v=1"></script>
+    <script src="pong.js?v=1"></script>
+    <script src="memory_match.js?v=1"></script>
+    <script src="type_rush.js?v=1"></script>
 </body>
 </html>

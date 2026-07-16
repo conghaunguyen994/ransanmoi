@@ -1389,12 +1389,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const NEW_VIEWS = [
         'dashboardView','snakeView','caroView','dinoView','chessView','xiangqiView',
         'minerView','tetrisView','pikachuView','solitaireView','invadersView','pacmanView',
-        'breakerView','game2048View','flappyView','whackView','wordleView'
+        'breakerView','game2048View','flappyView','whackView','wordleView',
+        'pongView','memoryView','typeRushView'
     ];
     const NEW_BTNS = [
         'btnHome','btnSnake','btnCaro','btnDino','btnChess','btnXiangqi',
         'btnMiner','btnTetris','btnPikachu','btnSolitaire','btnInvaders','btnPacman',
-        'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle'
+        'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle',
+        'btnPong','btnMemory','btnTypeRush'
     ];
 
     function switchTo(viewId, btnId) {
@@ -1437,6 +1439,39 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnQuitWordle').addEventListener('click', () => {
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnPong').addEventListener('click', () => {
+        switchTo('pongView', 'btnPong');
+        initPong('pongGameArea');
+    });
+
+    document.getElementById('btnQuitPong').addEventListener('click', () => {
+        const area = document.getElementById('pongGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnMemory').addEventListener('click', () => {
+        switchTo('memoryView', 'btnMemory');
+        initMemory('memoryGameArea');
+    });
+
+    document.getElementById('btnQuitMemory').addEventListener('click', () => {
+        const area = document.getElementById('memoryGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnTypeRush').addEventListener('click', () => {
+        switchTo('typeRushView', 'btnTypeRush');
+        initTypeRush('typeRushGameArea');
+    });
+
+    document.getElementById('btnQuitTypeRush').addEventListener('click', () => {
+        const area = document.getElementById('typeRushGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });
 });
