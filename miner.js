@@ -350,16 +350,53 @@
         ctx.stroke();
         ctx.shadowBlur = 0; // reset
 
-        // Vẽ thợ đào vàng Cyberpunk ở giữa trên (300, 30)
+        // Tính toán animation kéo tời cho thợ đào vàng
+        let minerOffsetY = 0;
+        let minerAngle = 0;
+        if (state.hook.state === 'RETRIEVING') {
+            // Lắc người nhẹ liên tục mô phỏng đang quay tay quay kéo cáp
+            minerOffsetY = Math.sin(Date.now() * 0.02) * 4;
+            minerAngle = Math.sin(Date.now() * 0.02) * 0.06;
+        }
+
+        // Vẽ thợ đào vàng cổ điển ở giữa trên (300, 30)
+        ctx.save();
+        ctx.translate(300, 35 + minerOffsetY);
+        ctx.rotate(minerAngle);
         try {
-            ctx.drawImage(imgMiner, 300 - 35, 5, 70, 70);
+            ctx.drawImage(imgMiner, -35, -30, 70, 70);
         } catch (e) {
-            // Fallback vẽ cụm máy tời nếu ảnh chưa load kịp
+            // Fallback
             ctx.fillStyle = '#b026ff';
             ctx.beginPath();
-            ctx.arc(300, HOOK_START_Y, 15, 0, Math.PI * 2);
+            ctx.arc(0, 15, 15, 0, Math.PI * 2);
             ctx.fill();
         }
+        ctx.restore();
+
+        // Vẽ ròng rọc quay (pulley animation) ở trục quay
+        ctx.save();
+        ctx.translate(300, HOOK_START_Y + 15);
+        if (state.hook.state === 'RETRIEVING') {
+            // Xoay liên tục khi đang kéo đồ
+            ctx.rotate(Date.now() * 0.015);
+        }
+        // Vẽ đĩa xích ròng rọc neon màu tím
+        ctx.strokeStyle = '#b026ff';
+        ctx.lineWidth = 2.5;
+        ctx.shadowBlur = 5;
+        ctx.shadowColor = '#b026ff';
+        ctx.beginPath();
+        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.stroke();
+        // Vẽ 4 nan hoa nhỏ xoay theo
+        for (let i = 0; i < 4; i++) {
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(Math.cos(i * Math.PI / 2) * 8, Math.sin(i * Math.PI / 2) * 8);
+            ctx.stroke();
+        }
+        ctx.restore();
 
         // Vẽ đầu móc
         ctx.strokeStyle = '#00f0ff';
