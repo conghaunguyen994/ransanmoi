@@ -374,27 +374,7 @@
         ctx.stroke();
         ctx.shadowBlur = 0; // reset
 
-        // Vẽ ròng rọc quay (pulley animation) tích hợp phát sáng neon chồng lên trục quấn cáp của ông già
-        ctx.save();
-        ctx.translate(298, HOOK_START_Y + 12);
-        if (state.hook.state === 'RETRIEVING') {
-            ctx.rotate(Date.now() * 0.015);
-        }
-        // Đĩa xích ròng rọc neon nhỏ đồng bộ chuyển động
-        ctx.strokeStyle = '#39ff14';
-        ctx.lineWidth = 2;
-        ctx.shadowBlur = 5;
-        ctx.shadowColor = '#39ff14';
-        ctx.beginPath();
-        ctx.arc(0, 0, 7, 0, Math.PI * 2);
-        ctx.stroke();
-        for (let i = 0; i < 4; i++) {
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(Math.cos(i * Math.PI / 2) * 7, Math.sin(i * Math.PI / 2) * 7);
-            ctx.stroke();
-        }
-        ctx.restore();
+
 
         // Vẽ đầu móc
         ctx.strokeStyle = '#00f0ff';
