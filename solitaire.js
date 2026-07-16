@@ -353,15 +353,19 @@
         // 5. Vẽ lá bài hoặc nhóm bài đang bị Kéo thả (Drag)
         if (state.dragState) {
             const ds = state.dragState;
-            const cardX = ds.currX - ds.offsetX;
-            const cardY = ds.currY - ds.offsetY;
+            const dragOffsetX = ds.currX - ds.startX;
+            const dragOffsetY = ds.currY - ds.startY;
 
             for (let i = 0; i < ds.cards.length; i++) {
-                const drawY = cardY + i * TABLEAU_VERTICAL_GAP;
+                const origCardY = (ds.source === 'tableau') 
+                    ? TABLEAU_START_Y + (ds.cardIdx + i) * TABLEAU_VERTICAL_GAP
+                    : WASTE_Y;
+                const dragX = ds.cardStartX + dragOffsetX;
+                const dragY = origCardY + dragOffsetY;
 
                 ctx.shadowBlur = 10;
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-                drawCard(cardX, drawY, ds.cards[i]);
+                drawCard(dragX, dragY, ds.cards[i]);
                 ctx.shadowBlur = 0;
             }
         }
@@ -438,8 +442,7 @@
                 startY: my,
                 currX: mx,
                 currY: my,
-                offsetX: mx - WASTE_X,
-                offsetY: my - WASTE_Y
+                cardStartX: WASTE_X
             };
         } else if (clicked.pile === 'tableau' && clicked.cardIdx !== -1) {
             const card = clicked.card;
@@ -447,7 +450,6 @@
                 // Kéo nhóm bài ngửa từ Tableau cột colIdx từ vị trí cardIdx đổ xuống
                 const cardsToDrag = state.tableaus[clicked.colIdx].slice(clicked.cardIdx);
                 const colX = TABLEAU_START_X + clicked.colIdx * CARD_SPACING_X;
-                const cardY = TABLEAU_START_Y + clicked.cardIdx * TABLEAU_VERTICAL_GAP;
 
                 state.dragState = {
                     source: 'tableau',
@@ -458,8 +460,7 @@
                     startY: my,
                     currX: mx,
                     currY: my,
-                    offsetX: mx - colX,
-                    offsetY: my - cardY
+                    cardStartX: colX
                 };
             }
         }
