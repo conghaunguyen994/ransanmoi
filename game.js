@@ -836,6 +836,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnTetris').classList.remove('active');
         document.getElementById('btnPikachu').classList.remove('active');
         document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
         
         document.getElementById('dashboardView').classList.remove('hidden');
         document.getElementById('snakeView').classList.add('hidden');
@@ -847,6 +851,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
         document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -855,14 +863,13 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnSnake').addEventListener('click', () => {
-        document.getElementById('btnSnake').classList.add('active');
-        document.getElementById('btnHome').classList.remove('active');
-        document.getElementById('btnCaro').classList.remove('active');
-        document.getElementById('btnDino').classList.remove('active');
-        document.getElementById('btnChess').classList.remove('active');
-        document.getElementById('btnXiangqi').classList.remove('active');
-        document.getElementById('btnMiner').classList.remove('active');
+        document.getElementById('btnTetris').classList.remove('active');
+        document.getElementById('btnPikachu').classList.remove('active');
         document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
         
         document.getElementById('snakeView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -874,6 +881,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
         document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
         
         // Vẽ lại bảng Snake để đảm bảo hiển thị đúng
         if (gameState.gameStatus === 'MENU') {
@@ -896,6 +907,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnXiangqi').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
         document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
         
         document.getElementById('caroView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -907,6 +922,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
         document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -923,6 +942,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnXiangqi').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
         document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
         
         document.getElementById('dinoView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -934,6 +957,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
         document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -950,6 +977,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnXiangqi').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
         document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
         
         document.getElementById('chessView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -961,6 +992,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
         document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -982,6 +1017,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnChess').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
         document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
         
         document.getElementById('xiangqiView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -993,6 +1032,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
         document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -1016,6 +1059,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnTetris').classList.remove('active');
         document.getElementById('btnPikachu').classList.remove('active');
         document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
         
         document.getElementById('minerView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -1027,6 +1074,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
         document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -1045,6 +1096,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnMiner').classList.remove('active');
         document.getElementById('btnPikachu').classList.remove('active');
         document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
         
         document.getElementById('tetrisView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -1056,6 +1111,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
         document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -1074,6 +1133,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnMiner').classList.remove('active');
         document.getElementById('btnTetris').classList.remove('active');
         document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
         
         document.getElementById('pikachuView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -1085,6 +1148,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -1103,6 +1170,10 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnMiner').classList.remove('active');
         document.getElementById('btnTetris').classList.remove('active');
         document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
         
         document.getElementById('solitaireView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -1114,8 +1185,160 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
+        if (gameState.gameStatus === 'PLAYING') {
+            togglePause();
+        }
+    });
+
+    document.getElementById('btnInvaders').addEventListener('click', () => {
+        document.getElementById('btnInvaders').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
+        document.getElementById('btnSnake').classList.remove('active');
+        document.getElementById('btnCaro').classList.remove('active');
+        document.getElementById('btnDino').classList.remove('active');
+        document.getElementById('btnChess').classList.remove('active');
+        document.getElementById('btnXiangqi').classList.remove('active');
+        document.getElementById('btnMiner').classList.remove('active');
+        document.getElementById('btnTetris').classList.remove('active');
+        document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
+        
+        document.getElementById('invadersView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
+        document.getElementById('snakeView').classList.add('hidden');
+        document.getElementById('caroView').classList.add('hidden');
+        document.getElementById('dinoView').classList.add('hidden');
+        document.getElementById('chessView').classList.add('hidden');
+        document.getElementById('xiangqiView').classList.add('hidden');
+        document.getElementById('minerView').classList.add('hidden');
+        document.getElementById('tetrisView').classList.add('hidden');
+        document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
+        
+        if (gameState.gameStatus === 'PLAYING') {
+            togglePause();
+        }
+    });
+
+    document.getElementById('btnPacman').addEventListener('click', () => {
+        document.getElementById('btnPacman').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
+        document.getElementById('btnSnake').classList.remove('active');
+        document.getElementById('btnCaro').classList.remove('active');
+        document.getElementById('btnDino').classList.remove('active');
+        document.getElementById('btnChess').classList.remove('active');
+        document.getElementById('btnXiangqi').classList.remove('active');
+        document.getElementById('btnMiner').classList.remove('active');
+        document.getElementById('btnTetris').classList.remove('active');
+        document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
+        
+        document.getElementById('pacmanView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
+        document.getElementById('snakeView').classList.add('hidden');
+        document.getElementById('caroView').classList.add('hidden');
+        document.getElementById('dinoView').classList.add('hidden');
+        document.getElementById('chessView').classList.add('hidden');
+        document.getElementById('xiangqiView').classList.add('hidden');
+        document.getElementById('minerView').classList.add('hidden');
+        document.getElementById('tetrisView').classList.add('hidden');
+        document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
+        
+        if (gameState.gameStatus === 'PLAYING') {
+            togglePause();
+        }
+    });
+
+    document.getElementById('btnBreaker').addEventListener('click', () => {
+        document.getElementById('btnBreaker').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
+        document.getElementById('btnSnake').classList.remove('active');
+        document.getElementById('btnCaro').classList.remove('active');
+        document.getElementById('btnDino').classList.remove('active');
+        document.getElementById('btnChess').classList.remove('active');
+        document.getElementById('btnXiangqi').classList.remove('active');
+        document.getElementById('btnMiner').classList.remove('active');
+        document.getElementById('btnTetris').classList.remove('active');
+        document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btn2048').classList.remove('active');
+        
+        document.getElementById('breakerView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
+        document.getElementById('snakeView').classList.add('hidden');
+        document.getElementById('caroView').classList.add('hidden');
+        document.getElementById('dinoView').classList.add('hidden');
+        document.getElementById('chessView').classList.add('hidden');
+        document.getElementById('xiangqiView').classList.add('hidden');
+        document.getElementById('minerView').classList.add('hidden');
+        document.getElementById('tetrisView').classList.add('hidden');
+        document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('game2048View').classList.add('hidden');
+        
+        if (gameState.gameStatus === 'PLAYING') {
+            togglePause();
+        }
+    });
+
+    document.getElementById('btn2048').addEventListener('click', () => {
+        document.getElementById('btn2048').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
+        document.getElementById('btnSnake').classList.remove('active');
+        document.getElementById('btnCaro').classList.remove('active');
+        document.getElementById('btnDino').classList.remove('active');
+        document.getElementById('btnChess').classList.remove('active');
+        document.getElementById('btnXiangqi').classList.remove('active');
+        document.getElementById('btnMiner').classList.remove('active');
+        document.getElementById('btnTetris').classList.remove('active');
+        document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
+        document.getElementById('btnInvaders').classList.remove('active');
+        document.getElementById('btnPacman').classList.remove('active');
+        document.getElementById('btnBreaker').classList.remove('active');
+        
+        document.getElementById('game2048View').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
+        document.getElementById('snakeView').classList.add('hidden');
+        document.getElementById('caroView').classList.add('hidden');
+        document.getElementById('dinoView').classList.add('hidden');
+        document.getElementById('chessView').classList.add('hidden');
+        document.getElementById('xiangqiView').classList.add('hidden');
+        document.getElementById('minerView').classList.add('hidden');
+        document.getElementById('tetrisView').classList.add('hidden');
+        document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
+        document.getElementById('invadersView').classList.add('hidden');
+        document.getElementById('pacmanView').classList.add('hidden');
+        document.getElementById('breakerView').classList.add('hidden');
+        
         if (gameState.gameStatus === 'PLAYING') {
             togglePause();
         }
@@ -1148,6 +1371,18 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('cardSolitaire').addEventListener('click', () => {
         document.getElementById('btnSolitaire').click();
+    });
+    document.getElementById('cardInvaders').addEventListener('click', () => {
+        document.getElementById('btnInvaders').click();
+    });
+    document.getElementById('cardPacman').addEventListener('click', () => {
+        document.getElementById('btnPacman').click();
+    });
+    document.getElementById('cardBreaker').addEventListener('click', () => {
+        document.getElementById('btnBreaker').click();
+    });
+    document.getElementById('card2048').addEventListener('click', () => {
+        document.getElementById('btn2048').click();
     });
 });
 

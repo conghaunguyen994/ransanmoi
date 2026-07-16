@@ -37,6 +37,10 @@
         <button id="btnTetris" class="nav-btn">🧱 NEON TETRIS</button>
         <button id="btnPikachu" class="nav-btn">⚡ NEON PIKACHU</button>
         <button id="btnSolitaire" class="nav-btn">🃏 NEON SOLITAIRE</button>
+        <button id="btnInvaders" class="nav-btn">🛩️ NEON INVADERS</button>
+        <button id="btnPacman" class="nav-btn">🕳️ NEON PACMAN</button>
+        <button id="btnBreaker" class="nav-btn">💥 NEON BREAKER</button>
+        <button id="btn2048" class="nav-btn">🧠 NEON 2048</button>
     </nav>
 
     <!-- Màn hình chính của các View -->
@@ -127,6 +131,42 @@
                     <div class="game-card-icon">🃏</div>
                     <h3 class="game-card-title">NEON SOLITAIRE</h3>
                     <p class="game-card-desc">Xếp bài Klondike cổ điển phong cách Windows, kéo thả mượt mà, lật bài rút từng lá và nhảy bài khi thắng.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 10: Space Invaders -->
+                <div class="game-card" id="cardInvaders" style="--card-color: #00f0ff;">
+                    <div class="game-card-icon">🛩️</div>
+                    <h3 class="game-card-title">NEON INVADERS</h3>
+                    <p class="game-card-desc">Bắn ruồi vũ trụ retro, điều khiển phi thuyền neon tránh làn đạn laser địch và hạ gục Boss khổng lồ.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 11: Pacman -->
+                <div class="game-card" id="cardPacman" style="--card-color: #ffe600;">
+                    <div class="game-card-icon">🕳️</div>
+                    <h3 class="game-card-title">NEON PACMAN</h3>
+                    <p class="game-card-desc">Ăn chấm sáng trong mê cung neon phát sáng, tránh né bóng ma đuổi theo, ăn chấm năng lượng để săn ma.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 12: Brick Breaker -->
+                <div class="game-card" id="cardBreaker" style="--card-color: #39ff14;">
+                    <div class="game-card-icon">💥</div>
+                    <h3 class="game-card-title">NEON BREAKER</h3>
+                    <p class="game-card-desc">Đập bóng phá gạch cổ điển, điều khiển thanh đỡ neon, thu thập vật phẩm, nhân đôi bóng, laser.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 13: 2048 -->
+                <div class="game-card" id="card2048" style="--card-color: #b026ff;">
+                    <div class="game-card-icon">🧠</div>
+                    <h3 class="game-card-title">NEON 2048</h3>
+                    <p class="game-card-desc">Trí tuệ ghép số, di chuyển các ô số phát sáng cùng giá trị chạm nhau để cộng dồn đến mốc 2048.</p>
                     <div class="game-card-meta">1 PLAYER</div>
                     <button class="game-card-btn">CHƠI NGAY</button>
                 </div>
@@ -546,6 +586,111 @@
             </div>
         </div>
 
+        <!-- View 10: Neon Space Invaders -->
+        <div id="invadersView" class="game-view hidden">
+            <div id="invadersLobby" class="caro-lobby-container">
+                <h2 class="lobby-title">🛩️ NEON INVADERS</h2>
+                <p class="lobby-subtitle">BẮN RUỒI VŨ TRỤ arcade</p>
+                <div class="lobby-actions">
+                    <button id="btnStartInvaders" class="lobby-btn create-btn" style="box-shadow: 0 0 10px #00f0ff; border-color: #00f0ff;">CHƠI NGAY</button>
+                </div>
+            </div>
+
+            <div id="invadersGameArea" class="hidden">
+                <div class="chess-header" style="max-width: 600px; margin: 0 auto 15px auto;">
+                    <div class="chess-header-item">SCORE: <span id="invadersScore" class="highlight" style="color: #00f0ff;">0</span></div>
+                    <div class="chess-header-item">LIVES: <span id="invadersLives" class="highlight" style="color: #ff007f;">3</span></div>
+                    <div class="chess-header-item">STAGE: <span id="invadersStage" class="highlight" style="color: #39ff14;">1</span></div>
+                </div>
+
+                <div class="chess-canvas-wrapper" style="width: 600px; aspect-ratio: 1.2 / 1; margin: 0 auto;">
+                    <canvas id="invadersCanvas" width="600" height="500"></canvas>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="btnQuitInvaders" class="leave-btn" style="margin: 0;">THOÁT GAME</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 11: Neon Pacman -->
+        <div id="pacmanView" class="game-view hidden">
+            <div id="pacmanLobby" class="caro-lobby-container">
+                <h2 class="lobby-title">🕳️ NEON PACMAN</h2>
+                <p class="lobby-subtitle">MÊ CUNG Neon Cyberpunk</p>
+                <div class="lobby-actions">
+                    <button id="btnStartPacman" class="lobby-btn create-btn" style="box-shadow: 0 0 10px #ffe600; border-color: #ffe600;">CHƠI NGAY</button>
+                </div>
+            </div>
+
+            <div id="pacmanGameArea" class="hidden">
+                <div class="chess-header" style="max-width: 440px; margin: 0 auto 15px auto;">
+                    <div class="chess-header-item">SCORE: <span id="pacmanScore" class="highlight" style="color: #ffe600;">0</span></div>
+                    <div class="chess-header-item">LIVES: <span id="pacmanLives" class="highlight" style="color: #ff007f;">3</span></div>
+                </div>
+
+                <div class="chess-canvas-wrapper" style="width: 440px; aspect-ratio: 11 / 12; margin: 0 auto;">
+                    <canvas id="pacmanCanvas" width="440" height="480"></canvas>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="btnQuitPacman" class="leave-btn" style="margin: 0;">THOÁT GAME</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 12: Neon Brick Breaker -->
+        <div id="breakerView" class="game-view hidden">
+            <div id="breakerLobby" class="caro-lobby-container">
+                <h2 class="lobby-title">💥 NEON BREAKER</h2>
+                <p class="lobby-subtitle">BẮN BÓNG PHÁ GẠCH cổ điển</p>
+                <div class="lobby-actions">
+                    <button id="btnStartBreaker" class="lobby-btn create-btn" style="box-shadow: 0 0 10px #39ff14; border-color: #39ff14;">CHƠI NGAY</button>
+                </div>
+            </div>
+
+            <div id="breakerGameArea" class="hidden">
+                <div class="chess-header" style="max-width: 600px; margin: 0 auto 15px auto;">
+                    <div class="chess-header-item">SCORE: <span id="breakerScore" class="highlight" style="color: #39ff14;">0</span></div>
+                    <div class="chess-header-item">LIVES: <span id="breakerLives" class="highlight" style="color: #ff007f;">3</span></div>
+                </div>
+
+                <div class="chess-canvas-wrapper" style="width: 600px; aspect-ratio: 1.2 / 1; margin: 0 auto;">
+                    <canvas id="breakerCanvas" width="600" height="500"></canvas>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="btnQuitBreaker" class="leave-btn" style="margin: 0;">THOÁT GAME</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 13: Neon 2048 -->
+        <div id="game2048View" class="game-view hidden">
+            <div id="game2048Lobby" class="caro-lobby-container">
+                <h2 class="lobby-title">🧠 NEON 2048</h2>
+                <p class="lobby-subtitle">TRÍ TUỆ GHÉP SỐ phát sáng</p>
+                <div class="lobby-actions">
+                    <button id="btnStart2048" class="lobby-btn create-btn" style="box-shadow: 0 0 10px #b026ff; border-color: #b026ff;">CHƠI NGAY</button>
+                </div>
+            </div>
+
+            <div id="game2048GameArea" class="hidden">
+                <div class="chess-header" style="max-width: 400px; margin: 0 auto 15px auto;">
+                    <div class="chess-header-item">SCORE: <span id="game2048Score" class="highlight" style="color: #b026ff;">0</span></div>
+                    <div class="chess-header-item">BEST: <span id="game2048Best" class="highlight" style="color: #00f0ff;">0</span></div>
+                </div>
+
+                <div class="chess-canvas-wrapper" style="width: 400px; aspect-ratio: 1 / 1; margin: 0 auto;">
+                    <canvas id="game2048Canvas" width="400" height="400"></canvas>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="btnQuit2048" class="leave-btn" style="margin: 0;">THOÁT GAME</button>
+                </div>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -558,5 +703,9 @@
     <script src="tetris.js?v=2"></script>
     <script src="pikachu.js?v=2"></script>
     <script src="solitaire.js?v=2"></script>
+    <script src="space_invaders.js?v=2"></script>
+    <script src="pacman.js?v=2"></script>
+    <script src="brick_breaker.js?v=2"></script>
+    <script src="game_2048.js?v=2"></script>
 </body>
 </html>

@@ -926,6 +926,38 @@ body {
     border-radius: 6px;
 }
 
+#invadersCanvas {
+    background-color: #05050a;
+    border: 2px solid #00f0ff;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+    display: block;
+    border-radius: 4px;
+}
+
+#pacmanCanvas {
+    background-color: #050505;
+    border: 2px solid #ffe600;
+    box-shadow: 0 0 15px rgba(255, 230, 0, 0.6);
+    display: block;
+    border-radius: 4px;
+}
+
+#breakerCanvas {
+    background-color: #050805;
+    border: 2px solid #39ff14;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+    display: block;
+    border-radius: 4px;
+}
+
+#game2048Canvas {
+    background-color: #0d0d15;
+    border: 2px solid #b026ff;
+    box-shadow: 0 0 15px rgba(176, 38, 255, 0.6);
+    display: block;
+    border-radius: 6px;
+}
+
 @media (max-width: 768px) {
     .chess-play-area {
         flex-direction: column;
