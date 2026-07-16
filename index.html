@@ -27,7 +27,8 @@
 
     <!-- Thanh Menubar Cyberpunk trên cùng -->
     <nav class="menubar">
-        <button id="btnSnake" class="nav-btn active">🐍 NEON SNAKE</button>
+        <button id="btnHome" class="nav-btn active">🏠 TRANG CHỦ</button>
+        <button id="btnSnake" class="nav-btn">🐍 NEON SNAKE</button>
         <button id="btnCaro" class="nav-btn">⚔️ NEON GOMOKU</button>
         <button id="btnDino" class="nav-btn">🦖 NEON DINO</button>
         <button id="btnChess" class="nav-btn">♟️ NEON CHESS</button>
@@ -39,8 +40,81 @@
     <!-- Màn hình chính của các View -->
     <div class="portal-container">
         
+        <!-- View 0: Neon Game Dashboard -->
+        <div id="dashboardView" class="game-view">
+            <div class="dashboard-header">
+                <h1 class="portal-title">🌌 NEON GAME HUB</h1>
+                <p class="portal-subtitle">CỔNG GAME CÔNG NGHỆ CAO - CHƠI TRỰC TUYẾN MIỄN PHÍ</p>
+            </div>
+            
+            <div class="game-grid">
+                <!-- Card 1: Snake -->
+                <div class="game-card" id="cardSnake" style="--card-color: #39ff14;">
+                    <div class="game-card-icon">🐍</div>
+                    <h3 class="game-card-title">NEON SNAKE</h3>
+                    <p class="game-card-desc">Điều khiển rắn săn mồi qua các cấp độ thử thách, kích hoạt chế độ tự động tìm đường thông minh.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 2: Caro -->
+                <div class="game-card" id="cardCaro" style="--card-color: #ff007f;">
+                    <div class="game-card-icon">⚔️</div>
+                    <h3 class="game-card-title">NEON GOMOKU</h3>
+                    <p class="game-card-desc">Thách đấu cờ ca rô trực tuyến cùng bạn bè qua hệ thống phòng đấu thời gian thực và kênh chat.</p>
+                    <div class="game-card-meta">2 PLAYERS ONLINE</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 3: Dino -->
+                <div class="game-card" id="cardDino" style="--card-color: #00f0ff;">
+                    <div class="game-card-icon">🦖</div>
+                    <h3 class="game-card-title">NEON DINO</h3>
+                    <p class="game-card-desc">Đuổi bắt điểm số cùng chú khủng long vượt chướng ngại vật cực kỳ vui nhộn (kích hoạt khi mất mạng).</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 4: Chess -->
+                <div class="game-card" id="cardChess" style="--card-color: #ffd700;">
+                    <div class="game-card-icon">♟️</div>
+                    <h3 class="game-card-title">NEON CHESS</h3>
+                    <p class="game-card-desc">Đấu trí cờ vua đỉnh cao hai người, sảnh chờ chuyên nghiệp, đồng bộ nước đi và hệ thống chơi lại.</p>
+                    <div class="game-card-meta">2 PLAYERS ONLINE</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 5: Xiangqi -->
+                <div class="game-card" id="cardXiangqi" style="--card-color: #ff3b30;">
+                    <div class="game-card-icon">🏯</div>
+                    <h3 class="game-card-title">NEON XIANGQI</h3>
+                    <p class="game-card-desc">Cờ tướng cổ điển trực tuyến với luật đi cờ tự động hoàn toàn, cản chân mã, cản mắt tượng, chiếu bí.</p>
+                    <div class="game-card-meta">2 PLAYERS ONLINE</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 6: Gold Miner -->
+                <div class="game-card" id="cardMiner" style="--card-color: #b026ff;">
+                    <div class="game-card-icon">⛏️</div>
+                    <h3 class="game-card-title">NEON MINER</h3>
+                    <p class="game-card-desc">Trở thành thợ đào vàng cổ điển kéo các cục vàng óng, kim cương, tránh né bom TNT phát nổ, bắt heo con.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 7: Tetris -->
+                <div class="game-card" id="cardTetris" style="--card-color: #ff7300;">
+                    <div class="game-card-icon">🧱</div>
+                    <h3 class="game-card-title">NEON TETRIS</h3>
+                    <p class="game-card-desc">Xếp hình cổ điển phong cách Cyberpunk, xoay khối cờ, dọn sạch lưới cờ và tăng tốc độ theo cấp độ.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+            </div>
+        </div>
+
         <!-- View 1: Neon Snake -->
-        <div id="snakeView" class="game-view">
+        <div id="snakeView" class="game-view hidden">
             <div class="game-container">
                 <!-- Bảng điểm số phía trên Canvas -->
                 <div class="score-board">

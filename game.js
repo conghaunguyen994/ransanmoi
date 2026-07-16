@@ -825,8 +825,34 @@ window.addEventListener('DOMContentLoaded', () => {
     console.log('Neon Snake initialized successfully with Menu.');
     
     // Thiết lập chuyển đổi View trên Menubar
+    document.getElementById('btnHome').addEventListener('click', () => {
+        document.getElementById('btnHome').classList.add('active');
+        document.getElementById('btnSnake').classList.remove('active');
+        document.getElementById('btnCaro').classList.remove('active');
+        document.getElementById('btnDino').classList.remove('active');
+        document.getElementById('btnChess').classList.remove('active');
+        document.getElementById('btnXiangqi').classList.remove('active');
+        document.getElementById('btnMiner').classList.remove('active');
+        document.getElementById('btnTetris').classList.remove('active');
+        
+        document.getElementById('dashboardView').classList.remove('hidden');
+        document.getElementById('snakeView').classList.add('hidden');
+        document.getElementById('caroView').classList.add('hidden');
+        document.getElementById('dinoView').classList.add('hidden');
+        document.getElementById('chessView').classList.add('hidden');
+        document.getElementById('xiangqiView').classList.add('hidden');
+        document.getElementById('minerView').classList.add('hidden');
+        document.getElementById('tetrisView').classList.add('hidden');
+        
+        // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
+        if (gameState.gameStatus === 'PLAYING') {
+            togglePause();
+        }
+    });
+
     document.getElementById('btnSnake').addEventListener('click', () => {
         document.getElementById('btnSnake').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
         document.getElementById('btnCaro').classList.remove('active');
         document.getElementById('btnDino').classList.remove('active');
         document.getElementById('btnChess').classList.remove('active');
@@ -835,6 +861,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnTetris').classList.remove('active');
         
         document.getElementById('snakeView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
         document.getElementById('caroView').classList.add('hidden');
         document.getElementById('dinoView').classList.add('hidden');
         document.getElementById('chessView').classList.add('hidden');
@@ -856,6 +883,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnCaro').addEventListener('click', () => {
         document.getElementById('btnCaro').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
         document.getElementById('btnSnake').classList.remove('active');
         document.getElementById('btnDino').classList.remove('active');
         document.getElementById('btnChess').classList.remove('active');
@@ -864,6 +892,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnTetris').classList.remove('active');
         
         document.getElementById('caroView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
         document.getElementById('snakeView').classList.add('hidden');
         document.getElementById('dinoView').classList.add('hidden');
         document.getElementById('chessView').classList.add('hidden');
@@ -879,6 +908,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnDino').addEventListener('click', () => {
         document.getElementById('btnDino').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
         document.getElementById('btnSnake').classList.remove('active');
         document.getElementById('btnCaro').classList.remove('active');
         document.getElementById('btnChess').classList.remove('active');
@@ -887,6 +917,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnTetris').classList.remove('active');
         
         document.getElementById('dinoView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
         document.getElementById('snakeView').classList.add('hidden');
         document.getElementById('caroView').classList.add('hidden');
         document.getElementById('chessView').classList.add('hidden');
@@ -902,6 +933,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnChess').addEventListener('click', () => {
         document.getElementById('btnChess').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
         document.getElementById('btnSnake').classList.remove('active');
         document.getElementById('btnCaro').classList.remove('active');
         document.getElementById('btnDino').classList.remove('active');
@@ -910,6 +942,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnTetris').classList.remove('active');
         
         document.getElementById('chessView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
         document.getElementById('snakeView').classList.add('hidden');
         document.getElementById('caroView').classList.add('hidden');
         document.getElementById('dinoView').classList.add('hidden');
@@ -930,6 +963,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnXiangqi').addEventListener('click', () => {
         document.getElementById('btnXiangqi').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
         document.getElementById('btnSnake').classList.remove('active');
         document.getElementById('btnCaro').classList.remove('active');
         document.getElementById('btnDino').classList.remove('active');
@@ -938,6 +972,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnTetris').classList.remove('active');
         
         document.getElementById('xiangqiView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
         document.getElementById('snakeView').classList.add('hidden');
         document.getElementById('caroView').classList.add('hidden');
         document.getElementById('dinoView').classList.add('hidden');
@@ -958,6 +993,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnMiner').addEventListener('click', () => {
         document.getElementById('btnMiner').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
         document.getElementById('btnSnake').classList.remove('active');
         document.getElementById('btnCaro').classList.remove('active');
         document.getElementById('btnDino').classList.remove('active');
@@ -966,6 +1002,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnTetris').classList.remove('active');
         
         document.getElementById('minerView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
         document.getElementById('snakeView').classList.add('hidden');
         document.getElementById('caroView').classList.add('hidden');
         document.getElementById('dinoView').classList.add('hidden');
@@ -981,6 +1018,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnTetris').addEventListener('click', () => {
         document.getElementById('btnTetris').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
         document.getElementById('btnSnake').classList.remove('active');
         document.getElementById('btnCaro').classList.remove('active');
         document.getElementById('btnDino').classList.remove('active');
@@ -989,6 +1027,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnMiner').classList.remove('active');
         
         document.getElementById('tetrisView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
         document.getElementById('snakeView').classList.add('hidden');
         document.getElementById('caroView').classList.add('hidden');
         document.getElementById('dinoView').classList.add('hidden');
@@ -1001,4 +1040,28 @@ window.addEventListener('DOMContentLoaded', () => {
             togglePause();
         }
     });
+
+    // Liên kết Click hành động từ các Game Card trên Dashboard
+    document.getElementById('cardSnake').addEventListener('click', () => {
+        document.getElementById('btnSnake').click();
+    });
+    document.getElementById('cardCaro').addEventListener('click', () => {
+        document.getElementById('btnCaro').click();
+    });
+    document.getElementById('cardDino').addEventListener('click', () => {
+        document.getElementById('btnDino').click();
+    });
+    document.getElementById('cardChess').addEventListener('click', () => {
+        document.getElementById('btnChess').click();
+    });
+    document.getElementById('cardXiangqi').addEventListener('click', () => {
+        document.getElementById('btnXiangqi').click();
+    });
+    document.getElementById('cardMiner').addEventListener('click', () => {
+        document.getElementById('btnMiner').click();
+    });
+    document.getElementById('cardTetris').addEventListener('click', () => {
+        document.getElementById('btnTetris').click();
+    });
+});
 });
