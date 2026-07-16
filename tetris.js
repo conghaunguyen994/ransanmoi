@@ -744,4 +744,40 @@
     tetrisChatInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') sendChat();
     });
+
+    // --- CONTROL KEYBOARD BINDINGS ---
+    window.addEventListener('keydown', function (e) {
+        if (state.gameOver || state.status !== 'PLAYING') return;
+
+        // Bỏ qua nếu đang gõ trong hộp chat
+        if (document.activeElement === tetrisChatInput) return;
+
+        switch (e.key) {
+            case 'ArrowLeft':
+                e.preventDefault();
+                movePiece(-1);
+                draw();
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                movePiece(1);
+                draw();
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                rotatePiece();
+                draw();
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                dropPiece();
+                draw();
+                break;
+            case ' ':
+                e.preventDefault();
+                hardDropPiece();
+                draw();
+                break;
+        }
+    });
 })();
