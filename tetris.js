@@ -476,6 +476,12 @@
         }
 
         draw();
+
+        // Đồng bộ điểm và vị trí cờ thời gian thực mỗi tick vẽ khi chơi Battle
+        if (state.mode === 'BATTLE') {
+            syncMyGridToOpponent();
+        }
+
         state.animationId = requestAnimationFrame(gameLoop);
     }
 
