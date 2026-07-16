@@ -99,6 +99,22 @@
             <span class="nav-icon">🏯</span>
             <span class="nav-label">NEON XIANGQI</span>
         </button>
+
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section-label">CASUAL</div>
+
+        <button id="btnFlappy" class="nav-btn" data-label="NEON FLAPPY">
+            <span class="nav-icon">🐦</span>
+            <span class="nav-label">NEON FLAPPY</span>
+        </button>
+        <button id="btnWhack" class="nav-btn" data-label="NEON WHACK">
+            <span class="nav-icon">🎯</span>
+            <span class="nav-label">NEON WHACK</span>
+        </button>
+        <button id="btnWordle" class="nav-btn" data-label="NEON WORDLE">
+            <span class="nav-icon">🔤</span>
+            <span class="nav-label">NEON WORDLE</span>
+        </button>
     </nav>
 
     <!-- Màn hình chính của các View -->
@@ -749,6 +765,32 @@
             </div>
         </div>
 
+        <!-- View 14: Neon Flappy Bird -->
+        <div id="flappyView" class="game-view hidden">
+            <div id="flappyContainer" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <h2 style="font-family:'Outfit',Arial;font-size:22px;font-weight:800;color:#ffe600;text-shadow:0 0 12px #ffe600;letter-spacing:2px;margin:0;">🐦 NEON FLAPPY BIRD</h2>
+                <p style="color:rgba(143,146,161,0.7);font-size:12px;letter-spacing:1px;margin:0;">CLICK HOẶC SPACE ĐỂ BẮT ĐẦU</p>
+                <div id="flappyGameArea"></div>
+                <button id="btnQuitFlappy" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 15: Neon Whack-a-Mole -->
+        <div id="whackView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="whackGameArea"></div>
+                <button id="btnQuitWhack" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 16: Neon Wordle -->
+        <div id="wordleView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="wordleGameArea"></div>
+                <button id="btnQuitWordle" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -765,5 +807,8 @@
     <script src="pacman.js?v=2"></script>
     <script src="brick_breaker.js?v=2"></script>
     <script src="game_2048.js?v=2"></script>
+    <script src="flappy_bird.js?v=1"></script>
+    <script src="whack_mole.js?v=1"></script>
+    <script src="neon_wordle.js?v=1"></script>
 </body>
 </html>

@@ -1384,5 +1384,59 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('card2048').addEventListener('click', () => {
         document.getElementById('btn2048').click();
     });
-});
 
+    // --- 3 GAME MỚI: Flappy, Whack, Wordle ---
+    const NEW_VIEWS = [
+        'dashboardView','snakeView','caroView','dinoView','chessView','xiangqiView',
+        'minerView','tetrisView','pikachuView','solitaireView','invadersView','pacmanView',
+        'breakerView','game2048View','flappyView','whackView','wordleView'
+    ];
+    const NEW_BTNS = [
+        'btnHome','btnSnake','btnCaro','btnDino','btnChess','btnXiangqi',
+        'btnMiner','btnTetris','btnPikachu','btnSolitaire','btnInvaders','btnPacman',
+        'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle'
+    ];
+
+    function switchTo(viewId, btnId) {
+        NEW_VIEWS.forEach(v => {
+            const el = document.getElementById(v);
+            if (el) el.classList.toggle('hidden', v !== viewId);
+        });
+        NEW_BTNS.forEach(b => {
+            const el = document.getElementById(b);
+            if (el) el.classList.toggle('active', b === btnId);
+        });
+        if (gameState.gameStatus === 'PLAYING') togglePause();
+    }
+
+    document.getElementById('btnFlappy').addEventListener('click', () => {
+        switchTo('flappyView', 'btnFlappy');
+        initFlappyBird('flappyGameArea');
+    });
+
+    document.getElementById('btnQuitFlappy').addEventListener('click', () => {
+        const area = document.getElementById('flappyGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnWhack').addEventListener('click', () => {
+        switchTo('whackView', 'btnWhack');
+        initWhackMole('whackGameArea');
+    });
+
+    document.getElementById('btnQuitWhack').addEventListener('click', () => {
+        const area = document.getElementById('whackGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnWordle').addEventListener('click', () => {
+        switchTo('wordleView', 'btnWordle');
+        initWordle('wordleGameArea');
+    });
+
+    document.getElementById('btnQuitWordle').addEventListener('click', () => {
+        switchTo('dashboardView', 'btnHome');
+    });
+});
