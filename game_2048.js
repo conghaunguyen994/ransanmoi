@@ -156,12 +156,13 @@
             }
 
             draw();
+        }
 
-            // Kiểm tra kẹt bàn chơi (Thua cuộc)
-            if (isGameOver()) {
-                state.gameActive = false;
-                alert('GAME OVER! Không còn nước đi hợp lệ. Điểm số: ' + state.score);
-            }
+        // Kiểm tra kẹt bàn chơi (Thua cuộc) - LUÔN kiểm tra sau mỗi nước đi
+        if (isGameOver()) {
+            state.gameActive = false;
+            draw();
+            drawGameOverOverlay();
         }
     }
 
@@ -177,6 +178,67 @@
             }
         }
         return true;
+    }
+
+    // Vẽ màn hình Game Over lên Canvas
+    function drawGameOverOverlay() {
+        // Lớp phủ mờ tối
+        ctx.fillStyle = 'rgba(5, 5, 15, 0.82)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Box trung tâm
+        const bx = 40, by = 110, bw = 320, bh = 180;
+        ctx.save();
+        ctx.fillStyle = 'rgba(17, 18, 29, 0.95)';
+        ctx.strokeStyle = '#ff007f';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#ff007f';
+        ctx.beginPath();
+        ctx.roundRect(bx, by, bw, bh, 12);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        // Tiêu đề GAME OVER
+        ctx.save();
+        ctx.fillStyle = '#ff007f';
+        ctx.font = '700 36px Outfit, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#ff007f';
+        ctx.fillText('GAME OVER!', canvas.width / 2, by + 55);
+        ctx.restore();
+
+        // Dòng phụ hiển thị điểm
+        ctx.save();
+        ctx.fillStyle = '#8f92a1';
+        ctx.font = '400 13px Inter, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Không còn nước đi hợp lệ', canvas.width / 2, by + 100);
+        ctx.restore();
+
+        // Điểm số nổi bật
+        ctx.save();
+        ctx.fillStyle = '#ffe600';
+        ctx.font = '700 28px Outfit, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = '#ffe600';
+        ctx.fillText('ĐIỂM: ' + state.score, canvas.width / 2, by + 140);
+        ctx.restore();
+
+        // Hướng dẫn chơi lại
+        ctx.save();
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.6)';
+        ctx.font = '400 11px Inter, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Nhấn THOÁT GAME để chơi lại', canvas.width / 2, by + 170);
+        ctx.restore();
     }
 
     // --- DRAWING GRAPHICS ---
