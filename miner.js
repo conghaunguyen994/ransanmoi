@@ -339,17 +339,6 @@
             ctx.stroke();
         }
 
-        // Vẽ dây móc
-        ctx.strokeStyle = '#00f0ff';
-        ctx.lineWidth = 2.5;
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = '#00f0ff';
-        ctx.beginPath();
-        ctx.moveTo(300, HOOK_START_Y + 15); // Xuất phát từ dưới máy đào một chút
-        ctx.lineTo(state.hook.x, state.hook.y);
-        ctx.stroke();
-        ctx.shadowBlur = 0; // reset
-
         // Tính toán animation kéo tời cho thợ đào vàng
         let minerOffsetY = 0;
         let minerAngle = 0;
@@ -359,7 +348,7 @@
             minerAngle = Math.sin(Date.now() * 0.02) * 0.06;
         }
 
-        // Vẽ thợ đào vàng cổ điển ở giữa trên (300, 30)
+        // Vẽ thợ đào vàng cổ điển và trục quay tời ở giữa trên (300, 35)
         ctx.save();
         ctx.translate(300, 35 + minerOffsetY);
         ctx.rotate(minerAngle);
@@ -374,26 +363,35 @@
         }
         ctx.restore();
 
-        // Vẽ ròng rọc quay (pulley animation) ở trục quay
+        // Vẽ dây móc xuất phát từ đúng vị trí trục quấn cáp của ông già (khoảng x=298, y=55)
+        ctx.strokeStyle = '#00f0ff';
+        ctx.lineWidth = 2.5;
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = '#00f0ff';
+        ctx.beginPath();
+        ctx.moveTo(298, HOOK_START_Y + 12); 
+        ctx.lineTo(state.hook.x, state.hook.y);
+        ctx.stroke();
+        ctx.shadowBlur = 0; // reset
+
+        // Vẽ ròng rọc quay (pulley animation) tích hợp phát sáng neon chồng lên trục quấn cáp của ông già
         ctx.save();
-        ctx.translate(300, HOOK_START_Y + 15);
+        ctx.translate(298, HOOK_START_Y + 12);
         if (state.hook.state === 'RETRIEVING') {
-            // Xoay liên tục khi đang kéo đồ
             ctx.rotate(Date.now() * 0.015);
         }
-        // Vẽ đĩa xích ròng rọc neon màu tím
-        ctx.strokeStyle = '#b026ff';
-        ctx.lineWidth = 2.5;
+        // Đĩa xích ròng rọc neon nhỏ đồng bộ chuyển động
+        ctx.strokeStyle = '#39ff14';
+        ctx.lineWidth = 2;
         ctx.shadowBlur = 5;
-        ctx.shadowColor = '#b026ff';
+        ctx.shadowColor = '#39ff14';
         ctx.beginPath();
-        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.arc(0, 0, 7, 0, Math.PI * 2);
         ctx.stroke();
-        // Vẽ 4 nan hoa nhỏ xoay theo
         for (let i = 0; i < 4; i++) {
             ctx.beginPath();
             ctx.moveTo(0, 0);
-            ctx.lineTo(Math.cos(i * Math.PI / 2) * 8, Math.sin(i * Math.PI / 2) * 8);
+            ctx.lineTo(Math.cos(i * Math.PI / 2) * 7, Math.sin(i * Math.PI / 2) * 7);
             ctx.stroke();
         }
         ctx.restore();
