@@ -482,10 +482,6 @@
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
 
-        // Tính tọa độ góc trên bên trái thực tế của lá bài đang bị kéo
-        const cardX = mx - ds.offsetX;
-        const cardY = my - ds.offsetY;
-
         // Tìm vùng thả bài (Drop area)
         let dropped = false;
 
@@ -497,10 +493,9 @@
             // Tọa độ Y mong muốn của cột đích
             const targetY = col.length === 0 ? TABLEAU_START_Y : TABLEAU_START_Y + (col.length - 1) * TABLEAU_VERTICAL_GAP;
             
-            // Kiểm tra xem hình chữ nhật của lá bài kéo có giao với vùng nhận diện của cột cờ không
-            // Tăng diện tích nhận diện lên để người chơi dễ dàng xếp bài hơn
-            const xMatch = (cardX + CARD_WIDTH / 2 >= colX - 25) && (cardX + CARD_WIDTH / 2 <= colX + CARD_WIDTH + 25);
-            const yMatch = (cardY + 30 >= targetY - 40) && (cardY <= targetY + CARD_HEIGHT + 40);
+            // Nhận diện vùng thả dựa trên toạ độ chuột (mx, my) với biên bao quanh cực rộng và linh hoạt
+            const xMatch = (mx >= colX - 30) && (mx <= colX + CARD_WIDTH + 30);
+            const yMatch = (my >= targetY - 50) && (my <= targetY + CARD_HEIGHT + 70);
 
             if (xMatch && yMatch) {
                 const bottomCard = ds.cards[0];
@@ -529,8 +524,8 @@
             for (let fIdx = 0; fIdx < 4; fIdx++) {
                 const fX = FOUNDATION_START_X + fIdx * CARD_SPACING_X;
                 
-                const xMatch = (cardX + CARD_WIDTH / 2 >= fX - 25) && (cardX + CARD_WIDTH / 2 <= fX + CARD_WIDTH + 25);
-                const yMatch = (cardY + CARD_HEIGHT / 2 >= FOUNDATION_Y - 25) && (cardY + CARD_HEIGHT / 2 <= FOUNDATION_Y + CARD_HEIGHT + 25);
+                const xMatch = (mx >= fX - 25) && (mx <= fX + CARD_WIDTH + 25);
+                const yMatch = (my >= FOUNDATION_Y - 25) && (my <= FOUNDATION_Y + CARD_HEIGHT + 40);
 
                 if (xMatch && yMatch) {
                     if (canPushToFoundation(fIdx, card)) {
