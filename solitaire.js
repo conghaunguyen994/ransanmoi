@@ -434,7 +434,7 @@
         if (clicked.pile === 'deck') {
             drawCardFromDeck();
         } else if (clicked.pile === 'waste' && clicked.card) {
-            // Kéo lá bài ngửa ra khay Waste (tính toán offset từ điểm chuột nhấp thật tới góc bài để tránh giật hình)
+            // Kéo lá bài ngửa ra khay Waste
             state.dragState = {
                 source: 'waste',
                 cards: [clicked.card],
@@ -442,7 +442,7 @@
                 startY: my,
                 currX: mx,
                 currY: my,
-                cardStartX: WASTE_X - (mx - WASTE_X)
+                cardStartX: WASTE_X
             };
         } else if (clicked.pile === 'tableau' && clicked.cardIdx !== -1) {
             const card = clicked.card;
@@ -460,7 +460,7 @@
                     startY: my,
                     currX: mx,
                     currY: my,
-                    cardStartX: colX - (mx - colX)
+                    cardStartX: colX
                 };
             }
         }
