@@ -33,6 +33,7 @@
         <button id="btnChess" class="nav-btn">♟️ NEON CHESS</button>
         <button id="btnXiangqi" class="nav-btn">🏯 CỜ TƯỚNG</button>
         <button id="btnMiner" class="nav-btn">⛏️ NEON MINER</button>
+        <button id="btnTetris" class="nav-btn">🧱 NEON TETRIS</button>
     </nav>
 
     <!-- Màn hình chính của các View -->
@@ -293,6 +294,52 @@
             </div>
         </div>
 
+        <!-- View 7: Neon Tetris -->
+        <div id="tetrisView" class="game-view hidden">
+            <div id="tetrisLobby" class="caro-lobby-container">
+                <h2 class="lobby-title">🧱 NEON TETRIS</h2>
+                <p class="lobby-subtitle">XẾP HÌNH CỔ ĐIỂN PHONG CÁCH NEON CYBERPUNK</p>
+                <div class="lobby-actions">
+                    <button id="btnStartTetris" class="lobby-btn create-btn">CHƠI NGAY</button>
+                </div>
+            </div>
+
+            <div id="tetrisGameArea" class="hidden">
+                <div class="chess-header" style="max-width: 500px; margin: 0 auto 15px auto;">
+                    <div class="chess-header-item">SCORE: <span id="tetrisScore" class="highlight" style="color: #00f0ff;">0</span></div>
+                    <div class="chess-header-item">LEVEL: <span id="tetrisLevel" class="highlight" style="color: #b026ff;">1</span></div>
+                    <div class="chess-header-item">LINES: <span id="tetrisLines" class="highlight" style="color: #39ff14;">0</span></div>
+                </div>
+
+                <div style="display: flex; justify-content: center; gap: 20px; max-width: 500px; margin: 0 auto; align-items: flex-start;">
+                    <!-- Bàn cờ chính -->
+                    <div class="chess-canvas-wrapper" style="width: 240px; aspect-ratio: 1 / 2;">
+                        <canvas id="tetrisCanvas" width="240" height="480"></canvas>
+                    </div>
+
+                    <!-- Khung thông tin phụ bên cạnh (Next Piece) -->
+                    <div style="display: flex; flex-direction: column; gap: 15px; width: 120px;">
+                        <div style="background: rgba(7, 8, 12, 0.85); border: 2px solid #b026ff; border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="color: #b026ff; font-family: 'Outfit', sans-serif; font-size: 12px; margin-bottom: 8px; font-weight: bold;">TIẾP THEO</div>
+                            <canvas id="tetrisNextCanvas" width="80" height="80" style="background: #000; border-radius: 4px;"></canvas>
+                        </div>
+
+                        <div style="background: rgba(7, 8, 12, 0.85); border: 2px solid #00f0ff; border-radius: 8px; padding: 10px; font-size: 10px; color: #8892b0; line-height: 1.5; font-family: monospace;">
+                            <div style="color: #00f0ff; font-weight: bold; margin-bottom: 5px; text-align: center;">ĐIỀU KHIỂN:</div>
+                            ← → : Di chuyển<br>
+                            ↑ : Xoay hình<br>
+                            ↓ : Rơi nhanh<br>
+                            Space : Rơi ngay
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="btnQuitTetris" class="leave-btn">THOÁT GAME</button>
+                </div>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -302,5 +349,6 @@
     <script src="chess-game.js?v=2"></script>
     <script src="xiangqi.js?v=2"></script>
     <script src="miner.js?v=2"></script>
+    <script src="tetris.js?v=2"></script>
 </body>
 </html>
