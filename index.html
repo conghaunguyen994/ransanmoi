@@ -370,29 +370,53 @@
 
         <!-- View 7: Neon Tetris -->
         <div id="tetrisView" class="game-view hidden">
+            <!-- Lobby: Chọn chế độ & Tạo/Vào phòng -->
             <div id="tetrisLobby" class="caro-lobby-container">
                 <h2 class="lobby-title">🧱 NEON TETRIS</h2>
-                <p class="lobby-subtitle">XẾP HÌNH CỔ ĐIỂN PHONG CÁCH NEON CYBERPUNK</p>
-                <div class="lobby-actions">
-                    <button id="btnStartTetris" class="lobby-btn create-btn">CHƠI NGAY</button>
+                <p class="lobby-subtitle">XẾP HÌNH CỔ ĐIỂN VÀ ĐỐI KHÁNG TRỰC TUYẾN</p>
+                
+                <div class="input-group">
+                    <label for="tetrisNicknameInput">TÊN HIỂN THỊ (KHI ĐẤU ONLINE)</label>
+                    <input type="text" id="tetrisNicknameInput" placeholder="NICKNAME CỦA BẠN..." maxlength="12">
                 </div>
+
+                <div class="lobby-actions" style="margin-top: 15px;">
+                    <button id="btnStartTetrisSolo" class="lobby-btn create-btn" style="box-shadow: 0 0 10px #39ff14; border-color: #39ff14;">CHƠI ĐƠN (SOLO)</button>
+                    
+                    <div class="divider" style="margin: 15px 0;">ĐỐI KHÁNG TRỰC TUYẾN</div>
+                    
+                    <div style="display: flex; gap: 15px; width: 100%;">
+                        <button id="btnTetrisCreateRoom" class="lobby-btn create-btn" style="flex: 1;">TẠO PHÒNG ĐẤU</button>
+                        <div class="join-box" style="flex: 1; display: flex; gap: 5px; margin: 0;">
+                            <input type="text" id="tetrisRoomCodeInput" placeholder="MÃ PHÒNG..." maxlength="4" style="width: 50%;">
+                            <button id="btnTetrisJoinRoom" class="lobby-btn join-btn" style="width: 50%; padding: 0;">VÀO PHÒNG</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <p id="tetrisLobbyMessage" class="lobby-msg" style="margin-top: 15px;"></p>
             </div>
 
+            <!-- Màn chơi Tetris (Cả Solo và Battle 2 người) -->
             <div id="tetrisGameArea" class="hidden">
-                <div class="chess-header" style="max-width: 500px; margin: 0 auto 15px auto;">
-                    <div class="chess-header-item">SCORE: <span id="tetrisScore" class="highlight" style="color: #00f0ff;">0</span></div>
-                    <div class="chess-header-item">LEVEL: <span id="tetrisLevel" class="highlight" style="color: #b026ff;">1</span></div>
-                    <div class="chess-header-item">LINES: <span id="tetrisLines" class="highlight" style="color: #39ff14;">0</span></div>
+                <div class="chess-header" style="max-width: 800px; margin: 0 auto 15px auto;">
+                    <div class="chess-header-item" id="tetrisRoomHeader" style="display: none;">ROOM: <span id="tetrisDisplayRoomCode" class="highlight">-</span></div>
+                    <div class="chess-header-item">ĐIỂM: <span id="tetrisScore" class="highlight" style="color: #00f0ff;">0</span></div>
+                    <div class="chess-header-item">CẤP: <span id="tetrisLevel" class="highlight" style="color: #b026ff;">1</span></div>
+                    <div class="chess-header-item">HÀNG XÓA: <span id="tetrisLines" class="highlight" style="color: #39ff14;">0</span></div>
                 </div>
 
-                <div style="display: flex; justify-content: center; gap: 20px; max-width: 500px; margin: 0 auto; align-items: flex-start;">
-                    <!-- Bàn cờ chính -->
-                    <div class="chess-canvas-wrapper" style="width: 240px; aspect-ratio: 1 / 2;">
-                        <canvas id="tetrisCanvas" width="240" height="480"></canvas>
+                <div class="chess-play-area" style="max-width: 900px; margin: 0 auto; gap: 20px;">
+                    <!-- Cột 1: Bàn cờ của Tôi -->
+                    <div class="board-column" style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="color: #00f0ff; font-family: 'Outfit', sans-serif; font-size: 13px; margin-bottom: 5px; font-weight: bold;">BÀN CỜ CỦA TÔI</div>
+                        <div class="chess-canvas-wrapper" style="width: 240px; aspect-ratio: 1 / 2;">
+                            <canvas id="tetrisCanvas" width="240" height="480"></canvas>
+                        </div>
                     </div>
 
-                    <!-- Khung thông tin phụ bên cạnh (Next Piece) -->
-                    <div style="display: flex; flex-direction: column; gap: 15px; width: 120px;">
+                    <!-- Cột 2: Next Block Preview + Điều khiển -->
+                    <div style="display: flex; flex-direction: column; gap: 15px; width: 120px; align-self: flex-start; margin-top: 20px;">
                         <div style="background: rgba(7, 8, 12, 0.85); border: 2px solid #b026ff; border-radius: 8px; padding: 10px; text-align: center;">
                             <div style="color: #b026ff; font-family: 'Outfit', sans-serif; font-size: 12px; margin-bottom: 8px; font-weight: bold;">TIẾP THEO</div>
                             <canvas id="tetrisNextCanvas" width="80" height="80" style="background: #000; border-radius: 4px;"></canvas>
@@ -406,10 +430,33 @@
                             Space : Rơi ngay
                         </div>
                     </div>
+
+                    <!-- Cột 3: Bàn cờ Đối thủ (Chỉ hiện khi chơi Battle) -->
+                    <div id="tetrisOpponentColumn" class="board-column" style="display: none; flex-direction: column; align-items: center;">
+                        <div style="color: #ff007f; font-family: 'Outfit', sans-serif; font-size: 13px; margin-bottom: 5px; font-weight: bold;">ĐỐI THỦ: <span id="tetrisOpponentName">-</span></div>
+                        <div class="chess-canvas-wrapper" style="width: 240px; aspect-ratio: 1 / 2; opacity: 0.85;">
+                            <canvas id="tetrisOpponentCanvas" width="240" height="480"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Cột 4: Khung Chat (Chỉ hiện khi chơi Battle) -->
+                    <div id="tetrisChatColumn" class="chat-column" style="display: none; height: 505px;">
+                        <div class="chat-history" id="tetrisChatHistory" style="height: 440px;">
+                            <div class="chat-msg system">KÊNH CHAT ĐỐI KHÁNG TETRIS</div>
+                        </div>
+                        <div class="chat-input-box">
+                            <input type="text" id="tetrisChatInput" placeholder="NHẬP TIN NHẮN..." maxlength="60">
+                            <button id="btnTetrisSendChat">GỬI</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div style="text-align: center; margin-top: 20px;">
-                    <button id="btnQuitTetris" class="leave-btn">THOÁT GAME</button>
+                    <div id="tetrisStatusText" style="color: #39ff14; font-family: monospace; margin-bottom: 10px; font-size: 13px;"></div>
+                    <div class="chess-footer-btns" style="justify-content: center; gap: 15px;">
+                        <button id="btnResetTetris" class="leave-btn hidden">CHƠI LẠI</button>
+                        <button id="btnQuitTetris" class="leave-btn">THOÁT GAME</button>
+                    </div>
                 </div>
             </div>
         </div>

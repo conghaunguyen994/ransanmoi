@@ -1,14 +1,21 @@
 /**
- * tetris.js - Neon Tetris (Xếp Hình Cổ Điển Cyberpunk)
+ * tetris.js - Neon Tetris (Xếp Hình Cổ Điển & Đối Kháng Cyberpunk)
  */
 
 (function () {
     // --- DOM Elements ---
     const tetrisLobby = document.getElementById('tetrisLobby');
     const tetrisGameArea = document.getElementById('tetrisGameArea');
-    const btnStartTetris = document.getElementById('btnStartTetris');
-    const btnQuitTetris = document.getElementById('btnQuitTetris');
     
+    const btnStartTetrisSolo = document.getElementById('btnStartTetrisSolo');
+    const btnTetrisCreateRoom = document.getElementById('btnTetrisCreateRoom');
+    const btnTetrisJoinRoom = document.getElementById('btnTetrisJoinRoom');
+    const tetrisNicknameInput = document.getElementById('tetrisNicknameInput');
+    const tetrisRoomCodeInput = document.getElementById('tetrisRoomCodeInput');
+    const tetrisLobbyMessage = document.getElementById('tetrisLobbyMessage');
+
+    const tetrisRoomHeader = document.getElementById('tetrisRoomHeader');
+    const tetrisDisplayRoomCode = document.getElementById('tetrisDisplayRoomCode');
     const labelScore = document.getElementById('tetrisScore');
     const labelLevel = document.getElementById('tetrisLevel');
     const labelLines = document.getElementById('tetrisLines');
@@ -19,12 +26,26 @@
     const tetrisNextCanvas = document.getElementById('tetrisNextCanvas');
     const nextCtx = tetrisNextCanvas.getContext('2d');
 
+    // UI Đối thủ & Chat
+    const tetrisOpponentColumn = document.getElementById('tetrisOpponentColumn');
+    const tetrisOpponentName = document.getElementById('tetrisOpponentName');
+    const tetrisOpponentCanvas = document.getElementById('tetrisOpponentCanvas');
+    const opponentCtx = tetrisOpponentCanvas.getContext('2d');
+
+    const tetrisChatColumn = document.getElementById('tetrisChatColumn');
+    const tetrisChatHistory = document.getElementById('tetrisChatHistory');
+    const tetrisChatInput = document.getElementById('tetrisChatInput');
+    const btnTetrisSendChat = document.getElementById('btnTetrisSendChat');
+
+    const tetrisStatusText = document.getElementById('tetrisStatusText');
+    const btnResetTetris = document.getElementById('btnResetTetris');
+    const btnQuitTetris = document.getElementById('btnQuitTetris');
+
     // --- GAME CONFIGS ---
     const COLS = 10;
     const ROWS = 20;
-    const BLOCK_SIZE = 24; // Kích thước mỗi ô (24px * 10 = 240px rộng, 24px * 20 = 480px cao)
+    const BLOCK_SIZE = 24; 
 
-    // Màu sắc khối cờ dạng phát sáng Neon
     const COLORS = [
         null,
         '#00f0ff', // I (Cyan)
@@ -36,7 +57,6 @@
         '#ff7300'  // L (Orange)
     ];
 
-    // Định nghĩa 7 khối Tetromino chuẩn
     const SHAPES = [
         [],
         [[1, 1, 1, 1]], // I
@@ -49,18 +69,52 @@
     ];
 
     const state = {
+        mode: 'SOLO', // SOLO | BATTLE
+        status: 'LOBBY', // LOBBY | PLAYING | WAITING | ENDED
+        nickname: '',
+        roomCode: '',
+        opponentName: 'Đối thủ',
+        myColor: 'w', // Host 'w', Guest 'b'
+        
         grid: Array(ROWS).fill().map(() => Array(COLS).fill(0)),
+        opponentGrid: Array(ROWS).fill().map(() => Array(COLS).fill(0)),
+        
         score: 0,
         level: 1,
         lines: 0,
-        currentPiece: null, // { shape: [[]], x, y, colorId }
+        currentPiece: null, 
         nextPiece: null,
         gameOver: false,
         dropCounter: 0,
-        dropInterval: 1000, // ms mỗi nhịp rơi (giảm dần khi tăng level)
+        dropInterval: 1000, 
         lastTime: 0,
-        animationId: null
+        animationId: null,
+
+        // Supabase channels
+        gameChannel: null,
+        chatChannel: null
     };
+
+    // --- UTILITIES ---
+    function genRoomCode() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let code = '';
+        for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+        return code;
+    }
+
+    function showLobbyMsg(msg, isError) {
+        tetrisLobbyMessage.innerText = msg;
+        tetrisLobbyMessage.style.color = isError ? '#ff3b30' : '#00f0ff';
+    }
+
+    function addChatMsg(text, type) {
+        const div = document.createElement('div');
+        div.classList.add('chat-msg', type);
+        div.textContent = text;
+        tetrisChatHistory.appendChild(div);
+        tetrisChatHistory.scrollTop = tetrisChatHistory.scrollHeight;
+    }
 
     // --- GAME ENGINE ---
 
@@ -73,8 +127,9 @@
         };
     }
 
-    function resetGame() {
+    function resetGame(fullReset = true) {
         state.grid = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+        state.opponentGrid = Array(ROWS).fill().map(() => Array(COLS).fill(0));
         state.score = 0;
         state.level = 1;
         state.lines = 0;
@@ -85,29 +140,52 @@
         labelScore.innerText = '0';
         labelLevel.innerText = '1';
         labelLines.innerText = '0';
+        tetrisStatusText.innerText = '';
+        btnResetTetris.classList.add('hidden');
 
-        // Tạo 2 khối ngẫu nhiên ban đầu
         state.nextPiece = createPiece(Math.floor(Math.random() * 7) + 1);
         spawnPiece();
+
+        if (state.mode === 'BATTLE') {
+            syncMyGridToOpponent();
+        }
     }
 
     function spawnPiece() {
         state.currentPiece = state.nextPiece;
         state.nextPiece = createPiece(Math.floor(Math.random() * 7) + 1);
 
-        // Kiểm tra ngay khi spawn xem có bị đè cờ không -> Game Over
         if (checkCollision(state.currentPiece)) {
-            state.gameOver = true;
-            cancelAnimationFrame(state.animationId);
-            alert('GAME OVER! Điểm của bạn: ' + state.score);
-            tetrisLobby.classList.remove('hidden');
-            tetrisGameArea.classList.add('hidden');
+            handleGameOver();
         }
 
         drawNextPiece();
     }
 
-    // Kiểm tra va chạm với biên hoặc các khối đã khóa dưới đáy
+    function handleGameOver() {
+        state.gameOver = true;
+        cancelAnimationFrame(state.animationId);
+
+        if (state.mode === 'SOLO') {
+            alert('GAME OVER! Điểm của bạn: ' + state.score);
+            tetrisLobby.classList.remove('hidden');
+            tetrisGameArea.classList.add('hidden');
+        } else {
+            // Chế độ đối kháng: Mình bị thua -> gửi thông báo cho đối thủ
+            tetrisStatusText.innerText = 'BẠN ĐÃ THUA CUỘC!';
+            tetrisStatusText.style.color = '#ff3b30';
+            btnResetTetris.classList.remove('hidden');
+
+            if (state.gameChannel) {
+                state.gameChannel.send({
+                    type: 'broadcast',
+                    event: 'game_over',
+                    payload: { loser: state.nickname }
+                });
+            }
+        }
+    }
+
     function checkCollision(piece, offsetX = 0, offsetY = 0, customShape = piece.shape) {
         for (let r = 0; r < customShape.length; r++) {
             for (let c = 0; c < customShape[r].length; c++) {
@@ -115,12 +193,10 @@
                     const targetX = piece.x + c + offsetX;
                     const targetY = piece.y + r + offsetY;
 
-                    // Kiểm tra biên
                     if (targetX < 0 || targetX >= COLS || targetY >= ROWS) {
                         return true;
                     }
 
-                    // Kiểm tra đè khối cũ dưới lưới (chỉ tính khi targetY hợp lệ >= 0)
                     if (targetY >= 0 && state.grid[targetY][targetX] !== 0) {
                         return true;
                     }
@@ -130,7 +206,6 @@
         return false;
     }
 
-    // Khóa khối cờ vào lưới và kiểm tra xóa hàng
     function mergePiece() {
         const p = state.currentPiece;
         for (let r = 0; r < p.shape.length; r++) {
@@ -142,9 +217,66 @@
                 }
             }
         }
+        if (state.mode === 'BATTLE') {
+            syncMyGridToOpponent();
+        }
     }
 
-    // Xóa các hàng đã xếp đầy cờ
+    // Tấn công: Nhận hàng rác từ đối thủ
+    function receiveGarbageLines(count) {
+        if (state.gameOver) return;
+
+        // Đẩy toàn bộ các hàng hiện tại lên trên
+        for (let i = 0; i < count; i++) {
+            state.grid.shift(); // Xóa hàng trên cùng
+            
+            // Thêm hàng rác ở dưới đáy (chứa 1 ô trống ngẫu nhiên)
+            const holeCol = Math.floor(Math.random() * COLS);
+            const garbageRow = Array(COLS).fill(8); // Màu rác phát sáng cam
+            garbageRow[holeCol] = 0; // Ô trống để xếp gạch chui qua
+            state.grid.push(garbageRow);
+        }
+
+        // Kiểm tra nếu khối cờ đang rơi bị va chạm sau khi đẩy cờ lên
+        if (state.currentPiece && checkCollision(state.currentPiece)) {
+            // Đẩy khối cờ lên để tránh kẹt cờ nếu có thể
+            while (state.currentPiece.y > 0 && checkCollision(state.currentPiece)) {
+                state.currentPiece.y--;
+            }
+            if (checkCollision(state.currentPiece)) {
+                handleGameOver();
+            }
+        }
+
+        draw();
+        if (state.mode === 'BATTLE') {
+            syncMyGridToOpponent();
+        }
+    }
+
+    // Tấn công: Gửi hàng rác sang đối thủ khi xóa hàng
+    function sendGarbageAttack(linesCleared) {
+        let attackCount = 0;
+        if (linesCleared === 2) attackCount = 1;
+        else if (linesCleared === 3) attackCount = 2;
+        else if (linesCleared >= 4) attackCount = 4; // Tetris Attack!
+
+        if (attackCount > 0 && state.gameChannel) {
+            state.gameChannel.send({
+                type: 'broadcast',
+                event: 'garbage',
+                payload: { count: attackCount }
+            });
+            tetrisStatusText.innerText = `TẤN CÔNG ĐỐI THỦ +${attackCount} HÀNG!`;
+            tetrisStatusText.style.color = '#39ff14';
+            setTimeout(() => {
+                if (state.status === 'PLAYING' && !state.gameOver) {
+                    tetrisStatusText.innerText = '';
+                }
+            }, 2000);
+        }
+    }
+
     function clearLines() {
         let linesCleared = 0;
         
@@ -155,30 +287,31 @@
                 }
             }
 
-            // Hàng đầy: xóa và đưa các hàng phía trên xuống
             state.grid.splice(r, 1);
             state.grid.unshift(Array(COLS).fill(0));
             linesCleared++;
-            r++; // Kiểm tra lại hàng này sau khi dồn xuống
+            r++; 
         }
 
         if (linesCleared > 0) {
             state.lines += linesCleared;
-            // Tính điểm kiểu Tetris chuẩn
             const linePoints = [0, 100, 300, 500, 800];
             state.score += (linePoints[linesCleared] || 800) * state.level;
 
-            // Tăng level mỗi khi xóa 10 hàng
             state.level = Math.floor(state.lines / 10) + 1;
             state.dropInterval = Math.max(100, 1000 - (state.level - 1) * 120);
 
             labelScore.innerText = state.score;
             labelLevel.innerText = state.level;
             labelLines.innerText = state.lines;
+
+            // Xử lý gửi dòng rác trong đối kháng
+            if (state.mode === 'BATTLE') {
+                sendGarbageAttack(linesCleared);
+            }
         }
     }
 
-    // Rơi khối cờ xuống 1 đơn vị
     function dropPiece() {
         state.currentPiece.y++;
         if (checkCollision(state.currentPiece)) {
@@ -190,21 +323,21 @@
         state.dropCounter = 0;
     }
 
-    // Di chuyển ngang
     function movePiece(dir) {
         state.currentPiece.x += dir;
         if (checkCollision(state.currentPiece)) {
             state.currentPiece.x -= dir;
         }
+        if (state.mode === 'BATTLE') {
+            syncMyGridToOpponent();
+        }
     }
 
-    // Xoay khối hình
     function rotatePiece() {
         const shape = state.currentPiece.shape;
         const n = shape.length;
         const m = shape[0].length;
         
-        // Tạo ma trận xoay 90 độ
         const rotated = Array(m).fill().map(() => Array(n).fill(0));
         for (let r = 0; r < n; r++) {
             for (let c = 0; c < m; c++) {
@@ -212,7 +345,6 @@
             }
         }
 
-        // Kiểm tra va chạm sau xoay, nếu đè thì thử dịch chuyển ngang (wall kick) để xoay mượt
         const originalX = state.currentPiece.x;
         let success = false;
         
@@ -224,11 +356,13 @@
                 success = true;
                 break;
             }
-            state.currentPiece.x = originalX; // reset thử tiếp
+            state.currentPiece.x = originalX;
+        }
+        if (success && state.mode === 'BATTLE') {
+            syncMyGridToOpponent();
         }
     }
 
-    // Rơi tự do ngay lập tức (Hard Drop)
     function hardDropPiece() {
         while (!checkCollision(state.currentPiece, 0, 1)) {
             state.currentPiece.y++;
@@ -241,26 +375,25 @@
     // --- DRAWING GRAPHICS ---
 
     function drawGridBlock(context, x, y, colorId, size) {
-        const color = COLORS[colorId];
+        const color = COLORS[colorId] || '#7f8c8d'; // Màu mặc định cho hàng rác (màu xám nhạt)
         context.fillStyle = color;
-        context.shadowBlur = 10;
+        context.shadowBlur = 8;
         context.shadowColor = color;
         
-        // Vẽ khối có bo viền neon
         context.fillRect(x * size + 1.5, y * size + 1.5, size - 3, size - 3);
         context.strokeStyle = '#ffffffaa';
         context.lineWidth = 1;
         context.strokeRect(x * size + 3, y * size + 3, size - 6, size - 6);
         
-        context.shadowBlur = 0; // reset
+        context.shadowBlur = 0; 
     }
 
     function draw() {
-        // Xóa bảng chính
+        // Xóa bảng chính của mình
         ctx.fillStyle = '#07080c';
         ctx.fillRect(0, 0, tetrisCanvas.width, tetrisCanvas.height);
 
-        // Vẽ các khối đã khóa trên lưới
+        // Vẽ lưới mình
         for (let r = 0; r < ROWS; r++) {
             for (let c = 0; c < COLS; c++) {
                 const block = state.grid[r][c];
@@ -270,7 +403,7 @@
             }
         }
 
-        // Vẽ khối đang rơi
+        // Vẽ khối đang rơi của mình
         const p = state.currentPiece;
         if (p) {
             for (let r = 0; r < p.shape.length; r++) {
@@ -281,9 +414,23 @@
                 }
             }
         }
+
+        // Vẽ lưới của đối thủ (nếu chơi đối kháng)
+        if (state.mode === 'BATTLE') {
+            opponentCtx.fillStyle = '#07080c';
+            opponentCtx.fillRect(0, 0, tetrisOpponentCanvas.width, tetrisOpponentCanvas.height);
+
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const block = state.opponentGrid[r][c];
+                    if (block !== 0) {
+                        drawGridBlock(opponentCtx, c, r, block, BLOCK_SIZE);
+                    }
+                }
+            }
+        }
     }
 
-    // Vẽ khối hình tiếp theo lên bảng Preview
     function drawNextPiece() {
         nextCtx.fillStyle = '#000000';
         nextCtx.fillRect(0, 0, tetrisNextCanvas.width, tetrisNextCanvas.height);
@@ -295,7 +442,6 @@
         const shapeW = p.shape[0].length * nextBlockSize;
         const shapeH = p.shape.length * nextBlockSize;
 
-        // Căn lề chính giữa canvas preview 80x80
         const startX = (80 - shapeW) / 2;
         const startY = (80 - shapeH) / 2;
 
@@ -310,12 +456,12 @@
                 }
             }
         }
-        nextCtx.shadowBlur = 0; // reset
+        nextCtx.shadowBlur = 0; 
     }
 
     // --- GAME LOOP ---
     function gameLoop(time = 0) {
-        if (state.gameOver) return;
+        if (state.gameOver || state.status !== 'PLAYING') return;
 
         const deltaTime = time - state.lastTime;
         state.lastTime = time;
@@ -329,56 +475,273 @@
         state.animationId = requestAnimationFrame(gameLoop);
     }
 
-    // --- CONTROL KEYBOARD BINDINGS ---
-    window.addEventListener('keydown', function (e) {
-        if (state.gameOver || state.status !== 'PLAYING') return;
+    // --- SUPABASE CONNECTIVITY ---
 
-        switch (e.key) {
-            case 'ArrowLeft':
-                e.preventDefault();
-                movePiece(-1);
-                draw();
-                break;
-            case 'ArrowRight':
-                e.preventDefault();
-                movePiece(1);
-                draw();
-                break;
-            case 'ArrowUp':
-                e.preventDefault();
-                rotatePiece();
-                draw();
-                break;
-            case 'ArrowDown':
-                e.preventDefault();
-                dropPiece();
-                draw();
-                break;
-            case ' ':
-                e.preventDefault();
-                hardDropPiece();
-                draw();
-                break;
+    // Gửi ma trận cờ hiện tại của mình cho đối thủ vẽ
+    function syncMyGridToOpponent() {
+        if (state.gameChannel) {
+            // Đóng gói luôn cả khối cờ đang rơi vào ma trận đồng bộ ảo để đối thủ nhìn thấy chuyển động mượt hơn
+            const gridToSend = JSON.parse(JSON.stringify(state.grid));
+            const p = state.currentPiece;
+            if (p) {
+                for (let r = 0; r < p.shape.length; r++) {
+                    for (let c = 0; c < p.shape[r].length; c++) {
+                        if (p.shape[r][c] !== 0) {
+                            if (p.y + r >= 0 && p.y + r < ROWS && p.x + c >= 0 && p.x + c < COLS) {
+                                gridToSend[p.y + r][p.x + c] = p.colorId;
+                            }
+                        }
+                    }
+                }
+            }
+
+            state.gameChannel.send({
+                type: 'broadcast',
+                event: 'grid_sync',
+                payload: { grid: gridToSend }
+            });
         }
-    });
+    }
+
+    function initSupabaseRoom() {
+        const client = window.supabaseClient;
+        if (!client) {
+            console.error('Supabase client is not initialized!');
+            return;
+        }
+
+        // Kênh game đồng bộ
+        state.gameChannel = client.channel(`tetris-${state.roomCode}`);
+        state.gameChannel
+            .on('broadcast', { event: 'join' }, payload => {
+                if (state.myColor === 'w') {
+                    state.opponentName = payload.payload.nickname;
+                    tetrisOpponentName.innerText = state.opponentName;
+                    addChatMsg(`[HỆ THỐNG] Đối thủ ${state.opponentName} đã vào phòng!`, 'system');
+                    
+                    state.gameChannel.send({
+                        type: 'broadcast',
+                        event: 'welcome',
+                        payload: { nickname: state.nickname }
+                    });
+
+                    state.status = 'PLAYING';
+                    resetGame();
+                    state.lastTime = performance.now();
+                    gameLoop();
+                }
+            })
+            .on('broadcast', { event: 'welcome' }, payload => {
+                if (state.myColor === 'b') {
+                    state.opponentName = payload.payload.nickname;
+                    tetrisOpponentName.innerText = state.opponentName;
+                    addChatMsg(`[HỆ THỐNG] Kết nối tới Host: ${state.opponentName}`, 'system');
+                    
+                    state.status = 'PLAYING';
+                    resetGame();
+                    state.lastTime = performance.now();
+                    gameLoop();
+                }
+            })
+            .on('broadcast', { event: 'grid_sync' }, payload => {
+                state.opponentGrid = payload.payload.grid;
+                draw();
+            })
+            .on('broadcast', { event: 'garbage' }, payload => {
+                receiveGarbageLines(payload.payload.count);
+            })
+            .on('broadcast', { event: 'game_over' }, () => {
+                // Đối thủ thua cuộc -> Mình chiến thắng!
+                state.gameOver = true;
+                cancelAnimationFrame(state.animationId);
+                
+                tetrisStatusText.innerText = 'ĐỐI THỦ THUA CUỘC! BẠN ĐÃ GIÀNH CHIẾN THẮNG!';
+                tetrisStatusText.style.color = '#39ff14';
+                btnResetTetris.classList.remove('hidden');
+            })
+            .on('broadcast', { event: 'reset_req' }, () => {
+                addChatMsg(`[HỆ THỐNG] Đối thủ yêu cầu đấu ván mới.`, 'system');
+                resetGame();
+                state.lastTime = performance.now();
+                gameLoop();
+            })
+            .on('broadcast', { event: 'leave' }, () => {
+                addChatMsg(`[HỆ THỐNG] Đối thủ đã rời phòng.`, 'system');
+                state.status = 'WAITING';
+                tetrisStatusText.innerText = 'ĐỐI THỦ ĐÃ RỜI PHÒNG. Đang chờ đối thủ mới...';
+                tetrisStatusText.style.color = '#ff9500';
+                btnResetTetris.classList.add('hidden');
+                
+                state.gameOver = true;
+                cancelAnimationFrame(state.animationId);
+            })
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    if (state.myColor === 'w') {
+                        addChatMsg(`[HỆ THỐNG] Đã tạo phòng ${state.roomCode}. Chờ đối thủ...`, 'system');
+                    } else {
+                        state.gameChannel.send({
+                            type: 'broadcast',
+                            event: 'join',
+                            payload: { nickname: state.nickname }
+                        });
+                    }
+                }
+            });
+
+        // Kênh chat room
+        state.chatChannel = client.channel(`tetris-chat-${state.roomCode}`);
+        state.chatChannel
+            .on('broadcast', { event: 'msg' }, payload => {
+                addChatMsg(`${payload.payload.sender}: ${payload.payload.text}`, 'opponent');
+            })
+            .subscribe();
+    }
 
     // --- BUTTON BINDINGS ---
-    btnStartTetris.addEventListener('click', function () {
+
+    // Chơi Solo
+    btnStartTetrisSolo.addEventListener('click', function () {
+        state.mode = 'SOLO';
+        state.status = 'PLAYING';
+
         tetrisLobby.classList.add('hidden');
         tetrisGameArea.classList.remove('hidden');
 
-        state.status = 'PLAYING';
+        // Ẩn các khu vực 2 người chơi
+        tetrisRoomHeader.style.display = 'none';
+        tetrisOpponentColumn.style.display = 'none';
+        tetrisChatColumn.style.display = 'none';
+
         resetGame();
         state.lastTime = performance.now();
         gameLoop();
     });
 
-    btnQuitTetris.addEventListener('click', function () {
+    // Host tạo phòng Battle
+    btnTetrisCreateRoom.addEventListener('click', function () {
+        const nick = tetrisNicknameInput.value.trim().toUpperCase();
+        if (!nick) {
+            showLobbyMsg('Vui lòng nhập tên hiển thị trước!', true);
+            return;
+        }
+        state.mode = 'BATTLE';
+        state.status = 'WAITING';
+        state.nickname = nick;
+        state.roomCode = genRoomCode();
+        state.myColor = 'w';
+        state.opponentName = 'Đối thủ';
+
+        tetrisLobby.classList.add('hidden');
+        tetrisGameArea.classList.remove('hidden');
+
+        // Hiện các khu vực đối kháng & chat
+        tetrisRoomHeader.style.display = 'block';
+        tetrisDisplayRoomCode.innerText = state.roomCode;
+        tetrisOpponentColumn.style.display = 'flex';
+        tetrisOpponentName.innerText = 'Chờ kết nối...';
+        tetrisChatColumn.style.display = 'block';
+        tetrisStatusText.innerText = 'ĐANG CHỜ ĐỐI THỦ VÀO PHÒNG...';
+        tetrisStatusText.style.color = '#ff9500';
+
+        initSupabaseRoom();
+        resetGame();
+    });
+
+    // Guest vào phòng Battle
+    btnTetrisJoinRoom.addEventListener('click', function () {
+        const nick = tetrisNicknameInput.value.trim().toUpperCase();
+        const code = tetrisRoomCodeInput.value.trim().toUpperCase();
+        if (!nick) {
+            showLobbyMsg('Vui lòng nhập tên hiển thị trước!', true);
+            return;
+        }
+        if (code.length !== 4) {
+            showLobbyMsg('Mã phòng phải gồm 4 ký tự!', true);
+            return;
+        }
+        state.mode = 'BATTLE';
+        state.status = 'WAITING';
+        state.nickname = nick;
+        state.roomCode = code;
+        state.myColor = 'b';
+
+        tetrisLobby.classList.add('hidden');
+        tetrisGameArea.classList.remove('hidden');
+
+        // Hiện các khu vực đối kháng & chat
+        tetrisRoomHeader.style.display = 'block';
+        tetrisDisplayRoomCode.innerText = state.roomCode;
+        tetrisOpponentColumn.style.display = 'flex';
+        tetrisChatColumn.style.display = 'block';
+        tetrisStatusText.innerText = 'ĐANG KẾT NỐI TỚI PHÒNG ĐẤU...';
+        tetrisStatusText.style.color = '#ff9500';
+
+        initSupabaseRoom();
+        resetGame();
+    });
+
+    // Rematch
+    btnResetTetris.addEventListener('click', () => {
+        resetGame();
+        state.lastTime = performance.now();
+        gameLoop();
+
+        if (state.gameChannel) {
+            state.gameChannel.send({
+                type: 'broadcast',
+                event: 'reset_req',
+                payload: {}
+            });
+        }
+        addChatMsg(`[HỆ THỐNG] Bạn đã yêu cầu bắt đầu ván mới.`, 'system');
+    });
+
+    // Thoát game
+    function quitGame() {
         state.gameOver = true;
         cancelAnimationFrame(state.animationId);
 
+        if (state.gameChannel) {
+            state.gameChannel.send({
+                type: 'broadcast',
+                event: 'leave',
+                payload: {}
+            });
+            state.gameChannel.unsubscribe();
+        }
+        if (state.chatChannel) {
+            state.chatChannel.unsubscribe();
+        }
+
         state.status = 'LOBBY';
+        state.roomCode = '';
+        
         tetrisLobby.classList.remove('hidden');
         tetrisGameArea.classList.add('hidden');
+        tetrisChatHistory.innerHTML = '<div class="chat-msg system">KÊNH CHAT ĐỐI KHÁNG TETRIS</div>';
+    }
+
+    btnQuitTetris.addEventListener('click', quitGame);
+
+    // Gửi chat
+    function sendChat() {
+        const text = tetrisChatInput.value.trim();
+        if (!text) return;
+
+        if (state.chatChannel) {
+            state.chatChannel.send({
+                type: 'broadcast',
+                event: 'msg',
+                payload: { sender: state.nickname, text }
+            });
+        }
+        addChatMsg(`Tôi: ${text}`, 'self');
+        tetrisChatInput.value = '';
+    }
+
+    btnTetrisSendChat.addEventListener('click', sendChat);
+    tetrisChatInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') sendChat();
     });
 })();
