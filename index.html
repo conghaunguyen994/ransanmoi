@@ -32,6 +32,7 @@
         <button id="btnDino" class="nav-btn">🦖 NEON DINO</button>
         <button id="btnChess" class="nav-btn">♟️ NEON CHESS</button>
         <button id="btnXiangqi" class="nav-btn">🏯 CỜ TƯỚNG</button>
+        <button id="btnMiner" class="nav-btn">⛏️ NEON MINER</button>
     </nav>
 
     <!-- Màn hình chính của các View -->
@@ -262,6 +263,33 @@
                     </div>
                 </div>
             </div>
+        <!-- View 6: Neon Miner (Gold Miner) -->
+        <div id="minerView" class="game-view hidden">
+            <div id="minerLobby" class="caro-lobby-container">
+                <h2 class="lobby-title">⛏️ NEON MINER</h2>
+                <p class="lobby-subtitle">PHÓNG MÓC ĐÀO VÀNG VÀ KIM CƯƠNG NEON</p>
+                <div class="lobby-actions">
+                    <button id="btnStartMiner" class="lobby-btn create-btn">CHƠI NGAY</button>
+                </div>
+            </div>
+
+            <div id="minerGameArea" class="hidden">
+                <div class="chess-header" style="max-width: 600px; margin: 0 auto 15px auto;">
+                    <div class="chess-header-item">MỤC TIÊU: <span id="minerTargetScore" class="highlight" style="color: #39ff14;">1000</span></div>
+                    <div class="chess-header-item">ĐIỂM: <span id="minerCurrentScore" class="highlight" style="color: #00f0ff;">0</span></div>
+                    <div class="chess-header-item">THỜI GIAN: <span id="minerTimer" class="highlight" style="color: #ff007f;">60s</span></div>
+                    <div class="chess-header-item">CẤP: <span id="minerLevel" class="highlight" style="color: #b026ff;">1</span></div>
+                </div>
+
+                <div class="chess-canvas-wrapper" style="max-width: 600px; margin: 0 auto; aspect-ratio: 4 / 3;">
+                    <canvas id="minerCanvas" width="600" height="450"></canvas>
+                </div>
+
+                <div style="text-align: center; margin-top: 15px;">
+                    <div id="minerStatusText" style="color: #00f0ff; font-family: 'Courier New', Courier, monospace; margin-bottom: 10px;">Bấm Space hoặc Click/Chạm vào Canvas để phóng móc!</div>
+                    <button id="btnQuitMiner" class="leave-btn">THOÁT GAME</button>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -272,5 +300,6 @@
     <script src="dino.js?v=2"></script>
     <script src="chess-game.js?v=2"></script>
     <script src="xiangqi.js?v=2"></script>
+    <script src="miner.js?v=2"></script>
 </body>
 </html>
