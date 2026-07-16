@@ -36,6 +36,7 @@
         <button id="btnMiner" class="nav-btn">⛏️ NEON MINER</button>
         <button id="btnTetris" class="nav-btn">🧱 NEON TETRIS</button>
         <button id="btnPikachu" class="nav-btn">⚡ NEON PIKACHU</button>
+        <button id="btnSolitaire" class="nav-btn">🃏 NEON SOLITAIRE</button>
     </nav>
 
     <!-- Màn hình chính của các View -->
@@ -117,6 +118,15 @@
                     <div class="game-card-icon">⚡</div>
                     <h3 class="game-card-title">NEON PIKACHU</h3>
                     <p class="game-card-desc">Nối các cặp hình động vật Neon giống nhau bằng đường nối tối đa 3 đoạn thẳng, hỗ trợ gợi ý & xáo bài.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 9: Solitaire -->
+                <div class="game-card" id="cardSolitaire" style="--card-color: #ff007f;">
+                    <div class="game-card-icon">🃏</div>
+                    <h3 class="game-card-title">NEON SOLITAIRE</h3>
+                    <p class="game-card-desc">Xếp bài Klondike cổ điển phong cách Windows, kéo thả mượt mà, lật bài rút từng lá và nhảy bài khi thắng.</p>
                     <div class="game-card-meta">1 PLAYER</div>
                     <button class="game-card-btn">CHƠI NGAY</button>
                 </div>
@@ -507,6 +517,35 @@
             </div>
         </div>
 
+        <!-- View 9: Neon Solitaire -->
+        <div id="solitaireView" class="game-view hidden">
+            <div id="solitaireLobby" class="caro-lobby-container">
+                <h2 class="lobby-title">🃏 NEON SOLITAIRE</h2>
+                <p class="lobby-subtitle">XẾP BÀI KLONDIKE CỔ ĐIỂN MỸ</p>
+                <div class="lobby-actions">
+                    <button id="btnStartSolitaire" class="lobby-btn create-btn" style="box-shadow: 0 0 10px #ff007f; border-color: #ff007f;">CHƠI NGAY</button>
+                </div>
+            </div>
+
+            <div id="solitaireGameArea" class="hidden">
+                <div class="chess-header" style="max-width: 800px; margin: 0 auto 15px auto;">
+                    <div class="chess-header-item">SCORE: <span id="solitaireScore" class="highlight" style="color: #ff007f;">0</span></div>
+                    <div class="chess-header-item">TIME: <span id="solitaireTimer" class="highlight" style="color: #00f0ff;">00:00</span></div>
+                    <div class="chess-header-item">MOVES: <span id="solitaireMoves" class="highlight" style="color: #39ff14;">0</span></div>
+                </div>
+
+                <div class="chess-canvas-wrapper" style="width: 800px; aspect-ratio: 1.33 / 1; margin: 0 auto;">
+                    <!-- Solitaire Canvas -->
+                    <canvas id="solitaireCanvas" width="800" height="600"></canvas>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px; display: flex; justify-content: center; gap: 15px;">
+                    <button id="btnSolitaireRestart" class="lobby-btn join-btn" style="width: auto; padding: 0 20px; border-color: #00f0ff; box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);">CHƠI LẠI</button>
+                    <button id="btnQuitSolitaire" class="leave-btn" style="margin: 0;">THOÁT GAME</button>
+                </div>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -518,5 +557,6 @@
     <script src="miner.js?v=2"></script>
     <script src="tetris.js?v=2"></script>
     <script src="pikachu.js?v=2"></script>
+    <script src="solitaire.js?v=2"></script>
 </body>
 </html>

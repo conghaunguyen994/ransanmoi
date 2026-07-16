@@ -835,6 +835,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnMiner').classList.remove('active');
         document.getElementById('btnTetris').classList.remove('active');
         document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
         
         document.getElementById('dashboardView').classList.remove('hidden');
         document.getElementById('snakeView').classList.add('hidden');
@@ -845,6 +846,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -860,8 +862,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnChess').classList.remove('active');
         document.getElementById('btnXiangqi').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
-        document.getElementById('btnTetris').classList.remove('active');
-        document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
         
         document.getElementById('snakeView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -872,6 +873,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
         
         // Vẽ lại bảng Snake để đảm bảo hiển thị đúng
         if (gameState.gameStatus === 'MENU') {
@@ -893,8 +895,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnChess').classList.remove('active');
         document.getElementById('btnXiangqi').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
-        document.getElementById('btnTetris').classList.remove('active');
-        document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
         
         document.getElementById('caroView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -905,6 +906,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -920,8 +922,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnChess').classList.remove('active');
         document.getElementById('btnXiangqi').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
-        document.getElementById('btnTetris').classList.remove('active');
-        document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
         
         document.getElementById('dinoView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -932,6 +933,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -947,8 +949,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnDino').classList.remove('active');
         document.getElementById('btnXiangqi').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
-        document.getElementById('btnTetris').classList.remove('active');
-        document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
         
         document.getElementById('chessView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -959,6 +960,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -979,8 +981,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnDino').classList.remove('active');
         document.getElementById('btnChess').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
-        document.getElementById('btnTetris').classList.remove('active');
-        document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
         
         document.getElementById('xiangqiView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -991,6 +992,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -1013,6 +1015,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnXiangqi').classList.remove('active');
         document.getElementById('btnTetris').classList.remove('active');
         document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
         
         document.getElementById('minerView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -1023,6 +1026,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('xiangqiView').classList.add('hidden');
         document.getElementById('tetrisView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -1040,6 +1044,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnXiangqi').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
         document.getElementById('btnPikachu').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
         
         document.getElementById('tetrisView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -1050,6 +1055,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('xiangqiView').classList.add('hidden');
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('pikachuView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -1067,6 +1073,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnXiangqi').classList.remove('active');
         document.getElementById('btnMiner').classList.remove('active');
         document.getElementById('btnTetris').classList.remove('active');
+        document.getElementById('btnSolitaire').classList.remove('active');
         
         document.getElementById('pikachuView').classList.remove('hidden');
         document.getElementById('dashboardView').classList.add('hidden');
@@ -1077,6 +1084,36 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('xiangqiView').classList.add('hidden');
         document.getElementById('minerView').classList.add('hidden');
         document.getElementById('tetrisView').classList.add('hidden');
+        document.getElementById('solitaireView').classList.add('hidden');
+        
+        // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
+        if (gameState.gameStatus === 'PLAYING') {
+            togglePause();
+        }
+    });
+
+    document.getElementById('btnSolitaire').addEventListener('click', () => {
+        document.getElementById('btnSolitaire').classList.add('active');
+        document.getElementById('btnHome').classList.remove('active');
+        document.getElementById('btnSnake').classList.remove('active');
+        document.getElementById('btnCaro').classList.remove('active');
+        document.getElementById('btnDino').classList.remove('active');
+        document.getElementById('btnChess').classList.remove('active');
+        document.getElementById('btnXiangqi').classList.remove('active');
+        document.getElementById('btnMiner').classList.remove('active');
+        document.getElementById('btnTetris').classList.remove('active');
+        document.getElementById('btnPikachu').classList.remove('active');
+        
+        document.getElementById('solitaireView').classList.remove('hidden');
+        document.getElementById('dashboardView').classList.add('hidden');
+        document.getElementById('snakeView').classList.add('hidden');
+        document.getElementById('caroView').classList.add('hidden');
+        document.getElementById('dinoView').classList.add('hidden');
+        document.getElementById('chessView').classList.add('hidden');
+        document.getElementById('xiangqiView').classList.add('hidden');
+        document.getElementById('minerView').classList.add('hidden');
+        document.getElementById('tetrisView').classList.add('hidden');
+        document.getElementById('pikachuView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -1108,6 +1145,9 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('cardPikachu').addEventListener('click', () => {
         document.getElementById('btnPikachu').click();
+    });
+    document.getElementById('cardSolitaire').addEventListener('click', () => {
+        document.getElementById('btnSolitaire').click();
     });
 });
 

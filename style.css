@@ -918,6 +918,14 @@ body {
     border-radius: 4px;
 }
 
+#solitaireCanvas {
+    background-color: #0d0e15;
+    border: 2px solid #ff007f;
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+    display: block;
+    border-radius: 6px;
+}
+
 @media (max-width: 768px) {
     .chess-play-area {
         flex-direction: column;
