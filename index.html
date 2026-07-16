@@ -35,6 +35,7 @@
         <button id="btnXiangqi" class="nav-btn">🏯 CỜ TƯỚNG</button>
         <button id="btnMiner" class="nav-btn">⛏️ NEON MINER</button>
         <button id="btnTetris" class="nav-btn">🧱 NEON TETRIS</button>
+        <button id="btnPikachu" class="nav-btn">⚡ NEON PIKACHU</button>
     </nav>
 
     <!-- Màn hình chính của các View -->
@@ -107,6 +108,15 @@
                     <div class="game-card-icon">🧱</div>
                     <h3 class="game-card-title">NEON TETRIS</h3>
                     <p class="game-card-desc">Xếp hình cổ điển phong cách Cyberpunk, xoay khối cờ, dọn sạch lưới cờ và tăng tốc độ theo cấp độ.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 8: Pikachu -->
+                <div class="game-card" id="cardPikachu" style="--card-color: #ffe600;">
+                    <div class="game-card-icon">⚡</div>
+                    <h3 class="game-card-title">NEON PIKACHU</h3>
+                    <p class="game-card-desc">Nối các cặp hình động vật Neon giống nhau bằng đường nối tối đa 3 đoạn thẳng, hỗ trợ gợi ý & xáo bài.</p>
                     <div class="game-card-meta">1 PLAYER</div>
                     <button class="game-card-btn">CHƠI NGAY</button>
                 </div>
@@ -462,6 +472,41 @@
             </div>
         </div>
 
+        <!-- View 8: Neon Pikachu -->
+        <div id="pikachuView" class="game-view hidden">
+            <div id="pikachuLobby" class="caro-lobby-container">
+                <h2 class="lobby-title">⚡ NEON PIKACHU</h2>
+                <p class="lobby-subtitle">NỐI THẺ ĐỘNG VẬT PHÁT SÁNG CỔ ĐIỂN</p>
+                <div class="lobby-actions">
+                    <button id="btnStartPikachu" class="lobby-btn create-btn" style="box-shadow: 0 0 10px #ffe600; border-color: #ffe600;">CHƠI NGAY</button>
+                </div>
+            </div>
+
+            <div id="pikachuGameArea" class="hidden">
+                <div class="chess-header" style="max-width: 680px; margin: 0 auto 15px auto;">
+                    <div class="chess-header-item">SCORE: <span id="pikachuScore" class="highlight" style="color: #ffe600;">0</span></div>
+                    <div class="chess-header-item" style="flex-grow: 1; margin: 0 30px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 11px; color: #8f92a1;">TIMER:</span>
+                        <div style="background: #11121d; border: 1px solid #222436; border-radius: 4px; height: 10px; width: 100%; overflow: hidden; position: relative;">
+                            <div id="pikachuTimeBar" style="background: linear-gradient(90deg, #ffe600, #ff007f); height: 100%; width: 100%; transition: width 0.3s linear;"></div>
+                        </div>
+                    </div>
+                    <div class="chess-header-item">LEVEL: <span id="pikachuLevel" class="highlight" style="color: #00f0ff;">1</span></div>
+                </div>
+
+                <div class="chess-canvas-wrapper" style="width: 680px; aspect-ratio: 1.4 / 1; margin: 0 auto;">
+                    <!-- Pikachu Canvas -->
+                    <canvas id="pikachuCanvas" width="680" height="480"></canvas>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px; display: flex; justify-content: center; gap: 15px;">
+                    <button id="btnPikachuHint" class="lobby-btn join-btn" style="width: auto; padding: 0 20px; border-color: #00f0ff; box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);">GỢI Ý (<span id="pikachuHintCount">3</span>)</button>
+                    <button id="btnPikachuShuffle" class="lobby-btn join-btn" style="width: auto; padding: 0 20px; border-color: #39ff14; box-shadow: 0 0 8px rgba(57, 255, 20, 0.3);">XÁO BÀI (<span id="pikachuShuffleCount">3</span>)</button>
+                    <button id="btnQuitPikachu" class="leave-btn" style="margin: 0;">THOÁT GAME</button>
+                </div>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -472,5 +517,6 @@
     <script src="xiangqi.js?v=2"></script>
     <script src="miner.js?v=2"></script>
     <script src="tetris.js?v=2"></script>
+    <script src="pikachu.js?v=2"></script>
 </body>
 </html>

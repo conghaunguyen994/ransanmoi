@@ -910,6 +910,14 @@ body {
     display: block;
 }
 
+#pikachuCanvas {
+    background-color: #07080c;
+    border: 2px solid #ffe600;
+    box-shadow: 0 0 15px rgba(255, 230, 0, 0.6);
+    display: block;
+    border-radius: 4px;
+}
+
 @media (max-width: 768px) {
     .chess-play-area {
         flex-direction: column;
