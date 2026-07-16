@@ -201,6 +201,68 @@
             </div>
         </div>
 
+        <!-- View 5: Neon Xiangqi -->
+        <div id="xiangqiView" class="game-view hidden">
+            <!-- Lobby: Tạo và tìm phòng -->
+            <div id="xiangqiLobby" class="caro-lobby-container">
+                <h2 class="lobby-title">🏯 NEON XIANGQI</h2>
+                <p class="lobby-subtitle">CHƠI CỜ TƯỚNG TRỰC TUYẾN CÙNG BẠN BÈ</p>
+                
+                <div class="input-group">
+                    <label for="xiangqiNicknameInput">TÊN HIỂN THỊ</label>
+                    <input type="text" id="xiangqiNicknameInput" placeholder="NICKNAME CỦA BẠN..." maxlength="12">
+                </div>
+                
+                <div class="lobby-actions">
+                    <button id="btnXiangqiCreateRoom" class="lobby-btn create-btn">TẠO PHÒNG MỚI</button>
+                    
+                    <div class="divider">HOẶC</div>
+                    
+                    <div class="join-box">
+                        <input type="text" id="xiangqiRoomCodeInput" placeholder="NHẬP MÃ 4 KÝ TỰ..." maxlength="4">
+                        <button id="btnXiangqiJoinRoom" class="lobby-btn join-btn">VÀO PHÒNG</button>
+                    </div>
+                </div>
+                
+                <p id="xiangqiLobbyMessage" class="lobby-msg"></p>
+            </div>
+
+            <!-- Màn chơi Xiangqi Online -->
+            <div id="xiangqiGame" class="chess-game-container hidden">
+                <div class="chess-header">
+                    <div class="chess-header-item">ROOM: <span id="xiangqiDisplayRoomCode" class="highlight">-</span></div>
+                    <div class="chess-header-item">LƯỢT: <span id="xiangqiTurn" class="highlight">ĐỎ</span></div>
+                    <div class="chess-header-item"><span id="xiangqiStatus" class="highlight blink hidden">CHIẾU TƯỚNG!</span></div>
+                </div>
+                
+                <div class="chess-play-area">
+                    <div class="board-column">
+                        <div class="chess-canvas-wrapper" style="aspect-ratio: 9 / 10;">
+                            <canvas id="xiangqiCanvas" width="450" height="500"></canvas>
+                        </div>
+                        
+                        <div class="chess-footer">
+                            <div id="xiangqiStatusText">ĐANG CHỜ ĐỐI THỦ VÀO PHÒNG...</div>
+                            <div class="chess-footer-btns">
+                                <button id="btnResetXiangqi" class="leave-btn hidden">CHƠI LẠI</button>
+                                <button id="btnLeaveXiangqi" class="leave-btn">THOÁT PHÒNG</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-column">
+                        <div class="chat-history" id="xiangqiChatHistory">
+                            <div class="chat-msg system">KÊNH CHAT PHÒNG CỜ TƯỚNG</div>
+                        </div>
+                        <div class="chat-input-box">
+                            <input type="text" id="xiangqiChatInput" placeholder="NHẬP TIN NHẮN..." maxlength="60">
+                            <button id="btnXiangqiSendChat">GỬI</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>

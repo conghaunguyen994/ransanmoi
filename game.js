@@ -830,11 +830,13 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnCaro').classList.remove('active');
         document.getElementById('btnDino').classList.remove('active');
         document.getElementById('btnChess').classList.remove('active');
+        document.getElementById('btnXiangqi').classList.remove('active');
         
         document.getElementById('snakeView').classList.remove('hidden');
         document.getElementById('caroView').classList.add('hidden');
         document.getElementById('dinoView').classList.add('hidden');
         document.getElementById('chessView').classList.add('hidden');
+        document.getElementById('xiangqiView').classList.add('hidden');
         
         // Vẽ lại bảng Snake để đảm bảo hiển thị đúng
         if (gameState.gameStatus === 'MENU') {
@@ -853,11 +855,13 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnSnake').classList.remove('active');
         document.getElementById('btnDino').classList.remove('active');
         document.getElementById('btnChess').classList.remove('active');
+        document.getElementById('btnXiangqi').classList.remove('active');
         
         document.getElementById('caroView').classList.remove('hidden');
         document.getElementById('snakeView').classList.add('hidden');
         document.getElementById('dinoView').classList.add('hidden');
         document.getElementById('chessView').classList.add('hidden');
+        document.getElementById('xiangqiView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -870,11 +874,13 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnSnake').classList.remove('active');
         document.getElementById('btnCaro').classList.remove('active');
         document.getElementById('btnChess').classList.remove('active');
+        document.getElementById('btnXiangqi').classList.remove('active');
         
         document.getElementById('dinoView').classList.remove('hidden');
         document.getElementById('snakeView').classList.add('hidden');
         document.getElementById('caroView').classList.add('hidden');
         document.getElementById('chessView').classList.add('hidden');
+        document.getElementById('xiangqiView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -887,11 +893,13 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnSnake').classList.remove('active');
         document.getElementById('btnCaro').classList.remove('active');
         document.getElementById('btnDino').classList.remove('active');
+        document.getElementById('btnXiangqi').classList.remove('active');
         
         document.getElementById('chessView').classList.remove('hidden');
         document.getElementById('snakeView').classList.add('hidden');
         document.getElementById('caroView').classList.add('hidden');
         document.getElementById('dinoView').classList.add('hidden');
+        document.getElementById('xiangqiView').classList.add('hidden');
         
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
@@ -901,6 +909,30 @@ window.addEventListener('DOMContentLoaded', () => {
         // Vẽ lại bàn cờ vua khi chuyển tab
         if (typeof window.renderChessBoard === 'function') {
             window.renderChessBoard();
+        }
+    });
+
+    document.getElementById('btnXiangqi').addEventListener('click', () => {
+        document.getElementById('btnXiangqi').classList.add('active');
+        document.getElementById('btnSnake').classList.remove('active');
+        document.getElementById('btnCaro').classList.remove('active');
+        document.getElementById('btnDino').classList.remove('active');
+        document.getElementById('btnChess').classList.remove('active');
+        
+        document.getElementById('xiangqiView').classList.remove('hidden');
+        document.getElementById('snakeView').classList.add('hidden');
+        document.getElementById('caroView').classList.add('hidden');
+        document.getElementById('dinoView').classList.add('hidden');
+        document.getElementById('chessView').classList.add('hidden');
+        
+        // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
+        if (gameState.gameStatus === 'PLAYING') {
+            togglePause();
+        }
+        
+        // Vẽ lại bàn cờ tướng khi chuyển tab
+        if (typeof window.renderXiangqiBoard === 'function') {
+            window.renderXiangqiBoard();
         }
     });
 });
