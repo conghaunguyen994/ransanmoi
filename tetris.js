@@ -144,6 +144,9 @@
         labelScore.innerText = '0';
         labelLevel.innerText = '1';
         labelLines.innerText = '0';
+        if (labelOpponentScore) {
+            labelOpponentScore.innerText = '0';
+        }
         tetrisStatusText.innerText = '';
         btnResetTetris.classList.add('hidden');
 
