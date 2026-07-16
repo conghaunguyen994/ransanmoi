@@ -525,6 +525,11 @@ function triggerDinoDuckEnd() {
 
 // Bắt phím ấn
 window.addEventListener('keydown', (e) => {
+    // Bỏ qua nếu đang gõ chữ trong ô chat / nhập liệu
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+        return;
+    }
+
     // Chỉ hoạt động khi đang ở view Dino
     const dinoView = document.getElementById('dinoView');
     if (dinoView.classList.contains('hidden')) return;

@@ -571,6 +571,11 @@
     }
 
     window.addEventListener('keydown', function (e) {
+        // Bỏ qua nếu đang gõ chữ trong ô chat / nhập liệu
+        if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+            return;
+        }
+
         if (e.code === 'Space') {
             e.preventDefault();
             handleTrigger();
