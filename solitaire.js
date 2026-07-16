@@ -403,16 +403,20 @@
                     return { pile: 'tableau', colIdx, cardIdx: -1 };
                 }
             } else {
-                // Click từ lá bài dưới cùng ngửa lên trên
+                // Duyệt từ lá bài trên cùng (cuối mảng) lùi về đầu mảng
                 for (let cardIdx = col.length - 1; cardIdx >= 0; cardIdx--) {
+                    const card = col[cardIdx];
+                    if (!card.faceUp) continue; // Chỉ click được bài ngửa
+
                     const cardY = TABLEAU_START_Y + cardIdx * TABLEAU_VERTICAL_GAP;
                     
-                    // Lá bài trên cùng có vùng click trọn vẹn CARD_HEIGHT, các lá dưới bị đè chỉ click được khoảng hở TABLEAU_VERTICAL_GAP
-                    const isTopCard = (cardIdx === col.length - 1);
-                    const heightBound = isTopCard ? CARD_HEIGHT : TABLEAU_VERTICAL_GAP;
+                    // Lá bài dưới cùng của cột (cuối mảng) có chiều cao click trọn vẹn, 
+                    // các lá bài xếp đè ở trên (chỉ lộ ra phần đầu) có chiều cao click là TABLEAU_VERTICAL_GAP
+                    const isTopCardInStack = (cardIdx === col.length - 1);
+                    const heightBound = isTopCardInStack ? CARD_HEIGHT : TABLEAU_VERTICAL_GAP;
 
                     if (mx >= colX && mx <= colX + CARD_WIDTH && my >= cardY && my <= cardY + heightBound) {
-                        return { pile: 'tableau', colIdx, cardIdx, card: col[cardIdx] };
+                        return { pile: 'tableau', colIdx, cardIdx, card };
                     }
                 }
             }
