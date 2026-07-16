@@ -21,7 +21,7 @@ body {
    SIDEBAR NAVIGATION
 ======================== */
 .sidebar {
-    width: 60px; /* Mặc định thu gọn chỉ hiện icon */
+    width: 220px; /* Luôn mở rộng cố định */
     min-height: 100vh;
     background: rgba(11, 12, 22, 0.92);
     backdrop-filter: blur(20px);
@@ -36,7 +36,6 @@ body {
     left: 0;
     z-index: 1000;
     overflow: hidden;
-    transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 4px 0 30px rgba(0, 0, 0, 0.6);
     overflow-y: auto;
     scrollbar-width: none; /* Firefox */
@@ -44,10 +43,6 @@ body {
 
 .sidebar::-webkit-scrollbar {
     display: none; /* Chrome/Safari */
-}
-
-.sidebar:hover {
-    width: 220px; /* Mở rộng khi hover */
 }
 
 /* Logo Brand */
@@ -76,14 +71,7 @@ body {
     color: #00f0ff;
     text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
     white-space: nowrap;
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: opacity 0.25s ease 0.1s, transform 0.25s ease 0.1s;
-}
-
-.sidebar:hover .sidebar-logo-text {
     opacity: 1;
-    transform: translateX(0);
 }
 
 /* Dividers & Section Labels */
@@ -102,14 +90,9 @@ body {
     color: rgba(143, 146, 161, 0.5);
     padding: 4px 20px;
     white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.2s ease 0.15s;
+    opacity: 1;
     min-width: 220px;
     flex-shrink: 0;
-}
-
-.sidebar:hover .sidebar-section-label {
-    opacity: 1;
 }
 
 /* Nav Buttons */
@@ -146,16 +129,9 @@ body {
 }
 
 .nav-label {
-    opacity: 0;
-    transform: translateX(-8px);
-    transition: opacity 0.2s ease 0.1s, transform 0.2s ease 0.1s;
+    opacity: 1;
     white-space: nowrap;
     font-size: 12px;
-}
-
-.sidebar:hover .nav-label {
-    opacity: 1;
-    transform: translateX(0);
 }
 
 .nav-btn:hover {
@@ -179,16 +155,15 @@ body {
 /* ========================
    MAIN CONTENT AREA
 ======================== */
-/* Container chứa các view - dịch phải 60px nhường chỗ cho sidebar */
+/* Container chứa các view - dịch phải 220px nhường chỗ cho sidebar luôn mở */
 .portal-container {
-    width: calc(100% - 60px);
-    margin-left: 60px; /* Luôn nhường 60px cho sidebar thu gọn */
+    width: calc(100% - 220px);
+    margin-left: 220px;
     padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
 .game-view {
