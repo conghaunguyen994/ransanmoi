@@ -20,6 +20,10 @@
     const labelLevel = document.getElementById('tetrisLevel');
     const labelLines = document.getElementById('tetrisLines');
     
+    // Đối thủ score
+    const tetrisOpponentScoreHeader = document.getElementById('tetrisOpponentScoreHeader');
+    const labelOpponentScore = document.getElementById('tetrisOpponentScore');
+
     const tetrisCanvas = document.getElementById('tetrisCanvas');
     const ctx = tetrisCanvas.getContext('2d');
     
@@ -498,7 +502,7 @@
             state.gameChannel.send({
                 type: 'broadcast',
                 event: 'grid_sync',
-                payload: { grid: gridToSend }
+                payload: { grid: gridToSend, score: state.score }
             });
         }
     }
@@ -545,6 +549,9 @@
             })
             .on('broadcast', { event: 'grid_sync' }, payload => {
                 state.opponentGrid = payload.payload.grid;
+                if (typeof payload.payload.score !== 'undefined') {
+                    labelOpponentScore.innerText = payload.payload.score;
+                }
                 draw();
             })
             .on('broadcast', { event: 'garbage' }, payload => {
@@ -610,6 +617,7 @@
 
         // Ẩn các khu vực 2 người chơi
         tetrisRoomHeader.style.display = 'none';
+        tetrisOpponentScoreHeader.style.display = 'none';
         tetrisOpponentColumn.style.display = 'none';
         tetrisChatColumn.style.display = 'none';
 
@@ -637,6 +645,8 @@
 
         // Hiện các khu vực đối kháng & chat
         tetrisRoomHeader.style.display = 'block';
+        tetrisOpponentScoreHeader.style.display = 'block';
+        labelOpponentScore.innerText = '0';
         tetrisDisplayRoomCode.innerText = state.roomCode;
         tetrisOpponentColumn.style.display = 'flex';
         tetrisOpponentName.innerText = 'Chờ kết nối...';
@@ -671,6 +681,8 @@
 
         // Hiện các khu vực đối kháng & chat
         tetrisRoomHeader.style.display = 'block';
+        tetrisOpponentScoreHeader.style.display = 'block';
+        labelOpponentScore.innerText = '0';
         tetrisDisplayRoomCode.innerText = state.roomCode;
         tetrisOpponentColumn.style.display = 'flex';
         tetrisChatColumn.style.display = 'block';
