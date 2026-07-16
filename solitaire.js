@@ -453,6 +453,22 @@
             if (card && card.faceUp) {
                 // Kéo nhóm bài ngửa từ Tableau cột colIdx từ vị trí cardIdx đổ xuống
                 const cardsToDrag = state.tableaus[clicked.colIdx].slice(clicked.cardIdx);
+                
+                // Kiểm tra xem nhóm bài định kéo có hợp lệ không (phải giảm dần xen kẽ màu)
+                let validDrag = true;
+                for (let i = 0; i < cardsToDrag.length - 1; i++) {
+                    const c1 = cardsToDrag[i];
+                    const c2 = cardsToDrag[i+1];
+                    const diffColors = c1.suit.isRed !== c2.suit.isRed;
+                    const diffVal = c1.valIdx - c2.valIdx;
+                    if (!diffColors || diffVal !== 1) {
+                        validDrag = false;
+                        break;
+                    }
+                }
+
+                if (!validDrag) return; // Không cho phép kéo nếu nhóm bài lộn xộn
+
                 const colX = TABLEAU_START_X + clicked.colIdx * CARD_SPACING_X;
 
                 state.dragState = {
