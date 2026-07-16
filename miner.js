@@ -195,27 +195,58 @@
         draw();
     }
 
+    // --- LOAD ASSET SPRITES ---
+    const imgMiner = new Image();
+    imgMiner.src = 'assets/miner_character.png';
+
+    const imgGold = new Image();
+    imgGold.src = 'assets/neon_gold_nugget.png';
+
+    const imgDiamond = new Image();
+    imgDiamond.src = 'assets/neon_diamond.png';
+
     // --- DRAWING GRAPHICS ---
     function draw() {
         ctx.fillStyle = '#07080c';
         ctx.fillRect(0, 0, minerCanvas.width, minerCanvas.height);
 
+        // Vẽ hậu cảnh hầm mỏ nhẹ nhàng
+        ctx.strokeStyle = '#1a1f2c';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < minerCanvas.width; i += 40) {
+            ctx.beginPath();
+            ctx.moveTo(i, 80);
+            ctx.lineTo(i, minerCanvas.height);
+            ctx.stroke();
+        }
+        for (let j = 80; j < minerCanvas.height; j += 40) {
+            ctx.beginPath();
+            ctx.moveTo(0, j);
+            ctx.lineTo(minerCanvas.width, j);
+            ctx.stroke();
+        }
+
         // Vẽ dây móc
         ctx.strokeStyle = '#00f0ff';
-        ctx.lineWidth = 2;
-        ctx.shadowBlur = 4;
+        ctx.lineWidth = 2.5;
+        ctx.shadowBlur = 6;
         ctx.shadowColor = '#00f0ff';
         ctx.beginPath();
-        ctx.moveTo(300, HOOK_START_Y);
+        ctx.moveTo(300, HOOK_START_Y + 15); // Xuất phát từ dưới máy đào một chút
         ctx.lineTo(state.hook.x, state.hook.y);
         ctx.stroke();
         ctx.shadowBlur = 0; // reset
 
-        // Vẽ cụm máy tời đào vàng (trục quay)
-        ctx.fillStyle = '#b026ff';
-        ctx.beginPath();
-        ctx.arc(300, HOOK_START_Y, 15, 0, Math.PI * 2);
-        ctx.fill();
+        // Vẽ thợ đào vàng Cyberpunk ở giữa trên (300, 30)
+        try {
+            ctx.drawImage(imgMiner, 300 - 35, 5, 70, 70);
+        } catch (e) {
+            // Fallback vẽ cụm máy tời nếu ảnh chưa load kịp
+            ctx.fillStyle = '#b026ff';
+            ctx.beginPath();
+            ctx.arc(300, HOOK_START_Y, 15, 0, Math.PI * 2);
+            ctx.fill();
+        }
 
         // Vẽ đầu móc
         ctx.strokeStyle = '#00f0ff';
@@ -236,21 +267,38 @@
     }
 
     function drawItem(item) {
-        ctx.fillStyle = item.color;
+        ctx.save();
         ctx.shadowBlur = 10;
         ctx.shadowColor = item.color;
-        ctx.beginPath();
         
-        if (item.type === 'DIAMOND') {
-            // Kim cương hình thoi
-            ctx.moveTo(item.x, item.y - item.radius);
-            ctx.lineTo(item.x + item.radius, item.y);
-            ctx.lineTo(item.x, item.y + item.radius);
-            ctx.lineTo(item.x - item.radius, item.y);
-            ctx.closePath();
-            ctx.fill();
+        if (item.type.startsWith('GOLD')) {
+            try {
+                // Vẽ sprite vàng neon
+                ctx.drawImage(imgGold, item.x - item.radius, item.y - item.radius, item.radius * 2, item.radius * 2);
+            } catch (e) {
+                ctx.fillStyle = item.color;
+                ctx.beginPath();
+                ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        } else if (item.type === 'DIAMOND') {
+            try {
+                // Vẽ sprite kim cương neon
+                ctx.drawImage(imgDiamond, item.x - item.radius, item.y - item.radius, item.radius * 2, item.radius * 2);
+            } catch (e) {
+                ctx.fillStyle = item.color;
+                ctx.beginPath();
+                ctx.moveTo(item.x, item.y - item.radius);
+                ctx.lineTo(item.x + item.radius, item.y);
+                ctx.lineTo(item.x, item.y + item.radius);
+                ctx.lineTo(item.x - item.radius, item.y);
+                ctx.closePath();
+                ctx.fill();
+            }
         } else if (item.type.startsWith('ROCK')) {
-            // Đá hình lục giác xù xì
+            // Đá giữ nguyên hình lục giác Cyberpunk phát sáng xám
+            ctx.fillStyle = item.color;
+            ctx.beginPath();
             for (let i = 0; i < 6; i++) {
                 const angle = (i * Math.PI) / 3 + 0.1;
                 const rx = item.x + Math.cos(angle) * item.radius;
@@ -261,12 +309,21 @@
             ctx.closePath();
             ctx.fill();
         } else {
-            // Vàng và Túi may mắn hình tròn
+            // Túi may mắn phát sáng đỏ neon
+            ctx.fillStyle = item.color;
+            ctx.beginPath();
             ctx.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
             ctx.fill();
+            
+            // Vẽ dấu hỏi chấm nhỏ lên túi
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('?', item.x, item.y);
         }
         
-        ctx.shadowBlur = 0; // reset
+        ctx.restore();
     }
 
     // --- GAME CONTROLFLOWS ---
