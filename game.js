@@ -1064,4 +1064,4 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnTetris').click();
     });
 });
-});
+
