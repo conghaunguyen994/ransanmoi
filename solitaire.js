@@ -353,19 +353,15 @@
         // 5. Vẽ lá bài hoặc nhóm bài đang bị Kéo thả (Drag)
         if (state.dragState) {
             const ds = state.dragState;
-            const dragOffsetX = ds.currX - ds.startX;
-            const dragOffsetY = ds.currY - ds.startY;
+            const cardX = ds.currX - ds.offsetX;
+            const cardY = ds.currY - ds.offsetY;
 
             for (let i = 0; i < ds.cards.length; i++) {
-                const origCardY = (ds.source === 'tableau') 
-                    ? TABLEAU_START_Y + (ds.cardIdx + i) * TABLEAU_VERTICAL_GAP
-                    : WASTE_Y;
-                const dragX = ds.cardStartX + dragOffsetX;
-                const dragY = origCardY + dragOffsetY;
+                const drawY = cardY + i * TABLEAU_VERTICAL_GAP;
 
                 ctx.shadowBlur = 10;
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-                drawCard(dragX, dragY, ds.cards[i]);
+                drawCard(cardX, drawY, ds.cards[i]);
                 ctx.shadowBlur = 0;
             }
         }
@@ -442,7 +438,8 @@
                 startY: my,
                 currX: mx,
                 currY: my,
-                cardStartX: WASTE_X
+                offsetX: mx - WASTE_X,
+                offsetY: my - WASTE_Y
             };
         } else if (clicked.pile === 'tableau' && clicked.cardIdx !== -1) {
             const card = clicked.card;
@@ -450,6 +447,7 @@
                 // Kéo nhóm bài ngửa từ Tableau cột colIdx từ vị trí cardIdx đổ xuống
                 const cardsToDrag = state.tableaus[clicked.colIdx].slice(clicked.cardIdx);
                 const colX = TABLEAU_START_X + clicked.colIdx * CARD_SPACING_X;
+                const cardY = TABLEAU_START_Y + clicked.cardIdx * TABLEAU_VERTICAL_GAP;
 
                 state.dragState = {
                     source: 'tableau',
@@ -460,7 +458,8 @@
                     startY: my,
                     currX: mx,
                     currY: my,
-                    cardStartX: colX
+                    offsetX: mx - colX,
+                    offsetY: my - cardY
                 };
             }
         }
@@ -483,6 +482,10 @@
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
 
+        // Tính tọa độ góc trên bên trái thực tế của lá bài đang bị kéo
+        const cardX = mx - ds.offsetX;
+        const cardY = my - ds.offsetY;
+
         // Tìm vùng thả bài (Drop area)
         let dropped = false;
 
@@ -491,10 +494,15 @@
             const colX = TABLEAU_START_X + colIdx * CARD_SPACING_X;
             const col = state.tableaus[colIdx];
             
-            // Vùng nhận diện thả bài
+            // Tọa độ Y mong muốn của cột đích
             const targetY = col.length === 0 ? TABLEAU_START_Y : TABLEAU_START_Y + (col.length - 1) * TABLEAU_VERTICAL_GAP;
             
-            if (mx >= colX - 10 && mx <= colX + CARD_WIDTH + 10 && my >= targetY - 20 && my <= targetY + CARD_HEIGHT + 30) {
+            // Kiểm tra xem hình chữ nhật của lá bài kéo có giao với vùng nhận diện của cột cờ không
+            // Tăng diện tích nhận diện lên để người chơi dễ dàng xếp bài hơn
+            const xMatch = (cardX + CARD_WIDTH / 2 >= colX - 25) && (cardX + CARD_WIDTH / 2 <= colX + CARD_WIDTH + 25);
+            const yMatch = (cardY + 30 >= targetY - 40) && (cardY <= targetY + CARD_HEIGHT + 40);
+
+            if (xMatch && yMatch) {
                 const bottomCard = ds.cards[0];
                 
                 if (canPushToTableau(colIdx, bottomCard)) {
@@ -520,7 +528,11 @@
             const card = ds.cards[0];
             for (let fIdx = 0; fIdx < 4; fIdx++) {
                 const fX = FOUNDATION_START_X + fIdx * CARD_SPACING_X;
-                if (mx >= fX - 10 && mx <= fX + CARD_WIDTH + 10 && my >= FOUNDATION_Y - 10 && my <= FOUNDATION_Y + CARD_HEIGHT + 10) {
+                
+                const xMatch = (cardX + CARD_WIDTH / 2 >= fX - 25) && (cardX + CARD_WIDTH / 2 <= fX + CARD_WIDTH + 25);
+                const yMatch = (cardY + CARD_HEIGHT / 2 >= FOUNDATION_Y - 25) && (cardY + CARD_HEIGHT / 2 <= FOUNDATION_Y + CARD_HEIGHT + 25);
+
+                if (xMatch && yMatch) {
                     if (canPushToFoundation(fIdx, card)) {
                         // Chuyển bài hợp lệ sang cột đích
                         if (ds.source === 'tableau') {
