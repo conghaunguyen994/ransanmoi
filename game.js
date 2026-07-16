@@ -1390,13 +1390,13 @@ window.addEventListener('DOMContentLoaded', () => {
         'dashboardView','snakeView','caroView','dinoView','chessView','xiangqiView',
         'minerView','tetrisView','pikachuView','solitaireView','invadersView','pacmanView',
         'breakerView','game2048View','flappyView','whackView','wordleView',
-        'pongView','memoryView','typeRushView'
+        'pongView','memoryView','typeRushView','froggerView','tronView','aimView'
     ];
     const NEW_BTNS = [
         'btnHome','btnSnake','btnCaro','btnDino','btnChess','btnXiangqi',
         'btnMiner','btnTetris','btnPikachu','btnSolitaire','btnInvaders','btnPacman',
         'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle',
-        'btnPong','btnMemory','btnTypeRush'
+        'btnPong','btnMemory','btnTypeRush','btnFrogger','btnTron','btnAim'
     ];
 
     function switchTo(viewId, btnId) {
@@ -1471,6 +1471,39 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnQuitTypeRush').addEventListener('click', () => {
         const area = document.getElementById('typeRushGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnFrogger').addEventListener('click', () => {
+        switchTo('froggerView', 'btnFrogger');
+        initFrogger('froggerGameArea');
+    });
+
+    document.getElementById('btnQuitFrogger').addEventListener('click', () => {
+        const area = document.getElementById('froggerGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnTron').addEventListener('click', () => {
+        switchTo('tronView', 'btnTron');
+        initTron('tronGameArea');
+    });
+
+    document.getElementById('btnQuitTron').addEventListener('click', () => {
+        const area = document.getElementById('tronGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnAim').addEventListener('click', () => {
+        switchTo('aimView', 'btnAim');
+        initAimTrainer('aimGameArea');
+    });
+
+    document.getElementById('btnQuitAim').addEventListener('click', () => {
+        const area = document.getElementById('aimGameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });

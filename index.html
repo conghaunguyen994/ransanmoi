@@ -127,6 +127,18 @@
             <span class="nav-icon">⌨️</span>
             <span class="nav-label">NEON TYPE RUSH</span>
         </button>
+        <button id="btnFrogger" class="nav-btn" data-label="NEON FROGGER">
+            <span class="nav-icon">🐸</span>
+            <span class="nav-label">NEON FROGGER</span>
+        </button>
+        <button id="btnTron" class="nav-btn" data-label="NEON TRON">
+            <span class="nav-icon">🌀</span>
+            <span class="nav-label">NEON TRON</span>
+        </button>
+        <button id="btnAim" class="nav-btn" data-label="NEON AIM">
+            <span class="nav-icon">🎯</span>
+            <span class="nav-label">NEON AIM</span>
+        </button>
     </nav>
 
     <!-- Màn hình chính của các View -->
@@ -827,6 +839,30 @@
             </div>
         </div>
 
+        <!-- View 20: Neon Frogger -->
+        <div id="froggerView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="froggerGameArea"></div>
+                <button id="btnQuitFrogger" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 21: Neon Tron -->
+        <div id="tronView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="tronGameArea"></div>
+                <button id="btnQuitTron" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 22: Neon Aim Trainer -->
+        <div id="aimView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="aimGameArea"></div>
+                <button id="btnQuitAim" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -849,5 +885,8 @@
     <script src="pong.js?v=1"></script>
     <script src="memory_match.js?v=1"></script>
     <script src="type_rush.js?v=1"></script>
+    <script src="frogger.js?v=1"></script>
+    <script src="tron.js?v=1"></script>
+    <script src="aim_trainer.js?v=1"></script>
 </body>
 </html>
