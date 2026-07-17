@@ -41,116 +41,128 @@
             <span class="nav-label">TRANG CHỦ</span>
         </button>
 
-        <div class="sidebar-section-label">SINGLE PLAYER</div>
-
-        <button id="btnSnake" class="nav-btn" data-label="NEON SNAKE">
-            <span class="nav-icon">🐍</span>
-            <span class="nav-label">NEON SNAKE</span>
-        </button>
-        <button id="btnDino" class="nav-btn" data-label="NEON DINO">
-            <span class="nav-icon">🦖</span>
-            <span class="nav-label">NEON DINO</span>
-        </button>
-        <button id="btnMiner" class="nav-btn" data-label="NEON MINER">
-            <span class="nav-icon">⛏️</span>
-            <span class="nav-label">NEON MINER</span>
-        </button>
-        <button id="btnTetris" class="nav-btn" data-label="NEON TETRIS">
-            <span class="nav-icon">🧱</span>
-            <span class="nav-label">NEON TETRIS</span>
-        </button>
-        <button id="btnPikachu" class="nav-btn" data-label="NEON PIKACHU">
-            <span class="nav-icon">⚡</span>
-            <span class="nav-label">NEON PIKACHU</span>
-        </button>
-        <button id="btnSolitaire" class="nav-btn" data-label="NEON SOLITAIRE">
-            <span class="nav-icon">🃏</span>
-            <span class="nav-label">NEON SOLITAIRE</span>
-        </button>
-        <button id="btnInvaders" class="nav-btn" data-label="NEON INVADERS">
-            <span class="nav-icon">🛩️</span>
-            <span class="nav-label">NEON INVADERS</span>
-        </button>
-        <button id="btnPacman" class="nav-btn" data-label="NEON PACMAN">
-            <span class="nav-icon">🕳️</span>
-            <span class="nav-label">NEON PACMAN</span>
-        </button>
-        <button id="btnBreaker" class="nav-btn" data-label="NEON BREAKER">
-            <span class="nav-icon">💥</span>
-            <span class="nav-label">NEON BREAKER</span>
-        </button>
-        <button id="btn2048" class="nav-btn" data-label="NEON 2048">
-            <span class="nav-icon">🧠</span>
-            <span class="nav-label">NEON 2048</span>
-        </button>
-
-        <div class="sidebar-divider"></div>
-        <div class="sidebar-section-label">MULTIPLAYER</div>
-
-        <button id="btnCaro" class="nav-btn" data-label="NEON GOMOKU">
-            <span class="nav-icon">⚔️</span>
-            <span class="nav-label">NEON GOMOKU</span>
-        </button>
-        <button id="btnChess" class="nav-btn" data-label="NEON CHESS">
-            <span class="nav-icon">♟️</span>
-            <span class="nav-label">NEON CHESS</span>
-        </button>
-        <button id="btnXiangqi" class="nav-btn" data-label="NEON XIANGQI">
-            <span class="nav-icon">🏯</span>
-            <span class="nav-label">NEON XIANGQI</span>
-        </button>
+        <div class="sidebar-section-header" onclick="toggleSidebarSection(this)">
+            <span class="sidebar-section-label">SINGLE PLAYER</span>
+            <span class="sidebar-section-arrow">▼</span>
+        </div>
+        <div class="sidebar-section-content show">
+            <button id="btnSnake" class="nav-btn" data-label="NEON SNAKE">
+                <span class="nav-icon">🐍</span>
+                <span class="nav-label">NEON SNAKE</span>
+            </button>
+            <button id="btnDino" class="nav-btn" data-label="NEON DINO">
+                <span class="nav-icon">🦖</span>
+                <span class="nav-label">NEON DINO</span>
+            </button>
+            <button id="btnMiner" class="nav-btn" data-label="NEON MINER">
+                <span class="nav-icon">⛏️</span>
+                <span class="nav-label">NEON MINER</span>
+            </button>
+            <button id="btnTetris" class="nav-btn" data-label="NEON TETRIS">
+                <span class="nav-icon">🧱</span>
+                <span class="nav-label">NEON TETRIS</span>
+            </button>
+            <button id="btnPikachu" class="nav-btn" data-label="NEON PIKACHU">
+                <span class="nav-icon">⚡</span>
+                <span class="nav-label">NEON PIKACHU</span>
+            </button>
+            <button id="btnSolitaire" class="nav-btn" data-label="NEON SOLITAIRE">
+                <span class="nav-icon">🃏</span>
+                <span class="nav-label">NEON SOLITAIRE</span>
+            </button>
+            <button id="btnInvaders" class="nav-btn" data-label="NEON INVADERS">
+                <span class="nav-icon">🛩️</span>
+                <span class="nav-label">NEON INVADERS</span>
+            </button>
+            <button id="btnPacman" class="nav-btn" data-label="NEON PACMAN">
+                <span class="nav-icon">🕳️</span>
+                <span class="nav-label">NEON PACMAN</span>
+            </button>
+            <button id="btnBreaker" class="nav-btn" data-label="NEON BREAKER">
+                <span class="nav-icon">💥</span>
+                <span class="nav-label">NEON BREAKER</span>
+            </button>
+            <button id="btn2048" class="nav-btn" data-label="NEON 2048">
+                <span class="nav-icon">🧠</span>
+                <span class="nav-label">NEON 2048</span>
+            </button>
+        </div>
 
         <div class="sidebar-divider"></div>
-        <div class="sidebar-section-label">CASUAL</div>
+        <div class="sidebar-section-header" onclick="toggleSidebarSection(this)">
+            <span class="sidebar-section-label">MULTIPLAYER</span>
+            <span class="sidebar-section-arrow">▼</span>
+        </div>
+        <div class="sidebar-section-content show">
+            <button id="btnCaro" class="nav-btn" data-label="NEON GOMOKU">
+                <span class="nav-icon">⚔️</span>
+                <span class="nav-label">NEON GOMOKU</span>
+            </button>
+            <button id="btnChess" class="nav-btn" data-label="NEON CHESS">
+                <span class="nav-icon">♟️</span>
+                <span class="nav-label">NEON CHESS</span>
+            </button>
+            <button id="btnXiangqi" class="nav-btn" data-label="NEON XIANGQI">
+                <span class="nav-icon">🏯</span>
+                <span class="nav-label">NEON XIANGQI</span>
+            </button>
+        </div>
 
-        <button id="btnFlappy" class="nav-btn" data-label="NEON FLAPPY">
-            <span class="nav-icon">🐦</span>
-            <span class="nav-label">NEON FLAPPY</span>
-        </button>
-        <button id="btnWhack" class="nav-btn" data-label="NEON WHACK">
-            <span class="nav-icon">🎯</span>
-            <span class="nav-label">NEON WHACK</span>
-        </button>
-        <button id="btnWordle" class="nav-btn" data-label="NEON WORDLE">
-            <span class="nav-icon">🔤</span>
-            <span class="nav-label">NEON WORDLE</span>
-        </button>
-        <button id="btnPong" class="nav-btn" data-label="NEON PONG">
-            <span class="nav-icon">🎱</span>
-            <span class="nav-label">NEON PONG</span>
-        </button>
-        <button id="btnMemory" class="nav-btn" data-label="NEON MEMORY">
-            <span class="nav-icon">🃏</span>
-            <span class="nav-label">NEON MEMORY</span>
-        </button>
-        <button id="btnTypeRush" class="nav-btn" data-label="NEON TYPE RUSH">
-            <span class="nav-icon">⌨️</span>
-            <span class="nav-label">NEON TYPE RUSH</span>
-        </button>
-        <button id="btnFrogger" class="nav-btn" data-label="NEON FROGGER">
-            <span class="nav-icon">🐸</span>
-            <span class="nav-label">NEON FROGGER</span>
-        </button>
-        <button id="btnTron" class="nav-btn" data-label="NEON TRON">
-            <span class="nav-icon">🌀</span>
-            <span class="nav-label">NEON TRON</span>
-        </button>
-        <button id="btnAim" class="nav-btn" data-label="NEON AIM">
-            <span class="nav-icon">🎯</span>
-            <span class="nav-label">NEON AIM</span>
-        </button>
-        <button id="btnMines" class="nav-btn" data-label="NEON MINES">
-            <span class="nav-icon">💣</span>
-            <span class="nav-label">NEON MINES</span>
-        </button>
-        <button id="btnSpin" class="nav-btn" data-label="NEON SPIN">
-            <span class="nav-icon">🌀</span>
-            <span class="nav-label">NEON SPIN</span>
-        </button>
-        <button id="btnTower" class="nav-btn" data-label="NEON TOWER">
-            <span class="nav-icon">🧱</span>
-            <span class="nav-label">NEON TOWER</span>
-        </button>
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section-header" onclick="toggleSidebarSection(this)">
+            <span class="sidebar-section-label">CASUAL</span>
+            <span class="sidebar-section-arrow">▼</span>
+        </div>
+        <div class="sidebar-section-content show">
+            <button id="btnFlappy" class="nav-btn" data-label="NEON FLAPPY">
+                <span class="nav-icon">🐦</span>
+                <span class="nav-label">NEON FLAPPY</span>
+            </button>
+            <button id="btnWhack" class="nav-btn" data-label="NEON WHACK">
+                <span class="nav-icon">🎯</span>
+                <span class="nav-label">NEON WHACK</span>
+            </button>
+            <button id="btnWordle" class="nav-btn" data-label="NEON WORDLE">
+                <span class="nav-icon">🔤</span>
+                <span class="nav-label">NEON WORDLE</span>
+            </button>
+            <button id="btnPong" class="nav-btn" data-label="NEON PONG">
+                <span class="nav-icon">🎱</span>
+                <span class="nav-label">NEON PONG</span>
+            </button>
+            <button id="btnMemory" class="nav-btn" data-label="NEON MEMORY">
+                <span class="nav-icon">🃏</span>
+                <span class="nav-label">NEON MEMORY</span>
+            </button>
+            <button id="btnTypeRush" class="nav-btn" data-label="NEON TYPE RUSH">
+                <span class="nav-icon">⌨️</span>
+                <span class="nav-label">NEON TYPE RUSH</span>
+            </button>
+            <button id="btnFrogger" class="nav-btn" data-label="NEON FROGGER">
+                <span class="nav-icon">🐸</span>
+                <span class="nav-label">NEON FROGGER</span>
+            </button>
+            <button id="btnTron" class="nav-btn" data-label="NEON TRON">
+                <span class="nav-icon">🌀</span>
+                <span class="nav-label">NEON TRON</span>
+            </button>
+            <button id="btnAim" class="nav-btn" data-label="NEON AIM">
+                <span class="nav-icon">🎯</span>
+                <span class="nav-label">NEON AIM</span>
+            </button>
+            <button id="btnMines" class="nav-btn" data-label="NEON MINES">
+                <span class="nav-icon">💣</span>
+                <span class="nav-label">NEON MINES</span>
+            </button>
+            <button id="btnSpin" class="nav-btn" data-label="NEON SPIN">
+                <span class="nav-icon">🌀</span>
+                <span class="nav-label">NEON SPIN</span>
+            </button>
+            <button id="btnTower" class="nav-btn" data-label="NEON TOWER">
+                <span class="nav-icon">🧱</span>
+                <span class="nav-label">NEON TOWER</span>
+            </button>
+        </div>
     </nav>
 
     <!-- Màn hình chính của các View -->

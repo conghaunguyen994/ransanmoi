@@ -1543,3 +1543,12 @@ window.addEventListener('DOMContentLoaded', () => {
         switchTo('dashboardView', 'btnHome');
     });
 });
+
+// Hàm toàn cục đóng mở các nhóm danh mục trong Sidebar
+window.toggleSidebarSection = function(headerEl) {
+    headerEl.classList.toggle('collapsed');
+    const contentEl = headerEl.nextElementSibling;
+    if (contentEl && contentEl.classList.contains('sidebar-section-content')) {
+        contentEl.classList.toggle('collapsed');
+    }
+};
