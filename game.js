@@ -1389,20 +1389,38 @@ window.addEventListener('DOMContentLoaded', () => {
     bindCardToBtn('cardHockey', 'btnHockey', 'hockeyView', () => initAirHockey('hockeyGameArea'));
     bindCardToBtn('cardGunny', 'btnGunny', 'gunnyView', () => initGunny('gunnyGameArea'));
 
+    document.getElementById('cardSudoku').addEventListener('click', () => {
+        document.getElementById('btnSudoku').click();
+    });
+    document.getElementById('cardSimon').addEventListener('click', () => {
+        document.getElementById('btnSimon').click();
+    });
+    document.getElementById('cardSlide').addEventListener('click', () => {
+        document.getElementById('btnSlide').click();
+    });
+    document.getElementById('cardReflex').addEventListener('click', () => {
+        document.getElementById('btnReflex').click();
+    });
+    document.getElementById('cardDash').addEventListener('click', () => {
+        document.getElementById('btnDash').click();
+    });
+
     // --- 3 GAME MỚI: Flappy, Whack, Wordle ---
     const NEW_VIEWS = [
         'dashboardView','snakeView','caroView','dinoView','chessView','xiangqiView',
         'minerView','tetrisView','pikachuView','solitaireView','invadersView','pacmanView',
         'breakerView','game2048View','flappyView','whackView','wordleView',
         'pongView','memoryView','typeRushView','froggerView','tronView','aimView',
-        'minesView','spinView','towerView','snake2PView','helixView','hockeyView','gunnyView'
+        'minesView','spinView','towerView','snake2PView','helixView','hockeyView','gunnyView',
+        'sudokuView','simonView','slideView','reflexView','dashView'
     ];
     const NEW_BTNS = [
         'btnHome','btnSnake','btnCaro','btnDino','btnChess','btnXiangqi',
         'btnMiner','btnTetris','btnPikachu','btnSolitaire','btnInvaders','btnPacman',
         'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle',
         'btnPong','btnMemory','btnTypeRush','btnFrogger','btnTron','btnAim',
-        'btnMines','btnSpin','btnTower','btnSnake2P','btnHelix','btnHockey','btnGunny'
+        'btnMines','btnSpin','btnTower','btnSnake2P','btnHelix','btnHockey','btnGunny',
+        'btnSudoku','btnSimon','btnSlide','btnReflex','btnDash'
     ];
 
     function switchTo(viewId, btnId) {
@@ -1547,6 +1565,12 @@ window.addEventListener('DOMContentLoaded', () => {
         switchTo('dashboardView', 'btnHome');
     });
 
+    document.getElementById('btnSudoku').addEventListener('click', () => {
+        switchTo('sudokuView', 'btnSudoku');
+        initNeonSudoku('sudokuGameArea');
+    });
+    document.getElementById('btnQuitSudoku').addEventListener('click', () => {
+        const area = document.getElementById('sudokuGameArea');
     document.getElementById('btnSnake2P').addEventListener('click', () => {
         switchTo('snake2PView', 'btnSnake2P');
         initSnake2P('snake2PGameArea');
@@ -1558,6 +1582,12 @@ window.addEventListener('DOMContentLoaded', () => {
         switchTo('dashboardView', 'btnHome');
     });
 
+    document.getElementById('btnSimon').addEventListener('click', () => {
+        switchTo('simonView', 'btnSimon');
+        initNeonSimon('simonGameArea');
+    });
+    document.getElementById('btnQuitSimon').addEventListener('click', () => {
+        const area = document.getElementById('simonGameArea');
     document.getElementById('btnHelix').addEventListener('click', () => {
         switchTo('helixView', 'btnHelix');
         initHelixJump('helixGameArea');
@@ -1569,6 +1599,12 @@ window.addEventListener('DOMContentLoaded', () => {
         switchTo('dashboardView', 'btnHome');
     });
 
+    document.getElementById('btnSlide').addEventListener('click', () => {
+        switchTo('slideView', 'btnSlide');
+        initNeonSlide('slideGameArea');
+    });
+    document.getElementById('btnQuitSlide').addEventListener('click', () => {
+        const area = document.getElementById('slideGameArea');
     document.getElementById('btnHockey').addEventListener('click', () => {
         switchTo('hockeyView', 'btnHockey');
         initAirHockey('hockeyGameArea');
@@ -1580,6 +1616,12 @@ window.addEventListener('DOMContentLoaded', () => {
         switchTo('dashboardView', 'btnHome');
     });
 
+    document.getElementById('btnReflex').addEventListener('click', () => {
+        switchTo('reflexView', 'btnReflex');
+        initNeonReflex('reflexGameArea');
+    });
+    document.getElementById('btnQuitReflex').addEventListener('click', () => {
+        const area = document.getElementById('reflexGameArea');
     document.getElementById('btnGunny').addEventListener('click', () => {
         switchTo('gunnyView', 'btnGunny');
         initGunny('gunnyGameArea');
@@ -1591,6 +1633,14 @@ window.addEventListener('DOMContentLoaded', () => {
         switchTo('dashboardView', 'btnHome');
     });
 
+    document.getElementById('btnDash').addEventListener('click', () => {
+        switchTo('dashView', 'btnDash');
+        initNeonDash('dashGameArea');
+    });
+    document.getElementById('btnQuitDash').addEventListener('click', () => {
+        const area = document.getElementById('dashGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
     // Lắng nghe sự kiện click đóng/mở các group game trên Sidebar
     document.querySelectorAll('.sidebar-section-header').forEach(header => {
         header.addEventListener('click', () => {
