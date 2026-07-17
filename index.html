@@ -178,26 +178,6 @@
         <span class="nav-icon">💣</span>
         <span class="nav-label">NEON GUNNY</span>
     </button>
-    <button id="btnSudoku" class="nav-btn" data-label="NEON SUDOKU">
-        <span class="nav-icon">🔢</span>
-        <span class="nav-label">NEON SUDOKU</span>
-    </button>
-    <button id="btnSimon" class="nav-btn" data-label="NEON SIMON">
-        <span class="nav-icon">🎡</span>
-        <span class="nav-label">NEON SIMON</span>
-    </button>
-    <button id="btnSlide" class="nav-btn" data-label="NEON SLIDE">
-        <span class="nav-icon">🧩</span>
-        <span class="nav-label">NEON SLIDE</span>
-    </button>
-    <button id="btnReflex" class="nav-btn" data-label="NEON REFLEX">
-        <span class="nav-icon">⚡</span>
-        <span class="nav-label">NEON REFLEX</span>
-    </button>
-    <button id="btnDash" class="nav-btn" data-label="NEON DASH">
-        <span class="nav-icon">🏃</span>
-        <span class="nav-label">NEON DASH</span>
-    </button>
 </div>
     </nav>
 
@@ -328,12 +308,6 @@
                     <div class="game-card-meta">1 PLAYER</div>
                     <button class="game-card-btn">CHƠI NGAY</button>
                 </div>
-
-                <!-- Card 14: Neon Sudoku -->
-                <div class="game-card" id="cardSudoku" style="--card-color: #b026ff;">
-                    <div class="game-card-icon">🔢</div>
-                    <h3 class="game-card-title">NEON SUDOKU</h3>
-                    <p class="game-card-desc">Ô số 9x9 logic cổ điển, tô sáng xung đột, sinh bảng ngẫu nhiên với lời giải duy nhất, lưu kỷ lục thời gian.</p>
                 <!-- Card 14: Flappy Bird -->
                 <div class="game-card" id="cardFlappy" style="--card-color: #ffe600;">
                     <div class="game-card-icon">🐦</div>
@@ -343,11 +317,6 @@
                     <button class="game-card-btn">CHƠI NGAY</button>
                 </div>
 
-                <!-- Card 15: Neon Simon -->
-                <div class="game-card" id="cardSimon" style="--card-color: #00f0ff;">
-                    <div class="game-card-icon">🎡</div>
-                    <h3 class="game-card-title">NEON SIMON</h3>
-                    <p class="game-card-desc">Ghi nhớ chuỗi đèn neon phát sáng theo thứ tự, mỗi vòng thêm một bước mới, 4 đệm màu với âm thanh từng nốt.</p>
                 <!-- Card 15: Whack-a-Mole -->
                 <div class="game-card" id="cardWhack" style="--card-color: #ff007f;">
                     <div class="game-card-icon">🎯</div>
@@ -357,11 +326,6 @@
                     <button class="game-card-btn">CHƠI NGAY</button>
                 </div>
 
-                <!-- Card 16: Neon Slide -->
-                <div class="game-card" id="cardSlide" style="--card-color: #39ff14;">
-                    <div class="game-card-icon">🧩</div>
-                    <h3 class="game-card-title">NEON SLIDE</h3>
-                    <p class="game-card-desc">Trượt ô 4×4 cổ điển, sắp xếp từ 1 đến 15 với ít nước nhất, hỗ trợ chuột và phím mũi tên, animation trượt mượt.</p>
                 <!-- Card 16: Wordle -->
                 <div class="game-card" id="cardWordle" style="--card-color: #00ff88;">
                     <div class="game-card-icon">🔤</div>
@@ -371,11 +335,6 @@
                     <button class="game-card-btn">CHƠI NGAY</button>
                 </div>
 
-                <!-- Card 17: Neon Reflex -->
-                <div class="game-card" id="cardReflex" style="--card-color: #ff7300;">
-                    <div class="game-card-icon">⚡</div>
-                    <h3 class="game-card-title">NEON REFLEX</h3>
-                    <p class="game-card-desc">Thử thách phản xạ nhận thức Stroop: chọn MÀU của chữ (không phải nghĩa), 30 giây, thưởng điểm cho phản xạ nhanh.</p>
                 <!-- Card 17: Pong -->
                 <div class="game-card" id="cardPong" style="--card-color: #00f0ff;">
                     <div class="game-card-icon">🎱</div>
@@ -430,14 +389,6 @@
                     <button class="game-card-btn">CHƠI NGAY</button>
                 </div>
 
-                <!-- Card 18: Neon Dash -->
-                <div class="game-card" id="cardDash" style="--card-color: #39ff14;">
-                    <div class="game-card-icon">🏃</div>
-                    <h3 class="game-card-title">NEON DASH</h3>
-                    <p class="game-card-desc">Cube neon tự lao về phía trước, nhấn giữ SPACE/click để nhảy qua gai đỏ, khối tím và platform, tốc độ tăng dần vô hạn.</p>
-                    <div class="game-card-meta">1 PLAYER</div>
-                    <button class="game-card-btn">CHƠI NGAY</button>
-                </div>
                 <!-- Card 23: Minesweeper -->
                 <div class="game-card" id="cardMines" style="--card-color: #ff3399;">
                     <div class="game-card-icon">💣</div>
@@ -1119,43 +1070,6 @@
             </div>
         </div>
 
-        <!-- View 26: Neon Sudoku -->
-        <div id="sudokuView" class="game-view hidden">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
-                <div id="sudokuGameArea"></div>
-                <button id="btnQuitSudoku" class="leave-btn" style="margin:0;">THOÁT GAME</button>
-            </div>
-        </div>
-
-        <!-- View 27: Neon Simon -->
-        <div id="simonView" class="game-view hidden">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
-                <div id="simonGameArea"></div>
-                <button id="btnQuitSimon" class="leave-btn" style="margin:0;">THOÁT GAME</button>
-            </div>
-        </div>
-
-        <!-- View 28: Neon Slide -->
-        <div id="slideView" class="game-view hidden">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
-                <div id="slideGameArea"></div>
-                <button id="btnQuitSlide" class="leave-btn" style="margin:0;">THOÁT GAME</button>
-            </div>
-        </div>
-
-        <!-- View 29: Neon Reflex (Stroop) -->
-        <div id="reflexView" class="game-view hidden">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
-                <div id="reflexGameArea"></div>
-                <button id="btnQuitReflex" class="leave-btn" style="margin:0;">THOÁT GAME</button>
-            </div>
-        </div>
-
-        <!-- View 30: Neon Dash (Geometry Dash style) -->
-        <div id="dashView" class="game-view hidden">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
-                <div id="dashGameArea"></div>
-                <button id="btnQuitDash" class="leave-btn" style="margin:0;">THOÁT GAME</button>
         <!-- View 26: Neon Snake 2 Players -->
         <div id="snake2PView" class="game-view hidden">
             <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
@@ -1191,7 +1105,7 @@
     </div>
     
     <script src="db-config.js?v=2"></script>
-    <script src="game.js?v=4"></script>
+    <script src="game.js?v=2"></script>
     <script src="caro.js?v=2"></script>
     <script src="dino.js?v=2"></script>
     <script src="chess-game.js?v=2"></script>
@@ -1216,11 +1130,6 @@
     <script src="minesweeper.js?v=1"></script>
     <script src="neon_spin.js?v=1"></script>
     <script src="tower_bloxx.js?v=1"></script>
-    <script src="neon_sudoku.js?v=1"></script>
-    <script src="neon_simon.js?v=1"></script>
-    <script src="neon_slide.js?v=1"></script>
-    <script src="neon_reflex.js?v=1"></script>
-    <script src="neon_dash.js?v=3"></script>
     <script src="snake_2p.js?v=1"></script>
     <script src="helix_jump.js?v=1"></script>
     <script src="air_hockey.js?v=1"></script>
