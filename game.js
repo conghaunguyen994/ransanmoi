@@ -1384,6 +1384,42 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('card2048').addEventListener('click', () => {
         document.getElementById('btn2048').click();
     });
+    document.getElementById('cardFlappy').addEventListener('click', () => {
+        document.getElementById('btnFlappy').click();
+    });
+    document.getElementById('cardWhack').addEventListener('click', () => {
+        document.getElementById('btnWhack').click();
+    });
+    document.getElementById('cardWordle').addEventListener('click', () => {
+        document.getElementById('btnWordle').click();
+    });
+    document.getElementById('cardPong').addEventListener('click', () => {
+        document.getElementById('btnPong').click();
+    });
+    document.getElementById('cardMemory').addEventListener('click', () => {
+        document.getElementById('btnMemory').click();
+    });
+    document.getElementById('cardTypeRush').addEventListener('click', () => {
+        document.getElementById('btnTypeRush').click();
+    });
+    document.getElementById('cardFrogger').addEventListener('click', () => {
+        document.getElementById('btnFrogger').click();
+    });
+    document.getElementById('cardTron').addEventListener('click', () => {
+        document.getElementById('btnTron').click();
+    });
+    document.getElementById('cardAim').addEventListener('click', () => {
+        document.getElementById('btnAim').click();
+    });
+    document.getElementById('cardMines').addEventListener('click', () => {
+        document.getElementById('btnMines').click();
+    });
+    document.getElementById('cardSpin').addEventListener('click', () => {
+        document.getElementById('btnSpin').click();
+    });
+    document.getElementById('cardTower').addEventListener('click', () => {
+        document.getElementById('btnTower').click();
+    });
 
     // --- 3 GAME MỚI: Flappy, Whack, Wordle ---
     const NEW_VIEWS = [
