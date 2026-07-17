@@ -90,48 +90,40 @@ function initGunny(containerId) {
         initState();
     }
 
+    // Lưu trạng thái các phím đang được nhấn
+    const keys = {};
+
     const onKey = (e) => {
         if (!document.getElementById(containerId)) return;
         if (state.phase === 'idle') { state.phase = 'playing'; return; }
         if (state.phase === 'over') { resetGame(); state.phase = 'playing'; return; }
 
-        if (state.bullet) return; // Không cho chỉnh khi đạn đang bay
+        keys[e.key.toLowerCase()] = true;
+        keys[e.key] = true;
 
+        if (state.bullet) return;
+
+        // Bắt đầu sạc lực bắn (không di chuyển hay chỉnh góc khi đang sạc)
         const turn = state.turn;
         const mode = state.mode;
 
-        // Player 1 Controls (Luôn là W/S và Space)
-        if (turn === 'p1') {
-            if (e.key === 'w' || e.key === 'W') {
-                e.preventDefault();
-                state.p1.angle = Math.max(0, Math.min(180, state.p1.angle + 3));
-            } else if (e.key === 's' || e.key === 'S') {
-                e.preventDefault();
-                state.p1.angle = Math.max(0, Math.min(180, state.p1.angle - 3));
-            } else if (e.key === ' ' && !state.p1.charging) {
-                e.preventDefault();
-                state.p1.charging = true;
-                state.p1.power = 5;
-            }
+        if (turn === 'p1' && e.key === ' ' && !state.p1.charging) {
+            e.preventDefault();
+            state.p1.charging = true;
+            state.p1.power = 5;
         }
 
-        // Player 2 Controls (Chỉ khả dụng khi chơi 2 người 2P và đến lượt P2)
-        if (turn === 'p2' && mode === '2p') {
-            if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                state.p2.angle = Math.max(0, Math.min(180, state.p2.angle - 3)); // P2 quay góc ngược lại do đứng bên phải
-            } else if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                state.p2.angle = Math.max(0, Math.min(180, state.p2.angle + 3));
-            } else if (e.key === 'Enter' && !state.p2.charging) {
-                e.preventDefault();
-                state.p2.charging = true;
-                state.p2.power = 5;
-            }
+        if (turn === 'p2' && mode === '2p' && e.key === 'Enter' && !state.p2.charging) {
+            e.preventDefault();
+            state.p2.charging = true;
+            state.p2.power = 5;
         }
     };
 
     const onKeyUp = (e) => {
+        keys[e.key.toLowerCase()] = false;
+        keys[e.key] = false;
+
         const turn = state.turn;
         const mode = state.mode;
 
@@ -169,22 +161,29 @@ function initGunny(containerId) {
     }
 
     function aiTurn() {
-        setTimeout(() => {
-            if (state.phase !== 'playing' || state.turn !== 'p2') return;
+        // AI sẽ di chuyển ngẫu nhiên một chút trước khi bắn
+        const aiMovement = (Math.random() - 0.5) * 80; // Di chuyển trong khoảng -40px đến 40px
+        const targetX = Math.max(W/2 + 20, Math.min(W - 15, state.p2.x + aiMovement));
 
-            const p2 = state.p2;
-            const p1 = state.p1;
-
-            // Target calculation
-            const dx = p1.x - p2.x;
-            const dy = p1.y - p2.y;
-
-            // Simple projectile calculation for angle & power
-            p2.angle = 120 + Math.random() * 30; // aim back left
-            p2.power = 40 + Math.random() * 30;
-
-            fireBullet(p2);
-        }, 1200);
+        let moveInterval = setInterval(() => {
+            if (state.phase !== 'playing' || state.turn !== 'p2' || state.bullet) {
+                clearInterval(moveInterval);
+                return;
+            }
+            const diff = targetX - state.p2.x;
+            if (Math.abs(diff) < 2) {
+                clearInterval(moveInterval);
+                // Sau khi di chuyển xong, tính toán bắn
+                const p2 = state.p2;
+                const p1 = state.p1;
+                p2.angle = 115 + Math.random() * 35; // nhắm bắn sang trái
+                p2.power = 45 + Math.random() * 35;
+                fireBullet(p2);
+            } else {
+                state.p2.x += Math.sign(diff) * 1.5;
+                state.p2.y = terrain[Math.floor(state.p2.x)] - 8;
+            }
+        }, 30);
     }
 
     function createExplosion(x, y, radius, color) {
@@ -211,7 +210,55 @@ function initGunny(containerId) {
     function update() {
         if (state.phase !== 'playing') return;
 
-        // Charging power logic
+        // Xử lý di chuyển và đổi góc của người chơi (chỉ được thực hiện khi đạn không bay và không sạc lực)
+        if (!state.bullet) {
+            const turn = state.turn;
+            const mode = state.mode;
+
+            // Player 1 controls (WASD)
+            if (turn === 'p1') {
+                const p1 = state.p1;
+                if (!p1.charging) {
+                    // Di chuyển A / D
+                    if (keys['a'] || keys['A']) {
+                        p1.x = Math.max(15, p1.x - 1.5);
+                    }
+                    if (keys['d'] || keys['D']) {
+                        p1.x = Math.min(W/2 - 20, p1.x + 1.5); // Giới hạn P1 ở nửa trái bản đồ
+                    }
+                    // Chỉnh góc W / S
+                    if (keys['w'] || keys['W']) {
+                        p1.angle = Math.min(180, p1.angle + 1.5);
+                    }
+                    if (keys['s'] || keys['S']) {
+                        p1.angle = Math.max(0, p1.angle - 1.5);
+                    }
+                }
+            }
+
+            // Player 2 controls (Arrows)
+            if (turn === 'p2' && mode === '2p') {
+                const p2 = state.p2;
+                if (!p2.charging) {
+                    // Di chuyển Trái / Phải
+                    if (keys['ArrowLeft']) {
+                        p2.x = Math.max(W/2 + 20, p2.x - 1.5); // Giới hạn P2 ở nửa phải bản đồ
+                    }
+                    if (keys['ArrowRight']) {
+                        p2.x = Math.min(W - 15, p2.x + 1.5);
+                    }
+                    // Chỉnh góc Lên / Xuống
+                    if (keys['ArrowUp']) {
+                        p2.angle = Math.max(0, p2.angle - 1.5); // do đứng bên phải
+                    }
+                    if (keys['ArrowDown']) {
+                        p2.angle = Math.min(180, p2.angle + 1.5);
+                    }
+                }
+            }
+        }
+
+        // Sạc lực bắn
         const activePlayer = state.turn === 'p1' ? state.p1 : state.p2;
         if (activePlayer.charging) {
             activePlayer.power += 1.5;
@@ -424,13 +471,13 @@ function initGunny(containerId) {
             ctx.fillText('💣 NEON GUNNY', W / 2, H / 2 - 60);
 
             ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = '700 13px Outfit,Arial'; ctx.textAlign = 'center';
-            ctx.fillText('HƯỚNG DẪN ĐIỀU KHIỂN:', W / 2, H / 2 - 20);
+            ctx.fillText('HƯỚNG DẪN ĐIỀU KHIỂN:', W / 2, H / 2 - 25);
 
             ctx.fillStyle = '#00f0ff'; ctx.font = '500 12px Inter,Arial';
-            ctx.fillText('P1 (XANH): Phím W / S để chỉnh góc • Giữ SPACE để sạc & bắn', W / 2, H / 2 + 5);
+            ctx.fillText('P1 (XANH): A / D di chuyển • W / S chỉnh góc • Giữ SPACE sạc & bắn', W / 2, H / 2 + 3);
 
             ctx.fillStyle = '#ff007f';
-            ctx.fillText('P2 (HỒNG): Phím Mũi tên Lên / Xuống • Giữ ENTER để sạc & bắn', W / 2, H / 2 + 25);
+            ctx.fillText('P2 (HỒNG): Trái / Phải di chuyển • Lên / Xuống chỉnh góc • Giữ ENTER sạc & bắn', W / 2, H / 2 + 25);
 
             ctx.fillStyle = '#ffe600'; ctx.font = '600 12px Outfit,Arial';
             ctx.fillText('Click để BẮT ĐẦU chơi', W / 2, H / 2 + 60);
