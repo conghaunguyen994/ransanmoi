@@ -139,6 +139,18 @@
             <span class="nav-icon">🎯</span>
             <span class="nav-label">NEON AIM</span>
         </button>
+        <button id="btnMines" class="nav-btn" data-label="NEON MINES">
+            <span class="nav-icon">💣</span>
+            <span class="nav-label">NEON MINES</span>
+        </button>
+        <button id="btnSpin" class="nav-btn" data-label="NEON SPIN">
+            <span class="nav-icon">🌀</span>
+            <span class="nav-label">NEON SPIN</span>
+        </button>
+        <button id="btnTower" class="nav-btn" data-label="NEON TOWER">
+            <span class="nav-icon">🧱</span>
+            <span class="nav-label">NEON TOWER</span>
+        </button>
     </nav>
 
     <!-- Màn hình chính của các View -->
@@ -863,6 +875,30 @@
             </div>
         </div>
 
+        <!-- View 23: Neon Minesweeper -->
+        <div id="minesView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="minesGameArea"></div>
+                <button id="btnQuitMines" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 24: Neon Spin -->
+        <div id="spinView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="spinGameArea"></div>
+                <button id="btnQuitSpin" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 25: Neon Tower Bloxx -->
+        <div id="towerView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="towerGameArea"></div>
+                <button id="btnQuitTower" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -888,5 +924,8 @@
     <script src="frogger.js?v=1"></script>
     <script src="tron.js?v=1"></script>
     <script src="aim_trainer.js?v=1"></script>
+    <script src="minesweeper.js?v=1"></script>
+    <script src="neon_spin.js?v=1"></script>
+    <script src="tower_bloxx.js?v=1"></script>
 </body>
 </html>

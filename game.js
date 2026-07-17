@@ -1390,13 +1390,15 @@ window.addEventListener('DOMContentLoaded', () => {
         'dashboardView','snakeView','caroView','dinoView','chessView','xiangqiView',
         'minerView','tetrisView','pikachuView','solitaireView','invadersView','pacmanView',
         'breakerView','game2048View','flappyView','whackView','wordleView',
-        'pongView','memoryView','typeRushView','froggerView','tronView','aimView'
+        'pongView','memoryView','typeRushView','froggerView','tronView','aimView',
+        'minesView','spinView','towerView'
     ];
     const NEW_BTNS = [
         'btnHome','btnSnake','btnCaro','btnDino','btnChess','btnXiangqi',
         'btnMiner','btnTetris','btnPikachu','btnSolitaire','btnInvaders','btnPacman',
         'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle',
-        'btnPong','btnMemory','btnTypeRush','btnFrogger','btnTron','btnAim'
+        'btnPong','btnMemory','btnTypeRush','btnFrogger','btnTron','btnAim',
+        'btnMines','btnSpin','btnTower'
     ];
 
     function switchTo(viewId, btnId) {
@@ -1504,6 +1506,39 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnQuitAim').addEventListener('click', () => {
         const area = document.getElementById('aimGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnMines').addEventListener('click', () => {
+        switchTo('minesView', 'btnMines');
+        initMinesweeper('minesGameArea');
+    });
+
+    document.getElementById('btnQuitMines').addEventListener('click', () => {
+        const area = document.getElementById('minesGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnSpin').addEventListener('click', () => {
+        switchTo('spinView', 'btnSpin');
+        initNeonSpin('spinGameArea');
+    });
+
+    document.getElementById('btnQuitSpin').addEventListener('click', () => {
+        const area = document.getElementById('spinGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnTower').addEventListener('click', () => {
+        switchTo('towerView', 'btnTower');
+        initTowerBloxx('towerGameArea');
+    });
+
+    document.getElementById('btnQuitTower').addEventListener('click', () => {
+        const area = document.getElementById('towerGameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });
