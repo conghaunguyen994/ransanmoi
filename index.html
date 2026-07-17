@@ -162,6 +162,18 @@
                 <span class="nav-icon">🧱</span>
                 <span class="nav-label">NEON TOWER</span>
             </button>
+            <button id="btnSnake2P" class="nav-btn" data-label="NEON SNAKE 2P">
+                <span class="nav-icon">🐍</span>
+                <span class="nav-label">NEON SNAKE 2P</span>
+            </button>
+            <button id="btnHelix" class="nav-btn" data-label="NEON HELIX">
+                <span class="nav-icon">🌀</span>
+                <span class="nav-label">NEON HELIX</span>
+            </button>
+            <button id="btnHockey" class="nav-btn" data-label="NEON HOCKEY">
+                <span class="nav-icon">⚽</span>
+                <span class="nav-label">NEON HOCKEY</span>
+            </button>
         </div>
     </nav>
 
@@ -1019,6 +1031,30 @@
             </div>
         </div>
 
+        <!-- View 26: Neon Snake 2 Players -->
+        <div id="snake2PView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="snake2PGameArea"></div>
+                <button id="btnQuitSnake2P" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 27: Neon Helix Jump -->
+        <div id="helixView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="helixGameArea"></div>
+                <button id="btnQuitHelix" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 28: Neon Air Hockey -->
+        <div id="hockeyView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="hockeyGameArea"></div>
+                <button id="btnQuitHockey" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -1047,5 +1083,8 @@
     <script src="minesweeper.js?v=1"></script>
     <script src="neon_spin.js?v=1"></script>
     <script src="tower_bloxx.js?v=1"></script>
+    <script src="snake_2p.js?v=1"></script>
+    <script src="helix_jump.js?v=1"></script>
+    <script src="air_hockey.js?v=1"></script>
 </body>
 </html>

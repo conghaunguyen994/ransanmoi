@@ -1384,6 +1384,9 @@ window.addEventListener('DOMContentLoaded', () => {
     bindCardToBtn('cardMines', 'btnMines', 'minesView', () => initMinesweeper('minesGameArea'));
     bindCardToBtn('cardSpin', 'btnSpin', 'spinView', () => initNeonSpin('spinGameArea'));
     bindCardToBtn('cardTower', 'btnTower', 'towerView', () => initTowerBloxx('towerGameArea'));
+    bindCardToBtn('cardSnake2P', 'btnSnake2P', 'snake2PView', () => initSnake2P('snake2PGameArea'));
+    bindCardToBtn('cardHelix', 'btnHelix', 'helixView', () => initHelixJump('helixGameArea'));
+    bindCardToBtn('cardHockey', 'btnHockey', 'hockeyView', () => initAirHockey('hockeyGameArea'));
 
     // --- 3 GAME MỚI: Flappy, Whack, Wordle ---
     const NEW_VIEWS = [
@@ -1391,14 +1394,14 @@ window.addEventListener('DOMContentLoaded', () => {
         'minerView','tetrisView','pikachuView','solitaireView','invadersView','pacmanView',
         'breakerView','game2048View','flappyView','whackView','wordleView',
         'pongView','memoryView','typeRushView','froggerView','tronView','aimView',
-        'minesView','spinView','towerView'
+        'minesView','spinView','towerView','snake2PView','helixView','hockeyView'
     ];
     const NEW_BTNS = [
         'btnHome','btnSnake','btnCaro','btnDino','btnChess','btnXiangqi',
         'btnMiner','btnTetris','btnPikachu','btnSolitaire','btnInvaders','btnPacman',
         'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle',
         'btnPong','btnMemory','btnTypeRush','btnFrogger','btnTron','btnAim',
-        'btnMines','btnSpin','btnTower'
+        'btnMines','btnSpin','btnTower','btnSnake2P','btnHelix','btnHockey'
     ];
 
     function switchTo(viewId, btnId) {
@@ -1539,6 +1542,39 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnQuitTower').addEventListener('click', () => {
         const area = document.getElementById('towerGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnSnake2P').addEventListener('click', () => {
+        switchTo('snake2PView', 'btnSnake2P');
+        initSnake2P('snake2PGameArea');
+    });
+
+    document.getElementById('btnQuitSnake2P').addEventListener('click', () => {
+        const area = document.getElementById('snake2PGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnHelix').addEventListener('click', () => {
+        switchTo('helixView', 'btnHelix');
+        initHelixJump('helixGameArea');
+    });
+
+    document.getElementById('btnQuitHelix').addEventListener('click', () => {
+        const area = document.getElementById('helixGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnHockey').addEventListener('click', () => {
+        switchTo('hockeyView', 'btnHockey');
+        initAirHockey('hockeyGameArea');
+    });
+
+    document.getElementById('btnQuitHockey').addEventListener('click', () => {
+        const area = document.getElementById('hockeyGameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });
