@@ -22,22 +22,20 @@ body {
 ======================== */
 .sidebar {
     width: 220px; /* Luôn mở rộng cố định */
-    min-height: 100vh;
+    height: 100vh;
     background: rgba(11, 12, 22, 0.92);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-right: 1px solid rgba(0, 240, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    display: block; /* Dùng block để cuộn dọc hoạt động hoàn hảo */
     padding: 12px 0;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
-    height: 100vh;
     box-shadow: 4px 0 30px rgba(0, 0, 0, 0.6);
-    overflow-y: auto;
+    overflow-y: auto !important;
+    overflow-x: hidden;
     /* Custom Neon Scrollbar */
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 240, 255, 0.3) transparent;
