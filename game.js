@@ -1345,45 +1345,49 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     // Liên kết Click hành động từ các Game Card trên Dashboard
-    document.getElementById('cardSnake').addEventListener('click', () => {
-        document.getElementById('btnSnake').click();
+    // Hàm bind sự kiện click an toàn cho các thẻ game card ở Dashboard
+    function bindCardToBtn(cardId, btnId, viewId, initFn) {
+        const card = document.getElementById(cardId);
+        if (card) {
+            card.addEventListener('click', () => {
+                switchTo(viewId, btnId);
+                if (initFn) initFn();
+            });
+        }
+    }
+
+    bindCardToBtn('cardSnake', 'btnSnake', 'snakeView', () => {
+        if (gameState.gameStatus === 'MENU') drawMenu();
+        else if (gameState.gameStatus === 'PLAYING') render();
     });
-    document.getElementById('cardCaro').addEventListener('click', () => {
-        document.getElementById('btnCaro').click();
-    });
-    document.getElementById('cardDino').addEventListener('click', () => {
-        document.getElementById('btnDino').click();
-    });
-    document.getElementById('cardChess').addEventListener('click', () => {
-        document.getElementById('btnChess').click();
-    });
-    document.getElementById('cardXiangqi').addEventListener('click', () => {
-        document.getElementById('btnXiangqi').click();
-    });
-    document.getElementById('cardMiner').addEventListener('click', () => {
-        document.getElementById('btnMiner').click();
-    });
-    document.getElementById('cardTetris').addEventListener('click', () => {
-        document.getElementById('btnTetris').click();
-    });
-    document.getElementById('cardPikachu').addEventListener('click', () => {
-        document.getElementById('btnPikachu').click();
-    });
-    document.getElementById('cardSolitaire').addEventListener('click', () => {
-        document.getElementById('btnSolitaire').click();
-    });
-    document.getElementById('cardInvaders').addEventListener('click', () => {
-        document.getElementById('btnInvaders').click();
-    });
-    document.getElementById('cardPacman').addEventListener('click', () => {
-        document.getElementById('btnPacman').click();
-    });
-    document.getElementById('cardBreaker').addEventListener('click', () => {
-        document.getElementById('btnBreaker').click();
-    });
-    document.getElementById('card2048').addEventListener('click', () => {
-        document.getElementById('btn2048').click();
-    });
+    bindCardToBtn('cardCaro', 'btnCaro', 'caroView');
+    bindCardToBtn('cardDino', 'btnDino', 'dinoView');
+    bindCardToBtn('cardChess', 'btnChess', 'chessView');
+    bindCardToBtn('cardXiangqi', 'btnXiangqi', 'xiangqiView');
+    bindCardToBtn('cardMiner', 'btnMiner', 'minerView', () => initGoldMiner('minerGameArea'));
+    bindCardToBtn('cardTetris', 'btnTetris', 'tetrisView', () => initTetris('tetrisGameArea'));
+    bindCardToBtn('cardPikachu', 'btnPikachu', 'pikachuView', () => initPikachu('pikachuGameArea'));
+    bindCardToBtn('cardSolitaire', 'btnSolitaire', 'solitaireView', () => initSolitaire('solitaireGameArea'));
+    bindCardToBtn('cardInvaders', 'btnInvaders', 'invadersView', () => initSpaceInvaders('invadersGameArea'));
+    bindCardToBtn('cardPacman', 'btnPacman', 'pacmanView', () => initPacman());
+    bindCardToBtn('cardBreaker', 'btnBreaker', 'breakerView', () => initBreaker('breakerGameArea'));
+    bindCardToBtn('card2048', 'btn2048', 'game2048View', () => init2048('game2048GameArea'));
+    bindCardToBtn('cardFlappy', 'btnFlappy', 'flappyView', () => initFlappyBird('flappyGameArea'));
+    bindCardToBtn('cardWhack', 'btnWhack', 'whackView', () => initWhackMole('whackGameArea'));
+    bindCardToBtn('cardWordle', 'btnWordle', 'wordleView', () => initWordle('wordleGameArea'));
+    bindCardToBtn('cardPong', 'btnPong', 'pongView', () => initPong('pongGameArea'));
+    bindCardToBtn('cardMemory', 'btnMemory', 'memoryView', () => initMemory('memoryGameArea'));
+    bindCardToBtn('cardTypeRush', 'btnTypeRush', 'typeRushView', () => initTypeRush('typeRushGameArea'));
+    bindCardToBtn('cardFrogger', 'btnFrogger', 'froggerView', () => initFrogger('froggerGameArea'));
+    bindCardToBtn('cardTron', 'btnTron', 'tronView', () => initTron('tronGameArea'));
+    bindCardToBtn('cardAim', 'btnAim', 'aimView', () => initAimTrainer('aimGameArea'));
+    bindCardToBtn('cardMines', 'btnMines', 'minesView', () => initMinesweeper('minesGameArea'));
+    bindCardToBtn('cardSpin', 'btnSpin', 'spinView', () => initNeonSpin('spinGameArea'));
+    bindCardToBtn('cardTower', 'btnTower', 'towerView', () => initTowerBloxx('towerGameArea'));
+    bindCardToBtn('cardSnake2P', 'btnSnake2P', 'snake2PView', () => initSnake2P('snake2PGameArea'));
+    bindCardToBtn('cardHelix', 'btnHelix', 'helixView', () => initHelixJump('helixGameArea'));
+    bindCardToBtn('cardHockey', 'btnHockey', 'hockeyView', () => initAirHockey('hockeyGameArea'));
+    bindCardToBtn('cardGunny', 'btnGunny', 'gunnyView', () => initGunny('gunnyGameArea'));
 
     document.getElementById('cardSudoku').addEventListener('click', () => {
         document.getElementById('btnSudoku').click();
@@ -1407,18 +1411,16 @@ window.addEventListener('DOMContentLoaded', () => {
         'minerView','tetrisView','pikachuView','solitaireView','invadersView','pacmanView',
         'breakerView','game2048View','flappyView','whackView','wordleView',
         'pongView','memoryView','typeRushView','froggerView','tronView','aimView',
-        'minesView','spinView','towerView',
-        'sudokuView','simonView','slideView','reflexView',
-        'dashView'
+        'minesView','spinView','towerView','snake2PView','helixView','hockeyView','gunnyView',
+        'sudokuView','simonView','slideView','reflexView','dashView'
     ];
     const NEW_BTNS = [
         'btnHome','btnSnake','btnCaro','btnDino','btnChess','btnXiangqi',
         'btnMiner','btnTetris','btnPikachu','btnSolitaire','btnInvaders','btnPacman',
         'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle',
         'btnPong','btnMemory','btnTypeRush','btnFrogger','btnTron','btnAim',
-        'btnMines','btnSpin','btnTower',
-        'btnSudoku','btnSimon','btnSlide','btnReflex',
-        'btnDash'
+        'btnMines','btnSpin','btnTower','btnSnake2P','btnHelix','btnHockey','btnGunny',
+        'btnSudoku','btnSimon','btnSlide','btnReflex','btnDash'
     ];
 
     function switchTo(viewId, btnId) {
@@ -1569,6 +1571,13 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('btnQuitSudoku').addEventListener('click', () => {
         const area = document.getElementById('sudokuGameArea');
+    document.getElementById('btnSnake2P').addEventListener('click', () => {
+        switchTo('snake2PView', 'btnSnake2P');
+        initSnake2P('snake2PGameArea');
+    });
+
+    document.getElementById('btnQuitSnake2P').addEventListener('click', () => {
+        const area = document.getElementById('snake2PGameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });
@@ -1579,6 +1588,13 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('btnQuitSimon').addEventListener('click', () => {
         const area = document.getElementById('simonGameArea');
+    document.getElementById('btnHelix').addEventListener('click', () => {
+        switchTo('helixView', 'btnHelix');
+        initHelixJump('helixGameArea');
+    });
+
+    document.getElementById('btnQuitHelix').addEventListener('click', () => {
+        const area = document.getElementById('helixGameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });
@@ -1589,6 +1605,13 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('btnQuitSlide').addEventListener('click', () => {
         const area = document.getElementById('slideGameArea');
+    document.getElementById('btnHockey').addEventListener('click', () => {
+        switchTo('hockeyView', 'btnHockey');
+        initAirHockey('hockeyGameArea');
+    });
+
+    document.getElementById('btnQuitHockey').addEventListener('click', () => {
+        const area = document.getElementById('hockeyGameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });
@@ -1599,6 +1622,13 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('btnQuitReflex').addEventListener('click', () => {
         const area = document.getElementById('reflexGameArea');
+    document.getElementById('btnGunny').addEventListener('click', () => {
+        switchTo('gunnyView', 'btnGunny');
+        initGunny('gunnyGameArea');
+    });
+
+    document.getElementById('btnQuitGunny').addEventListener('click', () => {
+        const area = document.getElementById('gunnyGameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });
@@ -1611,5 +1641,14 @@ window.addEventListener('DOMContentLoaded', () => {
         const area = document.getElementById('dashGameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
+    // Lắng nghe sự kiện click đóng/mở các group game trên Sidebar
+    document.querySelectorAll('.sidebar-section-header').forEach(header => {
+        header.addEventListener('click', () => {
+            header.classList.toggle('collapsed');
+            const content = header.nextElementSibling;
+            if (content && content.classList.contains('sidebar-section-content')) {
+                content.classList.toggle('collapsed');
+            }
+        });
     });
 });
