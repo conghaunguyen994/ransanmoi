@@ -38,11 +38,21 @@ body {
     overflow: hidden;
     box-shadow: 4px 0 30px rgba(0, 0, 0, 0.6);
     overflow-y: auto;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(0, 240, 255, 0.4) transparent;
 }
 
 .sidebar::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(0, 240, 255, 0.4);
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 /* Logo Brand */
