@@ -1542,13 +1542,15 @@ window.addEventListener('DOMContentLoaded', () => {
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });
-});
 
-// Hàm toàn cục đóng mở các nhóm danh mục trong Sidebar
-window.toggleSidebarSection = function(headerEl) {
-    headerEl.classList.toggle('collapsed');
-    const contentEl = headerEl.nextElementSibling;
-    if (contentEl && contentEl.classList.contains('sidebar-section-content')) {
-        contentEl.classList.toggle('collapsed');
-    }
-};
+    // Lắng nghe sự kiện click đóng/mở các group game trên Sidebar
+    document.querySelectorAll('.sidebar-section-header').forEach(header => {
+        header.addEventListener('click', () => {
+            header.classList.toggle('collapsed');
+            const content = header.nextElementSibling;
+            if (content && content.classList.contains('sidebar-section-content')) {
+                content.classList.toggle('collapsed');
+            }
+        });
+    });
+});
