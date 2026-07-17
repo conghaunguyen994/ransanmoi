@@ -1387,6 +1387,7 @@ window.addEventListener('DOMContentLoaded', () => {
     bindCardToBtn('cardSnake2P', 'btnSnake2P', 'snake2PView', () => initSnake2P('snake2PGameArea'));
     bindCardToBtn('cardHelix', 'btnHelix', 'helixView', () => initHelixJump('helixGameArea'));
     bindCardToBtn('cardHockey', 'btnHockey', 'hockeyView', () => initAirHockey('hockeyGameArea'));
+    bindCardToBtn('cardGunny', 'btnGunny', 'gunnyView', () => initGunny('gunnyGameArea'));
 
     // --- 3 GAME MỚI: Flappy, Whack, Wordle ---
     const NEW_VIEWS = [
@@ -1394,14 +1395,14 @@ window.addEventListener('DOMContentLoaded', () => {
         'minerView','tetrisView','pikachuView','solitaireView','invadersView','pacmanView',
         'breakerView','game2048View','flappyView','whackView','wordleView',
         'pongView','memoryView','typeRushView','froggerView','tronView','aimView',
-        'minesView','spinView','towerView','snake2PView','helixView','hockeyView'
+        'minesView','spinView','towerView','snake2PView','helixView','hockeyView','gunnyView'
     ];
     const NEW_BTNS = [
         'btnHome','btnSnake','btnCaro','btnDino','btnChess','btnXiangqi',
         'btnMiner','btnTetris','btnPikachu','btnSolitaire','btnInvaders','btnPacman',
         'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle',
         'btnPong','btnMemory','btnTypeRush','btnFrogger','btnTron','btnAim',
-        'btnMines','btnSpin','btnTower','btnSnake2P','btnHelix','btnHockey'
+        'btnMines','btnSpin','btnTower','btnSnake2P','btnHelix','btnHockey','btnGunny'
     ];
 
     function switchTo(viewId, btnId) {
@@ -1575,6 +1576,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnQuitHockey').addEventListener('click', () => {
         const area = document.getElementById('hockeyGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnGunny').addEventListener('click', () => {
+        switchTo('gunnyView', 'btnGunny');
+        initGunny('gunnyGameArea');
+    });
+
+    document.getElementById('btnQuitGunny').addEventListener('click', () => {
+        const area = document.getElementById('gunnyGameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });

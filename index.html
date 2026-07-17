@@ -174,6 +174,10 @@
                 <span class="nav-icon">⚽</span>
                 <span class="nav-label">NEON HOCKEY</span>
             </button>
+            <button id="btnGunny" class="nav-btn" data-label="NEON GUNNY">
+                <span class="nav-icon">💣</span>
+                <span class="nav-label">NEON GUNNY</span>
+            </button>
         </div>
     </nav>
 
@@ -410,6 +414,42 @@
                     <h3 class="game-card-title">NEON TOWER</h3>
                     <p class="game-card-desc">Xếp tháp cao neon, thả các khối block đung đưa từ dây cẩu đặt chồng lên nhau chuẩn xác.</p>
                     <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 26: Snake 2 Players -->
+                <div class="game-card" id="cardSnake2P" style="--card-color: #00f0ff;">
+                    <div class="game-card-icon">🐍</div>
+                    <h3 class="game-card-title">NEON SNAKE 2P</h3>
+                    <p class="game-card-desc">Đấu đối kháng rắn săn mồi 2 người chơi cùng bàn phím, tránh đụng đối thủ hoặc đâm vào chính mình.</p>
+                    <div class="game-card-meta">2 PLAYERS LOCAL</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 27: Helix Jump -->
+                <div class="game-card" id="cardHelix" style="--card-color: #ffe600;">
+                    <div class="game-card-icon">🌀</div>
+                    <h3 class="game-card-title">NEON HELIX</h3>
+                    <p class="game-card-desc">Điều khiển cột tháp xoắn ốc xoay tròn để bóng nhảy lọt qua các khe hở phát sáng xuống chân tháp.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 28: Air Hockey -->
+                <div class="game-card" id="cardHockey" style="--card-color: #ff007f;">
+                    <div class="game-card-icon">⚽</div>
+                    <h3 class="game-card-title">NEON HOCKEY</h3>
+                    <p class="game-card-desc">Khúc côn cầu không khí đỉnh cao, đẩy puck vào lưới đối thủ bằng các mallet phát sáng. VS AI hoặc 2P.</p>
+                    <div class="game-card-meta">1-2 PLAYERS</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 29: Gunny -->
+                <div class="game-card" id="cardGunny" style="--card-color: #39ff14;">
+                    <div class="game-card-icon">💣</div>
+                    <h3 class="game-card-title">NEON GUNNY</h3>
+                    <p class="game-card-desc">Bắn súng tọa độ căn góc và lực cực kỳ gay cấn, phá hủy địa hình nhấp nhô, đấu đơn với AI hoặc chơi đôi.</p>
+                    <div class="game-card-meta">1-2 PLAYERS</div>
                     <button class="game-card-btn">CHƠI NGAY</button>
                 </div>
             </div>
@@ -1055,6 +1095,14 @@
             </div>
         </div>
 
+        <!-- View 29: Neon Gunny -->
+        <div id="gunnyView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <div id="gunnyGameArea"></div>
+                <button id="btnQuitGunny" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -1086,5 +1134,6 @@
     <script src="snake_2p.js?v=1"></script>
     <script src="helix_jump.js?v=1"></script>
     <script src="air_hockey.js?v=1"></script>
+    <script src="gunny.js?v=1"></script>
 </body>
 </html>
