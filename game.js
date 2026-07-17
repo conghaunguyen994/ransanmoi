@@ -1345,81 +1345,42 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     // Liên kết Click hành động từ các Game Card trên Dashboard
-    document.getElementById('cardSnake').addEventListener('click', () => {
-        document.getElementById('btnSnake').click();
-    });
-    document.getElementById('cardCaro').addEventListener('click', () => {
-        document.getElementById('btnCaro').click();
-    });
-    document.getElementById('cardDino').addEventListener('click', () => {
-        document.getElementById('btnDino').click();
-    });
-    document.getElementById('cardChess').addEventListener('click', () => {
-        document.getElementById('btnChess').click();
-    });
-    document.getElementById('cardXiangqi').addEventListener('click', () => {
-        document.getElementById('btnXiangqi').click();
-    });
-    document.getElementById('cardMiner').addEventListener('click', () => {
-        document.getElementById('btnMiner').click();
-    });
-    document.getElementById('cardTetris').addEventListener('click', () => {
-        document.getElementById('btnTetris').click();
-    });
-    document.getElementById('cardPikachu').addEventListener('click', () => {
-        document.getElementById('btnPikachu').click();
-    });
-    document.getElementById('cardSolitaire').addEventListener('click', () => {
-        document.getElementById('btnSolitaire').click();
-    });
-    document.getElementById('cardInvaders').addEventListener('click', () => {
-        document.getElementById('btnInvaders').click();
-    });
-    document.getElementById('cardPacman').addEventListener('click', () => {
-        document.getElementById('btnPacman').click();
-    });
-    document.getElementById('cardBreaker').addEventListener('click', () => {
-        document.getElementById('btnBreaker').click();
-    });
-    document.getElementById('card2048').addEventListener('click', () => {
-        document.getElementById('btn2048').click();
-    });
-    document.getElementById('cardFlappy').addEventListener('click', () => {
-        document.getElementById('btnFlappy').click();
-    });
-    document.getElementById('cardWhack').addEventListener('click', () => {
-        document.getElementById('btnWhack').click();
-    });
-    document.getElementById('cardWordle').addEventListener('click', () => {
-        document.getElementById('btnWordle').click();
-    });
-    document.getElementById('cardPong').addEventListener('click', () => {
-        document.getElementById('btnPong').click();
-    });
-    document.getElementById('cardMemory').addEventListener('click', () => {
-        document.getElementById('btnMemory').click();
-    });
-    document.getElementById('cardTypeRush').addEventListener('click', () => {
-        document.getElementById('btnTypeRush').click();
-    });
-    document.getElementById('cardFrogger').addEventListener('click', () => {
-        document.getElementById('btnFrogger').click();
-    });
-    document.getElementById('cardTron').addEventListener('click', () => {
-        document.getElementById('btnTron').click();
-    });
-    document.getElementById('cardAim').addEventListener('click', () => {
-        document.getElementById('btnAim').click();
-    });
-    document.getElementById('cardMines').addEventListener('click', () => {
-        document.getElementById('btnMines').click();
-    });
-    document.getElementById('cardSpin').addEventListener('click', () => {
-        document.getElementById('btnSpin').click();
-    });
-    document.getElementById('cardTower').addEventListener('click', () => {
-        document.getElementById('btnTower').click();
-    });
+    // Hàm bind sự kiện click an toàn cho các thẻ game card ở Dashboard
+    function bindCardToBtn(cardId, btnId) {
+        const card = document.getElementById(cardId);
+        const btn = document.getElementById(btnId);
+        if (card && btn) {
+            card.addEventListener('click', () => {
+                btn.click();
+            });
+        }
+    }
+
+    bindCardToBtn('cardSnake', 'btnSnake');
+    bindCardToBtn('cardCaro', 'btnCaro');
+    bindCardToBtn('cardDino', 'btnDino');
+    bindCardToBtn('cardChess', 'btnChess');
+    bindCardToBtn('cardXiangqi', 'btnXiangqi');
+    bindCardToBtn('cardMiner', 'btnMiner');
+    bindCardToBtn('cardTetris', 'btnTetris');
+    bindCardToBtn('cardPikachu', 'btnPikachu');
+    bindCardToBtn('cardSolitaire', 'btnSolitaire');
+    bindCardToBtn('cardInvaders', 'btnInvaders');
+    bindCardToBtn('cardPacman', 'btnPacman');
+    bindCardToBtn('cardBreaker', 'btnBreaker');
+    bindCardToBtn('card2048', 'btn2048');
+    bindCardToBtn('cardFlappy', 'btnFlappy');
+    bindCardToBtn('cardWhack', 'btnWhack');
+    bindCardToBtn('cardWordle', 'btnWordle');
+    bindCardToBtn('cardPong', 'btnPong');
+    bindCardToBtn('cardMemory', 'btnMemory');
+    bindCardToBtn('cardTypeRush', 'btnTypeRush');
+    bindCardToBtn('cardFrogger', 'btnFrogger');
+    bindCardToBtn('cardTron', 'btnTron');
+    bindCardToBtn('cardAim', 'btnAim');
+    bindCardToBtn('cardMines', 'btnMines');
+    bindCardToBtn('cardSpin', 'btnSpin');
+    bindCardToBtn('cardTower', 'btnTower');
 
     // --- 3 GAME MỚI: Flappy, Whack, Wordle ---
     const NEW_VIEWS = [
