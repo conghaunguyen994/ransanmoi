@@ -1389,6 +1389,12 @@ window.addEventListener('DOMContentLoaded', () => {
     bindCardToBtn('cardHockey', 'btnHockey', 'hockeyView', () => initAirHockey('hockeyGameArea'));
     bindCardToBtn('cardGunny', 'btnGunny', 'gunnyView', () => initGunny('gunnyGameArea'));
 
+    bindCardToBtn('cardSudoku', 'btnSudoku', 'sudokuView', () => initNeonSudoku('sudokuGameArea'));
+    bindCardToBtn('cardSimon', 'btnSimon', 'simonView', () => initNeonSimon('simonGameArea'));
+    bindCardToBtn('cardSlide', 'btnSlide', 'slideView', () => initNeonSlide('slideGameArea'));
+    bindCardToBtn('cardReflex', 'btnReflex', 'reflexView', () => initNeonReflex('reflexGameArea'));
+    bindCardToBtn('cardDash', 'btnDash', 'dashView', () => initNeonDash('dashGameArea'));
+
     // --- 3 GAME MỚI: Flappy, Whack, Wordle ---
     const NEW_VIEWS = [
         'dashboardView','snakeView','caroView','dinoView','chessView','xiangqiView',
@@ -1396,6 +1402,7 @@ window.addEventListener('DOMContentLoaded', () => {
         'breakerView','game2048View','flappyView','whackView','wordleView',
         'pongView','memoryView','typeRushView','froggerView','tronView','aimView',
         'minesView','spinView','towerView','snake2PView','helixView','hockeyView','gunnyView',
+        'sudokuView','simonView','slideView','reflexView','dashView'
     ];
     const NEW_BTNS = [
         'btnHome','btnSnake','btnCaro','btnDino','btnChess','btnXiangqi',
@@ -1403,6 +1410,7 @@ window.addEventListener('DOMContentLoaded', () => {
         'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle',
         'btnPong','btnMemory','btnTypeRush','btnFrogger','btnTron','btnAim',
         'btnMines','btnSpin','btnTower','btnSnake2P','btnHelix','btnHockey','btnGunny',
+        'btnSudoku','btnSimon','btnSlide','btnReflex','btnDash'
     ];
 
     function switchTo(viewId, btnId) {
@@ -1587,6 +1595,56 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btnQuitGunny').addEventListener('click', () => {
         const area = document.getElementById('gunnyGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnSudoku').addEventListener('click', () => {
+        switchTo('sudokuView', 'btnSudoku');
+        initNeonSudoku('sudokuGameArea');
+    });
+    document.getElementById('btnQuitSudoku').addEventListener('click', () => {
+        const area = document.getElementById('sudokuGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnSimon').addEventListener('click', () => {
+        switchTo('simonView', 'btnSimon');
+        initNeonSimon('simonGameArea');
+    });
+    document.getElementById('btnQuitSimon').addEventListener('click', () => {
+        const area = document.getElementById('simonGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnSlide').addEventListener('click', () => {
+        switchTo('slideView', 'btnSlide');
+        initNeonSlide('slideGameArea');
+    });
+    document.getElementById('btnQuitSlide').addEventListener('click', () => {
+        const area = document.getElementById('slideGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnReflex').addEventListener('click', () => {
+        switchTo('reflexView', 'btnReflex');
+        initNeonReflex('reflexGameArea');
+    });
+    document.getElementById('btnQuitReflex').addEventListener('click', () => {
+        const area = document.getElementById('reflexGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnDash').addEventListener('click', () => {
+        switchTo('dashView', 'btnDash');
+        initNeonDash('dashGameArea');
+    });
+    document.getElementById('btnQuitDash').addEventListener('click', () => {
+        const area = document.getElementById('dashGameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });
