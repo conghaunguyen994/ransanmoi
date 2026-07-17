@@ -95,34 +95,59 @@ function initGunny(containerId) {
         if (state.phase === 'idle') { state.phase = 'playing'; return; }
         if (state.phase === 'over') { resetGame(); state.phase = 'playing'; return; }
 
-        if (state.bullet) return; // Can't adjust during bullet fly
+        if (state.bullet) return; // Không cho chỉnh khi đạn đang bay
 
-        const activePlayer = state.turn === 'p1' ? state.p1 : state.p2;
+        const turn = state.turn;
+        const mode = state.mode;
 
-        // Angle controls (Left / Right / Up / Down)
-        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-            e.preventDefault();
-            activePlayer.angle = Math.max(0, Math.min(180, activePlayer.angle + 3));
-        } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-            e.preventDefault();
-            activePlayer.angle = Math.max(0, Math.min(180, activePlayer.angle - 3));
+        // Player 1 Controls (Luôn là W/S và Space)
+        if (turn === 'p1') {
+            if (e.key === 'w' || e.key === 'W') {
+                e.preventDefault();
+                state.p1.angle = Math.max(0, Math.min(180, state.p1.angle + 3));
+            } else if (e.key === 's' || e.key === 'S') {
+                e.preventDefault();
+                state.p1.angle = Math.max(0, Math.min(180, state.p1.angle - 3));
+            } else if (e.key === ' ' && !state.p1.charging) {
+                e.preventDefault();
+                state.p1.charging = true;
+                state.p1.power = 5;
+            }
         }
 
-        // Fire Charge (Hold Space)
-        if (e.key === ' ' && !activePlayer.charging) {
-            e.preventDefault();
-            activePlayer.charging = true;
-            activePlayer.power = 5;
+        // Player 2 Controls (Chỉ khả dụng khi chơi 2 người 2P và đến lượt P2)
+        if (turn === 'p2' && mode === '2p') {
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                state.p2.angle = Math.max(0, Math.min(180, state.p2.angle - 3)); // P2 quay góc ngược lại do đứng bên phải
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                state.p2.angle = Math.max(0, Math.min(180, state.p2.angle + 3));
+            } else if (e.key === 'Enter' && !state.p2.charging) {
+                e.preventDefault();
+                state.p2.charging = true;
+                state.p2.power = 5;
+            }
         }
     };
 
     const onKeyUp = (e) => {
-        if (e.key === ' ') {
-            const activePlayer = state.turn === 'p1' ? state.p1 : state.p2;
-            if (activePlayer.charging) {
+        const turn = state.turn;
+        const mode = state.mode;
+
+        if (turn === 'p1' && e.key === ' ') {
+            if (state.p1.charging) {
                 e.preventDefault();
-                activePlayer.charging = false;
-                fireBullet(activePlayer);
+                state.p1.charging = false;
+                fireBullet(state.p1);
+            }
+        }
+
+        if (turn === 'p2' && mode === '2p' && e.key === 'Enter') {
+            if (state.p2.charging) {
+                e.preventDefault();
+                state.p2.charging = false;
+                fireBullet(state.p2);
             }
         }
     };
@@ -396,12 +421,19 @@ function initGunny(containerId) {
         if (state.phase === 'idle') {
             ctx.save(); ctx.fillStyle = 'rgba(5, 8, 20, 0.85)'; ctx.fillRect(0, 0, W, H);
             ctx.fillStyle = '#39ff14'; ctx.font = '700 28px Outfit,Arial'; ctx.textAlign = 'center'; ctx.shadowBlur = 15; ctx.shadowColor = '#39ff14';
-            ctx.fillText('💣 NEON GUNNY', W / 2, H / 2 - 40);
-            ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.font = '400 13px Inter,Arial'; ctx.shadowBlur = 0;
-            ctx.fillText('Nút Up/Down (hoặc W/S) để chỉnh góc bắn', W / 2, H / 2);
-            ctx.fillText('Nhấn GIỮ phím SPACE để tăng lực bắn, thả ra để bắn!', W / 2, H / 2 + 20);
+            ctx.fillText('💣 NEON GUNNY', W / 2, H / 2 - 60);
+
+            ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = '700 13px Outfit,Arial'; ctx.textAlign = 'center';
+            ctx.fillText('HƯỚNG DẪN ĐIỀU KHIỂN:', W / 2, H / 2 - 20);
+
+            ctx.fillStyle = '#00f0ff'; ctx.font = '500 12px Inter,Arial';
+            ctx.fillText('P1 (XANH): Phím W / S để chỉnh góc • Giữ SPACE để sạc & bắn', W / 2, H / 2 + 5);
+
+            ctx.fillStyle = '#ff007f';
+            ctx.fillText('P2 (HỒNG): Phím Mũi tên Lên / Xuống • Giữ ENTER để sạc & bắn', W / 2, H / 2 + 25);
+
             ctx.fillStyle = '#ffe600'; ctx.font = '600 12px Outfit,Arial';
-            ctx.fillText('Click để BẮT ĐẦU', W / 2, H / 2 + 50);
+            ctx.fillText('Click để BẮT ĐẦU chơi', W / 2, H / 2 + 60);
             ctx.restore();
         }
         if (state.phase === 'over') {
