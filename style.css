@@ -35,7 +35,7 @@ body {
     top: 0;
     left: 0;
     z-index: 1000;
-    overflow: hidden;
+    height: 100vh;
     box-shadow: 4px 0 30px rgba(0, 0, 0, 0.6);
     overflow-y: auto;
     /* Custom Neon Scrollbar */

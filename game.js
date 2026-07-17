@@ -1346,51 +1346,44 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Liên kết Click hành động từ các Game Card trên Dashboard
     // Hàm bind sự kiện click an toàn cho các thẻ game card ở Dashboard
-    function bindCardToBtn(cardId, btnId) {
+    function bindCardToBtn(cardId, btnId, viewId, initFn) {
         const card = document.getElementById(cardId);
-        const btn = document.getElementById(btnId);
-        if (card && btn) {
+        if (card) {
             card.addEventListener('click', () => {
-                // Tự động mở rộng thư mục cha trong sidebar nếu đang bị đóng để kích hoạt pointer-events
-                const parentContent = btn.closest('.sidebar-section-content');
-                if (parentContent && parentContent.classList.contains('collapsed')) {
-                    const header = parentContent.previousElementSibling;
-                    if (header && header.classList.contains('sidebar-section-header')) {
-                        header.click();
-                    }
-                }
-                setTimeout(() => {
-                    btn.click();
-                }, 50);
+                switchTo(viewId, btnId);
+                if (initFn) initFn();
             });
         }
     }
 
-    bindCardToBtn('cardSnake', 'btnSnake');
-    bindCardToBtn('cardCaro', 'btnCaro');
-    bindCardToBtn('cardDino', 'btnDino');
-    bindCardToBtn('cardChess', 'btnChess');
-    bindCardToBtn('cardXiangqi', 'btnXiangqi');
-    bindCardToBtn('cardMiner', 'btnMiner');
-    bindCardToBtn('cardTetris', 'btnTetris');
-    bindCardToBtn('cardPikachu', 'btnPikachu');
-    bindCardToBtn('cardSolitaire', 'btnSolitaire');
-    bindCardToBtn('cardInvaders', 'btnInvaders');
-    bindCardToBtn('cardPacman', 'btnPacman');
-    bindCardToBtn('cardBreaker', 'btnBreaker');
-    bindCardToBtn('card2048', 'btn2048');
-    bindCardToBtn('cardFlappy', 'btnFlappy');
-    bindCardToBtn('cardWhack', 'btnWhack');
-    bindCardToBtn('cardWordle', 'btnWordle');
-    bindCardToBtn('cardPong', 'btnPong');
-    bindCardToBtn('cardMemory', 'btnMemory');
-    bindCardToBtn('cardTypeRush', 'btnTypeRush');
-    bindCardToBtn('cardFrogger', 'btnFrogger');
-    bindCardToBtn('cardTron', 'btnTron');
-    bindCardToBtn('cardAim', 'btnAim');
-    bindCardToBtn('cardMines', 'btnMines');
-    bindCardToBtn('cardSpin', 'btnSpin');
-    bindCardToBtn('cardTower', 'btnTower');
+    bindCardToBtn('cardSnake', 'btnSnake', 'snakeView', () => {
+        if (gameState.gameStatus === 'MENU') drawMenu();
+        else if (gameState.gameStatus === 'PLAYING') render();
+    });
+    bindCardToBtn('cardCaro', 'btnCaro', 'caroView');
+    bindCardToBtn('cardDino', 'btnDino', 'dinoView');
+    bindCardToBtn('cardChess', 'btnChess', 'chessView');
+    bindCardToBtn('cardXiangqi', 'btnXiangqi', 'xiangqiView');
+    bindCardToBtn('cardMiner', 'btnMiner', 'minerView', () => initGoldMiner('minerGameArea'));
+    bindCardToBtn('cardTetris', 'btnTetris', 'tetrisView', () => initTetris('tetrisGameArea'));
+    bindCardToBtn('cardPikachu', 'btnPikachu', 'pikachuView', () => initPikachu('pikachuGameArea'));
+    bindCardToBtn('cardSolitaire', 'btnSolitaire', 'solitaireView', () => initSolitaire('solitaireGameArea'));
+    bindCardToBtn('cardInvaders', 'btnInvaders', 'invadersView', () => initSpaceInvaders('invadersGameArea'));
+    bindCardToBtn('cardPacman', 'btnPacman', 'pacmanView', () => initPacman());
+    bindCardToBtn('cardBreaker', 'btnBreaker', 'breakerView', () => initBreaker('breakerGameArea'));
+    bindCardToBtn('card2048', 'btn2048', 'game2048View', () => init2048('game2048GameArea'));
+    bindCardToBtn('cardFlappy', 'btnFlappy', 'flappyView', () => initFlappyBird('flappyGameArea'));
+    bindCardToBtn('cardWhack', 'btnWhack', 'whackView', () => initWhackMole('whackGameArea'));
+    bindCardToBtn('cardWordle', 'btnWordle', 'wordleView', () => initWordle('wordleGameArea'));
+    bindCardToBtn('cardPong', 'btnPong', 'pongView', () => initPong('pongGameArea'));
+    bindCardToBtn('cardMemory', 'btnMemory', 'memoryView', () => initMemory('memoryGameArea'));
+    bindCardToBtn('cardTypeRush', 'btnTypeRush', 'typeRushView', () => initTypeRush('typeRushGameArea'));
+    bindCardToBtn('cardFrogger', 'btnFrogger', 'froggerView', () => initFrogger('froggerGameArea'));
+    bindCardToBtn('cardTron', 'btnTron', 'tronView', () => initTron('tronGameArea'));
+    bindCardToBtn('cardAim', 'btnAim', 'aimView', () => initAimTrainer('aimGameArea'));
+    bindCardToBtn('cardMines', 'btnMines', 'minesView', () => initMinesweeper('minesGameArea'));
+    bindCardToBtn('cardSpin', 'btnSpin', 'spinView', () => initNeonSpin('spinGameArea'));
+    bindCardToBtn('cardTower', 'btnTower', 'towerView', () => initTowerBloxx('towerGameArea'));
 
     // --- 3 GAME MỚI: Flappy, Whack, Wordle ---
     const NEW_VIEWS = [
