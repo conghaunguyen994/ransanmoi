@@ -198,6 +198,18 @@
         <span class="nav-icon">🏃</span>
         <span class="nav-label">NEON DASH</span>
     </button>
+    <button id="btnBubble" class="nav-btn" data-label="NEON BUBBLE">
+        <span class="nav-icon">🔮</span>
+        <span class="nav-label">NEON BUBBLE</span>
+    </button>
+    <button id="btnAsteroids" class="nav-btn" data-label="NEON ASTEROIDS">
+        <span class="nav-icon">☄️</span>
+        <span class="nav-label">NEON ASTEROIDS</span>
+    </button>
+    <button id="btnConnect4" class="nav-btn" data-label="NEON CONNECT 4">
+        <span class="nav-icon">🟡</span>
+        <span class="nav-label">NEON CONNECT 4</span>
+    </button>
 </div>
     </nav>
 
@@ -514,6 +526,33 @@
                     <h3 class="game-card-title">NEON DASH</h3>
                     <p class="game-card-desc">Cube neon tự lao về phía trước, nhấn giữ SPACE/click để nhảy qua gai đỏ, khối tím và platform, tốc độ tăng dần vô hạn.</p>
                     <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 35: Neon Bubble Shooter -->
+                <div class="game-card" id="cardBubble" style="--card-color: #00f0ff;">
+                    <div class="game-card-icon">🔮</div>
+                    <h3 class="game-card-title">NEON BUBBLE</h3>
+                    <p class="game-card-desc">Bắn và phối hợp các bong bóng neon phát sáng cùng màu để tạo thành nhóm 3 trái trở lên và phát nổ chúng.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 36: Neon Asteroids -->
+                <div class="game-card" id="cardAsteroids" style="--card-color: #ff7300;">
+                    <div class="game-card-icon">☄️</div>
+                    <h3 class="game-card-title">NEON ASTEROIDS</h3>
+                    <p class="game-card-desc">Điều khiển phi thuyền không gian bắn phá các tiểu hành tinh neon trôi nổi, né tránh va chạm mảnh vỡ vũ trụ.</p>
+                    <div class="game-card-meta">1 PLAYER</div>
+                    <button class="game-card-btn">CHƠI NGAY</button>
+                </div>
+
+                <!-- Card 37: Neon Connect Four -->
+                <div class="game-card" id="cardConnect4" style="--card-color: #b026ff;">
+                    <div class="game-card-icon">🟡</div>
+                    <h3 class="game-card-title">NEON CONNECT 4</h3>
+                    <p class="game-card-desc">Xếp 4 hạt tròn neon liên tiếp theo hàng ngang, hàng dọc hoặc đường chéo. Đấu với AI thông minh hoặc chơi đôi.</p>
+                    <div class="game-card-meta">1-2 PLAYERS</div>
                     <button class="game-card-btn">CHƠI NGAY</button>
                 </div>
             </div>
@@ -1207,6 +1246,33 @@
             </div>
         </div>
 
+        <!-- View 35: Neon Bubble Shooter -->
+        <div id="bubbleView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <h2 style="font-family:'Outfit',Arial;font-size:22px;font-weight:800;color:#00f0ff;text-shadow:0 0 12px #00f0ff;letter-spacing:2px;margin:0;">🔮 NEON BUBBLE SHOOTER</h2>
+                <div id="bubbleGameArea"></div>
+                <button id="btnQuitBubble" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 36: Neon Asteroids -->
+        <div id="asteroidsView" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <h2 style="font-family:'Outfit',Arial;font-size:22px;font-weight:800;color:#ff7300;text-shadow:0 0 12px #ff7300;letter-spacing:2px;margin:0;">☄️ NEON ASTEROIDS</h2>
+                <div id="asteroidsGameArea"></div>
+                <button id="btnQuitAsteroids" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
+        <!-- View 37: Neon Connect Four -->
+        <div id="connect4View" class="game-view hidden">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px;">
+                <h2 style="font-family:'Outfit',Arial;font-size:22px;font-weight:800;color:#b026ff;text-shadow:0 0 12px #b026ff;letter-spacing:2px;margin:0;">🟡 NEON CONNECT FOUR</h2>
+                <div id="connect4GameArea"></div>
+                <button id="btnQuitConnect4" class="leave-btn" style="margin:0;">THOÁT GAME</button>
+            </div>
+        </div>
+
     </div>
     
     <script src="db-config.js?v=2"></script>
@@ -1244,5 +1310,8 @@
     <script src="neon_slide.js?v=1"></script>
     <script src="neon_reflex.js?v=1"></script>
     <script src="neon_dash.js?v=1"></script>
+    <script src="neon_bubble_shooter.js?v=1"></script>
+    <script src="neon_asteroids.js?v=1"></script>
+    <script src="neon_connect_four.js?v=1"></script>
 </body>
 </html>

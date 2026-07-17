@@ -826,36 +826,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // Thiết lập chuyển đổi View trên Menubar
     document.getElementById('btnHome').addEventListener('click', () => {
-        document.getElementById('btnHome').classList.add('active');
-        document.getElementById('btnSnake').classList.remove('active');
-        document.getElementById('btnCaro').classList.remove('active');
-        document.getElementById('btnDino').classList.remove('active');
-        document.getElementById('btnChess').classList.remove('active');
-        document.getElementById('btnXiangqi').classList.remove('active');
-        document.getElementById('btnMiner').classList.remove('active');
-        document.getElementById('btnTetris').classList.remove('active');
-        document.getElementById('btnPikachu').classList.remove('active');
-        document.getElementById('btnSolitaire').classList.remove('active');
-        document.getElementById('btnInvaders').classList.remove('active');
-        document.getElementById('btnPacman').classList.remove('active');
-        document.getElementById('btnBreaker').classList.remove('active');
-        document.getElementById('btn2048').classList.remove('active');
-        
-        document.getElementById('dashboardView').classList.remove('hidden');
-        document.getElementById('snakeView').classList.add('hidden');
-        document.getElementById('caroView').classList.add('hidden');
-        document.getElementById('dinoView').classList.add('hidden');
-        document.getElementById('chessView').classList.add('hidden');
-        document.getElementById('xiangqiView').classList.add('hidden');
-        document.getElementById('minerView').classList.add('hidden');
-        document.getElementById('tetrisView').classList.add('hidden');
-        document.getElementById('pikachuView').classList.add('hidden');
-        document.getElementById('solitaireView').classList.add('hidden');
-        document.getElementById('invadersView').classList.add('hidden');
-        document.getElementById('pacmanView').classList.add('hidden');
-        document.getElementById('breakerView').classList.add('hidden');
-        document.getElementById('game2048View').classList.add('hidden');
-        
+        switchTo('dashboardView', 'btnHome');
         // Tự động tạm dừng game Rắn nếu đang chơi để tránh rắn tự chết
         if (gameState.gameStatus === 'PLAYING') {
             togglePause();
@@ -1394,6 +1365,9 @@ window.addEventListener('DOMContentLoaded', () => {
     bindCardToBtn('cardSlide', 'btnSlide', 'slideView', () => initNeonSlide('slideGameArea'));
     bindCardToBtn('cardReflex', 'btnReflex', 'reflexView', () => initNeonReflex('reflexGameArea'));
     bindCardToBtn('cardDash', 'btnDash', 'dashView', () => initNeonDash('dashGameArea'));
+    bindCardToBtn('cardBubble', 'btnBubble', 'bubbleView', () => initNeonBubbleShooter('bubbleGameArea'));
+    bindCardToBtn('cardAsteroids', 'btnAsteroids', 'asteroidsView', () => initNeonAsteroids('asteroidsGameArea'));
+    bindCardToBtn('cardConnect4', 'btnConnect4', 'connect4View', () => initNeonConnectFour('connect4GameArea'));
 
     // --- 3 GAME MỚI: Flappy, Whack, Wordle ---
     const NEW_VIEWS = [
@@ -1402,7 +1376,8 @@ window.addEventListener('DOMContentLoaded', () => {
         'breakerView','game2048View','flappyView','whackView','wordleView',
         'pongView','memoryView','typeRushView','froggerView','tronView','aimView',
         'minesView','spinView','towerView','snake2PView','helixView','hockeyView','gunnyView',
-        'sudokuView','simonView','slideView','reflexView','dashView'
+        'sudokuView','simonView','slideView','reflexView','dashView',
+        'bubbleView','asteroidsView','connect4View'
     ];
     const NEW_BTNS = [
         'btnHome','btnSnake','btnCaro','btnDino','btnChess','btnXiangqi',
@@ -1410,7 +1385,8 @@ window.addEventListener('DOMContentLoaded', () => {
         'btnBreaker','btn2048','btnFlappy','btnWhack','btnWordle',
         'btnPong','btnMemory','btnTypeRush','btnFrogger','btnTron','btnAim',
         'btnMines','btnSpin','btnTower','btnSnake2P','btnHelix','btnHockey','btnGunny',
-        'btnSudoku','btnSimon','btnSlide','btnReflex','btnDash'
+        'btnSudoku','btnSimon','btnSlide','btnReflex','btnDash',
+        'btnBubble','btnAsteroids','btnConnect4'
     ];
 
     function switchTo(viewId, btnId) {
@@ -1645,6 +1621,36 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('btnQuitDash').addEventListener('click', () => {
         const area = document.getElementById('dashGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnBubble').addEventListener('click', () => {
+        switchTo('bubbleView', 'btnBubble');
+        initNeonBubbleShooter('bubbleGameArea');
+    });
+    document.getElementById('btnQuitBubble').addEventListener('click', () => {
+        const area = document.getElementById('bubbleGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnAsteroids').addEventListener('click', () => {
+        switchTo('asteroidsView', 'btnAsteroids');
+        initNeonAsteroids('asteroidsGameArea');
+    });
+    document.getElementById('btnQuitAsteroids').addEventListener('click', () => {
+        const area = document.getElementById('asteroidsGameArea');
+        if (area && area._gameCleanup) area._gameCleanup();
+        switchTo('dashboardView', 'btnHome');
+    });
+
+    document.getElementById('btnConnect4').addEventListener('click', () => {
+        switchTo('connect4View', 'btnConnect4');
+        initNeonConnectFour('connect4GameArea');
+    });
+    document.getElementById('btnQuitConnect4').addEventListener('click', () => {
+        const area = document.getElementById('connect4GameArea');
         if (area && area._gameCleanup) area._gameCleanup();
         switchTo('dashboardView', 'btnHome');
     });
