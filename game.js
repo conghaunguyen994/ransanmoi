@@ -1351,7 +1351,17 @@ window.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById(btnId);
         if (card && btn) {
             card.addEventListener('click', () => {
-                btn.click();
+                // Tự động mở rộng thư mục cha trong sidebar nếu đang bị đóng để kích hoạt pointer-events
+                const parentContent = btn.closest('.sidebar-section-content');
+                if (parentContent && parentContent.classList.contains('collapsed')) {
+                    const header = parentContent.previousElementSibling;
+                    if (header && header.classList.contains('sidebar-section-header')) {
+                        header.click();
+                    }
+                }
+                setTimeout(() => {
+                    btn.click();
+                }, 50);
             });
         }
     }
