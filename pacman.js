@@ -139,7 +139,7 @@
         const HALF = TILE_SIZE / 2;
         const modX = ((pm.x % TILE_SIZE) + TILE_SIZE) % TILE_SIZE;
         const modY = ((pm.y % TILE_SIZE) + TILE_SIZE) % TILE_SIZE;
-        const threshold = pm.speed + 0.5; // phạm vi để coi là đang ở tâm ô
+        const threshold = pm.speed / 2; // phải < speed để snap chỉ xảy ra khi cắt qua tâm ô
 
         const nearCenterX = Math.abs(modX - HALF) <= threshold;
         const nearCenterY = Math.abs(modY - HALF) <= threshold;
@@ -202,8 +202,8 @@
             pm.y = nextY;
         } else if (blocked) {
             // Snap về tâm ô gần nhất khi bị chặn
-            pm.x = Math.round(pm.x / TILE_SIZE) * TILE_SIZE + HALF;
-            pm.y = Math.round(pm.y / TILE_SIZE) * TILE_SIZE + HALF;
+            pm.x = Math.round((pm.x - HALF) / TILE_SIZE) * TILE_SIZE + HALF;
+            pm.y = Math.round((pm.y - HALF) / TILE_SIZE) * TILE_SIZE + HALF;
             pm.dirX = 0;
             pm.dirY = 0;
         }
@@ -229,7 +229,7 @@
             const gHalf = TILE_SIZE / 2;
             const gModX = ((g.x % TILE_SIZE) + TILE_SIZE) % TILE_SIZE;
             const gModY = ((g.y % TILE_SIZE) + TILE_SIZE) % TILE_SIZE;
-            const gThresh = g.speed + 0.5;
+            const gThresh = g.speed / 2;
             const align = Math.abs(gModX - gHalf) <= gThresh && Math.abs(gModY - gHalf) <= gThresh;
             if (align) {
                 // Snap về tâm ô
